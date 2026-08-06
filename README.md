@@ -1,4 +1,4 @@
-# 🎸 Support Band DB
+# 🎸 SupportScout
 
 A mobile-first application for researching, ranking and managing Perth bands for gigs and festivals.
 
@@ -8,7 +8,7 @@ Built with **React Native (Expo)**, **TypeScript**, **SQLite**, and **PostgreSQL
 
 ## Overview
 
-Support Band DB is designed to replace spreadsheets and notebooks used when organising gigs.
+SupportScout is designed to replace spreadsheets and notebooks used when organising gigs.
 
 It helps identify suitable support acts, keep track of contacts, assess compatibility, estimate audience draw, and build the strongest possible line-ups.
 

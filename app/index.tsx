@@ -14,7 +14,7 @@ const sections = [
 export default function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Support Band DB</Text>
+      <Text style={styles.title}>SupportScout</Text>
       <Text style={styles.subtitle}>Research, rank and build Perth band line-ups.</Text>
       <View style={styles.grid}>
         {sections.map(([href, label]) => (
