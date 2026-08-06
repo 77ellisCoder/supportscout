@@ -1,0 +1,1 @@
+-- Local SQLite seed data placeholder.
