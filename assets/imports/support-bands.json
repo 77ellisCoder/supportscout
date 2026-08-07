@@ -1,0 +1,127 @@
+{
+  "source": "Support Bands.ods",
+  "worksheet": "Sheet1",
+  "generatedAt": "2026-08-07T00:53:02.861Z",
+  "bands": [
+    {
+      "bandName": "Kelvin's Place",
+      "genreStyle": "Indie Rock, Surf Rock",
+      "similarArtists": "Hockey Dad, Fool Nelson, The Grogans",
+      "memberCount": 2,
+      "recentUpcomingGigs": "Headlined Lynott's Lounge (6 Jun 2026); previously supported Great Gable, Hey So Hungry and others.",
+      "estimatedDrawMin": 120,
+      "estimatedDrawMax": 200,
+      "redTemplesFit": null,
+      "bookingPriority": "A+",
+      "notes": "One of the strongest fits. Young crowd, energetic, already playing with bands in your scene."
+    },
+    {
+      "bandName": "Sun After Dusk",
+      "genreStyle": "Indie Rock with 80s influence",
+      "similarArtists": "Great Gable, Spacey Jane",
+      "memberCount": null,
+      "recentUpcomingGigs": "WA Music Week at Gage Roads (7 Aug 2026).",
+      "estimatedDrawMin": 150,
+      "estimatedDrawMax": 250,
+      "redTemplesFit": null,
+      "bookingPriority": "A",
+      "notes": "Growing profile and good festival exposure."
+    },
+    {
+      "bandName": "Outfront",
+      "genreStyle": "Indie / Alternative Rock",
+      "similarArtists": "Dear Sunday, Last Quokka",
+      "memberCount": null,
+      "recentUpcomingGigs": "Supported Kelvin's Place launch and Hey So Hungry headline.",
+      "estimatedDrawMin": 80,
+      "estimatedDrawMax": 150,
+      "redTemplesFit": null,
+      "bookingPriority": "A",
+      "notes": "Frequently appears on strong local line-ups."
+    },
+    {
+      "bandName": "Navy June",
+      "genreStyle": "Indie Rock",
+      "similarArtists": "Spacey Jane, Old Mervs",
+      "memberCount": null,
+      "recentUpcomingGigs": "Playing with Willow Park EP launch (14 Aug 2026).",
+      "estimatedDrawMin": 100,
+      "estimatedDrawMax": 180,
+      "redTemplesFit": null,
+      "bookingPriority": "A",
+      "notes": "Excellent crossover audience."
+    },
+    {
+      "bandName": "Calico City",
+      "genreStyle": "Indie Rock",
+      "similarArtists": "Great Gable, The Rions",
+      "memberCount": null,
+      "recentUpcomingGigs": "Supported Hey So Hungry; played with Kenny Drives and The Arcade Lights.",
+      "estimatedDrawMin": 80,
+      "estimatedDrawMax": 150,
+      "redTemplesFit": null,
+      "bookingPriority": "A",
+      "notes": "Very compatible with Red Temples' style."
+    },
+    {
+      "bandName": "Hey So Hungry",
+      "genreStyle": "High-energy Indie Rock",
+      "similarArtists": "Dune Rats, Hockey Dad",
+      "memberCount": null,
+      "recentUpcomingGigs": "Headline tour finished May 2026.",
+      "estimatedDrawMin": 200,
+      "estimatedDrawMax": 350,
+      "redTemplesFit": null,
+      "bookingPriority": "A+",
+      "notes": "Probably the biggest draw in this first batch."
+    },
+    {
+      "bandName": "Don't Tell Daisy",
+      "genreStyle": "Indie Pop / Rock",
+      "similarArtists": "Lime Cordiale",
+      "memberCount": null,
+      "recentUpcomingGigs": "Headlined Clancy's Fremantle (13 Jun 2026).",
+      "estimatedDrawMin": 80,
+      "estimatedDrawMax": 150,
+      "redTemplesFit": null,
+      "bookingPriority": "B+",
+      "notes": "Good support option if you want a broader audience mix."
+    },
+    {
+      "bandName": "About Yesterday",
+      "genreStyle": "Alternative / Indie",
+      "similarArtists": "Unknown",
+      "memberCount": null,
+      "recentUpcomingGigs": "Supported Sun After Dusk at Indian Ocean Hotel (21 Aug 2026).",
+      "estimatedDrawMin": 50,
+      "estimatedDrawMax": 100,
+      "redTemplesFit": null,
+      "bookingPriority": "B",
+      "notes": "Emerging act worth watching."
+    },
+    {
+      "bandName": "Kenny Drives",
+      "genreStyle": "Indie Rock",
+      "similarArtists": "Old Mervs",
+      "memberCount": null,
+      "recentUpcomingGigs": "Indian Ocean Hotel with Willow Park; The Bird with Calico City.",
+      "estimatedDrawMin": 70,
+      "estimatedDrawMax": 140,
+      "redTemplesFit": null,
+      "bookingPriority": "B+",
+      "notes": "Already sharing bills with several target bands."
+    },
+    {
+      "bandName": "Willow Park",
+      "genreStyle": "Surf / Indie Rock",
+      "similarArtists": "The Grogans, Great Gable",
+      "memberCount": null,
+      "recentUpcomingGigs": "EP launch at Indian Ocean Hotel (14 Aug 2026).",
+      "estimatedDrawMin": 100,
+      "estimatedDrawMax": 180,
+      "redTemplesFit": null,
+      "bookingPriority": "A",
+      "notes": "New band with momentum and a strong fit."
+    }
+  ]
+}

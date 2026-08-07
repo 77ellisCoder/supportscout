@@ -1,0 +1,564 @@
+:root {
+  /* --------------------------------------------------
+     SupportScout Brand Colours
+  -------------------------------------------------- */
+
+  --ss-purple-500: #8e5bff;
+  --ss-purple-400: #b78cff;
+  --ss-purple-600: #7446d8;
+  --ss-purple-700: #5d36ad;
+
+  --ss-bg: #0d0d14;
+  --ss-bg-deep: #08080d;
+  --ss-surface: #1a1a24;
+  --ss-surface-hover: #22222e;
+  --ss-surface-raised: #252532;
+
+  --ss-border: #2a2a36;
+  --ss-border-strong: #3b3b48;
+
+  --ss-text: #f2f2f7;
+  --ss-text-secondary: #a7a7b3;
+  --ss-text-muted: #747482;
+
+  --ss-success: #52d273;
+  --ss-warning: #f3b94f;
+  --ss-danger: #ef5b68;
+  --ss-info: #5ca8ff;
+
+  /* --------------------------------------------------
+     Gradients
+  -------------------------------------------------- */
+
+  --ss-gradient-primary:
+    linear-gradient(
+      135deg,
+      var(--ss-purple-500) 0%,
+      var(--ss-purple-400) 100%
+    );
+
+  --ss-gradient-deep:
+    linear-gradient(
+      180deg,
+      var(--ss-surface) 0%,
+      var(--ss-bg) 100%
+    );
+
+  --ss-gradient-stage:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(142, 91, 255, 0.24) 0%,
+      rgba(142, 91, 255, 0.05) 40%,
+      transparent 72%
+    );
+
+  /* --------------------------------------------------
+     Typography
+  -------------------------------------------------- */
+
+  --ss-font:
+    "Poppins",
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --ss-font-mono:
+    "JetBrains Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+
+  --ss-text-xs: 0.75rem;
+  --ss-text-sm: 0.875rem;
+  --ss-text-md: 1rem;
+  --ss-text-lg: 1.125rem;
+  --ss-text-xl: 1.5rem;
+  --ss-text-2xl: 2rem;
+  --ss-text-3xl: 2.75rem;
+
+  /* --------------------------------------------------
+     Spacing
+  -------------------------------------------------- */
+
+  --ss-space-1: 0.25rem;
+  --ss-space-2: 0.5rem;
+  --ss-space-3: 0.75rem;
+  --ss-space-4: 1rem;
+  --ss-space-5: 1.5rem;
+  --ss-space-6: 2rem;
+  --ss-space-7: 3rem;
+  --ss-space-8: 4rem;
+
+  /* --------------------------------------------------
+     Radius
+  -------------------------------------------------- */
+
+  --ss-radius-sm: 8px;
+  --ss-radius-md: 12px;
+  --ss-radius-lg: 18px;
+  --ss-radius-xl: 24px;
+  --ss-radius-pill: 999px;
+
+  /* --------------------------------------------------
+     Shadows
+  -------------------------------------------------- */
+
+  --ss-shadow-sm:
+    0 4px 14px rgba(0, 0, 0, 0.24);
+
+  --ss-shadow-md:
+    0 10px 30px rgba(0, 0, 0, 0.35);
+
+  --ss-shadow-purple:
+    0 0 28px rgba(142, 91, 255, 0.24);
+
+  /* --------------------------------------------------
+     Transitions
+  -------------------------------------------------- */
+
+  --ss-transition-fast: 120ms ease;
+  --ss-transition: 180ms ease;
+  --ss-transition-slow: 280ms ease;
+}
+
+/* --------------------------------------------------
+   Base
+-------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background:
+    var(--ss-gradient-stage),
+    var(--ss-bg);
+
+  color: var(--ss-text);
+  font-family: var(--ss-font);
+  font-size: var(--ss-text-md);
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--ss-purple-400);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ss-purple-500);
+}
+
+/* --------------------------------------------------
+   Typography
+-------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  color: var(--ss-text);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: var(--ss-text-3xl);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--ss-text-2xl);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: var(--ss-text-xl);
+  font-weight: 600;
+}
+
+p {
+  color: var(--ss-text-secondary);
+}
+
+.ss-muted {
+  color: var(--ss-text-muted);
+}
+
+/* --------------------------------------------------
+   App Shell
+-------------------------------------------------- */
+
+.ss-app {
+  min-height: 100vh;
+  background:
+    var(--ss-gradient-stage),
+    var(--ss-bg);
+}
+
+.ss-container {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------
+   Cards
+-------------------------------------------------- */
+
+.ss-card {
+  background: var(--ss-surface);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-lg);
+  box-shadow: var(--ss-shadow-sm);
+
+  padding: var(--ss-space-5);
+
+  transition:
+    transform var(--ss-transition),
+    border-color var(--ss-transition),
+    background var(--ss-transition);
+}
+
+.ss-card:hover {
+  background: var(--ss-surface-hover);
+  border-color: var(--ss-border-strong);
+  transform: translateY(-2px);
+}
+
+.ss-card--highlight {
+  border-color: rgba(142, 91, 255, 0.42);
+  box-shadow: var(--ss-shadow-purple);
+}
+
+/* --------------------------------------------------
+   Buttons
+-------------------------------------------------- */
+
+.ss-button {
+  appearance: none;
+  border: 0;
+  border-radius: var(--ss-radius-md);
+
+  min-height: 44px;
+  padding: 0 var(--ss-space-5);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ss-space-2);
+
+  font: inherit;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform var(--ss-transition-fast),
+    opacity var(--ss-transition-fast),
+    background var(--ss-transition);
+}
+
+.ss-button:active {
+  transform: scale(0.98);
+}
+
+.ss-button--primary {
+  color: white;
+  background: var(--ss-gradient-primary);
+}
+
+.ss-button--primary:hover {
+  opacity: 0.94;
+}
+
+.ss-button--secondary {
+  color: var(--ss-text);
+  background: transparent;
+  border: 1px solid var(--ss-border-strong);
+}
+
+.ss-button--secondary:hover {
+  background: var(--ss-surface-hover);
+}
+
+.ss-button--ghost {
+  color: var(--ss-purple-400);
+  background: transparent;
+}
+
+/* --------------------------------------------------
+   Inputs
+-------------------------------------------------- */
+
+.ss-input,
+.ss-select,
+.ss-textarea {
+  width: 100%;
+
+  background: var(--ss-bg-deep);
+  color: var(--ss-text);
+
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-md);
+
+  padding: 12px 14px;
+
+  font: inherit;
+
+  outline: none;
+
+  transition:
+    border-color var(--ss-transition),
+    box-shadow var(--ss-transition);
+}
+
+.ss-input:focus,
+.ss-select:focus,
+.ss-textarea:focus {
+  border-color: var(--ss-purple-500);
+  box-shadow: 0 0 0 3px rgba(142, 91, 255, 0.16);
+}
+
+.ss-input::placeholder,
+.ss-textarea::placeholder {
+  color: var(--ss-text-muted);
+}
+
+/* --------------------------------------------------
+   Search
+-------------------------------------------------- */
+
+.ss-search {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-space-3);
+
+  background: var(--ss-bg-deep);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-pill);
+
+  padding: 10px 16px;
+}
+
+.ss-search:focus-within {
+  border-color: var(--ss-purple-500);
+  box-shadow: 0 0 0 3px rgba(142, 91, 255, 0.13);
+}
+
+/* --------------------------------------------------
+   Chips / Tags
+-------------------------------------------------- */
+
+.ss-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 5px 10px;
+
+  color: var(--ss-purple-400);
+  background: rgba(142, 91, 255, 0.1);
+
+  border: 1px solid rgba(142, 91, 255, 0.25);
+  border-radius: var(--ss-radius-pill);
+
+  font-size: var(--ss-text-sm);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------
+   Score / Ranking
+-------------------------------------------------- */
+
+.ss-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 52px;
+  height: 34px;
+
+  padding: 0 12px;
+
+  color: white;
+  background: var(--ss-gradient-primary);
+
+  border-radius: var(--ss-radius-pill);
+
+  font-weight: 700;
+}
+
+.ss-rating {
+  color: var(--ss-purple-400);
+  letter-spacing: 2px;
+}
+
+/* --------------------------------------------------
+   Band Card
+-------------------------------------------------- */
+
+.ss-band-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--ss-space-4);
+
+  background: var(--ss-surface);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-lg);
+
+  padding: var(--ss-space-5);
+}
+
+.ss-band-card__name {
+  margin: 0 0 4px;
+
+  font-size: var(--ss-text-lg);
+  font-weight: 600;
+}
+
+.ss-band-card__meta {
+  color: var(--ss-text-secondary);
+  font-size: var(--ss-text-sm);
+}
+
+.ss-band-card__score {
+  align-self: center;
+}
+
+/* --------------------------------------------------
+   Navigation
+-------------------------------------------------- */
+
+.ss-nav {
+  background: rgba(13, 13, 20, 0.88);
+  border-bottom: 1px solid var(--ss-border);
+
+  backdrop-filter: blur(18px);
+}
+
+.ss-nav__item {
+  color: var(--ss-text-secondary);
+
+  transition: color var(--ss-transition);
+}
+
+.ss-nav__item:hover {
+  color: var(--ss-text);
+}
+
+.ss-nav__item--active {
+  color: var(--ss-purple-400);
+}
+
+/* --------------------------------------------------
+   Tabs
+-------------------------------------------------- */
+
+.ss-tabs {
+  display: flex;
+  gap: var(--ss-space-2);
+
+  border-bottom: 1px solid var(--ss-border);
+}
+
+.ss-tab {
+  padding: 10px 14px;
+
+  color: var(--ss-text-secondary);
+
+  border-bottom: 2px solid transparent;
+}
+
+.ss-tab--active {
+  color: var(--ss-purple-400);
+  border-color: var(--ss-purple-500);
+}
+
+/* --------------------------------------------------
+   Divider
+-------------------------------------------------- */
+
+.ss-divider {
+  height: 1px;
+  background: var(--ss-border);
+  border: 0;
+}
+
+/* --------------------------------------------------
+   Purple Accent Divider
+-------------------------------------------------- */
+
+.ss-brand-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: var(--ss-purple-400);
+}
+
+.ss-brand-divider::before,
+.ss-brand-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+
+  background: rgba(142, 91, 255, 0.45);
+}
+
+/* --------------------------------------------------
+   Dashboard Stats
+-------------------------------------------------- */
+
+.ss-stat {
+  background: var(--ss-surface);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-lg);
+
+  padding: var(--ss-space-5);
+}
+
+.ss-stat__label {
+  color: var(--ss-text-secondary);
+  font-size: var(--ss-text-sm);
+}
+
+.ss-stat__value {
+  margin-top: 4px;
+
+  color: var(--ss-text);
+  font-size: var(--ss-text-2xl);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------
+   Utility
+-------------------------------------------------- */
+
+.ss-purple {
+  color: var(--ss-purple-400);
+}
+
+.ss-surface {
+  background: var(--ss-surface);
+}
+
+.ss-rounded {
+  border-radius: var(--ss-radius-lg);
+}
+
+.ss-glow {
+  box-shadow: var(--ss-shadow-purple);
+}

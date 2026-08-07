@@ -1,6 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-export type BandListItem = { id: number; name: string; score?: number };
-async function fetchBands(): Promise<BandListItem[]> { return []; }
+import { BandRepository } from "../repositories/BandRepository";
+
 export function useBands() {
-  return useQuery({ queryKey: ["bands"], queryFn: fetchBands });
+  const query = useQuery({
+    queryKey: ["bands"],
+    queryFn: async () => {
+      const bands = await BandRepository.getAll();
+      return bands;
+    },
+    enabled: true,
+    retry: false,
+  });
+
+  return query;
 }
