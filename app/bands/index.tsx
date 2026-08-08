@@ -19,19 +19,6 @@ import { styles } from "../../styles/bands.styles";
 
 export default function BandsScreen() {
   const [search, setSearch] = useState("");
-
-  // TOOD: get from database / API call?
-  const GENRES = [
-    "All",
-    "Indie Rock",
-    "Surf Rock",
-    "Alternative",
-    "Indie Pop",
-    "Reggae",
-    "Rock",
-    "Hard Rock"
-  ];
-
   const [selectedGenre, setSelectedGenre] = useState("All");
 
   const {
@@ -53,6 +40,31 @@ export default function BandsScreen() {
         .includes(genre)
     );
   }, [bands, selectedGenre]);
+
+  const GENRES = useMemo(() => {
+    const values = new Set<string>();
+
+    bands.forEach((band) => {
+      const description = band.shortDescription;
+
+      if (!description) {
+        return;
+      }
+
+      description
+        .split(/[,/]/)
+        .map((value) => value.trim())
+        .filter(Boolean)
+        .forEach((value) => values.add(value));
+    });
+
+    return [
+      "All",
+      ...Array.from(values).sort((a, b) =>
+        a.localeCompare(b)
+      ),
+    ];
+  }, [bands]);
 
   return (
     <View style={styles.page}>
@@ -85,7 +97,7 @@ export default function BandsScreen() {
 
       <View style={styles.resultHeader}>
         <Text style={styles.resultCount}>
-          {bands.length} {bands.length === 1 ? "band" : "bands"}
+          {filteredBands.length} {filteredBands.length === 1 ? "band" : "bands"}
         </Text>
       </View>
 
@@ -102,7 +114,7 @@ export default function BandsScreen() {
         </View>
       ) : (
         <FlatList
-          data={bands}
+          data={filteredBands}
           keyExtractor={(item) => String(item.bandId)}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
@@ -122,7 +134,9 @@ export default function BandsScreen() {
               </Text>
 
               <Text style={styles.emptyText}>
-                Try a different search.
+                {selectedGenre === "All"
+                  ? "Try a different search."
+                  : `No bands match ${selectedGenre}.`}
               </Text>
             </View>
           }

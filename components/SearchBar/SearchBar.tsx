@@ -1,28 +1,44 @@
-import { TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
+
 import { styles } from "./SearchBar.styles";
 
 type SearchBarProps = {
-    value: string;
-    onChangeText: (value: string) => void;
-    placeholder?: string;
+  value: string;
+  onChangeText: (value: string) => void;
+  placeholder?: string;
 };
 
 export function SearchBar({
-    value,
-    onChangeText,
-    placeholder = "Search bands...",
+  value,
+  onChangeText,
+  placeholder = "Search bands...",
 }: SearchBarProps) {
-    return (
-        <View style={styles.wrapper}>
-            <TextInput
-                value={value}
-                onChangeText={onChangeText}
-                placeholder={placeholder}
-                placeholderTextColor="#747482"
-                style={styles.input}
-                autoCapitalize="none"
-                autoCorrect={false}
-            />
-        </View>
-    );
+  return (
+    <View style={styles.wrapper}>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor="#747482"
+        style={styles.input}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+
+      {value.length > 0 && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Clear search"
+          onPress={() => onChangeText("")}
+          hitSlop={10}
+          style={({ pressed }) => [
+            styles.clearButton,
+            pressed && styles.clearButtonPressed,
+          ]}
+        >
+          <Text style={styles.clearText}>×</Text>
+        </Pressable>
+      )}
+    </View>
+  );
 }
