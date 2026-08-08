@@ -51,14 +51,28 @@ function slugify(value: string): string {
 }
 
 export const BandRepository = {
-  async getAll(): Promise<Band[]> {
+  async getAll(search?: string): Promise<Band[]> {
     const db = await getDatabase();
-    const rows = await db.getAllAsync<BandRow>(`
-      SELECT *
-      FROM bands
-      WHERE archived_at IS NULL
-      ORDER BY band_name COLLATE NOCASE
-    `);
+
+    const rows = search?.trim()
+      ? await db.getAllAsync<BandRow>(
+        `
+          SELECT *
+          FROM bands
+          WHERE archived_at IS NULL
+            AND band_name LIKE ?
+          ORDER BY band_name COLLATE NOCASE
+        `,
+        `%${search.trim()}%`
+      )
+      : await db.getAllAsync<BandRow>(
+        `
+          SELECT *
+          FROM bands
+          WHERE archived_at IS NULL
+          ORDER BY band_name COLLATE NOCASE
+        `
+      );
 
     return rows.map(mapBand);
   },

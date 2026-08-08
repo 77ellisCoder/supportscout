@@ -14,6 +14,13 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+  },
+
   container: {
     width: "100%",
     maxWidth: 1100,
