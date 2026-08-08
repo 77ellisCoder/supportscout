@@ -21,6 +21,10 @@ export default function BandsScreen() {
   const [search, setSearch] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
 
+  type SortOption = "name-asc" | "name-desc";
+
+  const [sortBy, setSortBy] = useState<SortOption>("name-asc");
+
   const {
     data: bands = [],
     isLoading,
@@ -40,6 +44,23 @@ export default function BandsScreen() {
         .includes(genre)
     );
   }, [bands, selectedGenre]);
+
+  const sortedBands = useMemo(() => {
+    const sorted = [...filteredBands];
+
+    switch (sortBy) {
+      case "name-desc":
+        return sorted.sort((a, b) =>
+          b.bandName.localeCompare(a.bandName)
+        );
+
+      case "name-asc":
+      default:
+        return sorted.sort((a, b) =>
+          a.bandName.localeCompare(b.bandName)
+        );
+    }
+  }, [filteredBands, sortBy]);
 
   const GENRES = useMemo(() => {
     const values = new Set<string>();
@@ -95,6 +116,23 @@ export default function BandsScreen() {
         </View>
       </View>
 
+      {/* Sorting */}
+      <View style={styles.sortRow}>
+        <Text style={styles.sortLabel}>SORT</Text>
+
+        <Chip
+          label="A–Z"
+          selected={sortBy === "name-asc"}
+          onPress={() => setSortBy("name-asc")}
+        />
+
+        <Chip
+          label="Z–A"
+          selected={sortBy === "name-desc"}
+          onPress={() => setSortBy("name-desc")}
+        />
+      </View>
+
       <View style={styles.resultHeader}>
         <Text style={styles.resultCount}>
           {filteredBands.length} {filteredBands.length === 1 ? "band" : "bands"}
@@ -114,7 +152,7 @@ export default function BandsScreen() {
         </View>
       ) : (
         <FlatList
-          data={filteredBands}
+          data={sortedBands}
           keyExtractor={(item) => String(item.bandId)}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (

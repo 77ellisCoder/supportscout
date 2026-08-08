@@ -10,13 +10,27 @@ import {
 
 export const styles = StyleSheet.create({
 
+    sortRow: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: spacing.sm,
+        marginTop: spacing.lg,
+    },
+
+    sortLabel: {
+        ...typography.label,
+        color: colors.textMuted,
+        marginRight: spacing.xs,
+    },
+
     chipRow: {
         flexDirection: "row",
         flexWrap: "wrap",
         gap: spacing.sm,
         marginTop: spacing.lg,
     },
-    
+
     page: {
         flex: 1,
         backgroundColor: colors.background,
