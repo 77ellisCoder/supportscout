@@ -1,64 +1,39 @@
-import { Audio, AVPlaybackStatus } from "expo-av";
+import { createAudioPlayer, setAudioModeAsync } from "expo-audio";
+
+const clickSource = require("../assets/sounds/ui-click.mp3");
 
 class SoundServiceClass {
-    private clickSound: Audio.Sound | null = null;
-    private isLoaded = false;
-    private isLoading = false;
+    private clickPlayer = createAudioPlayer(clickSource);
+    private initialised = false;
 
     async initialise(): Promise<void> {
-        if (this.isLoaded || this.isLoading) {
+        if (this.initialised) {
             return;
         }
 
-        this.isLoading = true;
+        await setAudioModeAsync({
+            interruptionMode: "mixWithOthers",
+            playsInSilentMode: true,
+        });
 
-        try {
-            const { sound } = await Audio.Sound.createAsync(
-                require("../assets/sounds/ui-click.mp3"),
-                {
-                    shouldPlay: false,
-                    volume: 0.35,
-                }
-            );
-
-            this.clickSound = sound;
-            this.isLoaded = true;
-        } catch (error) {
-            console.warn("Unable to preload UI sounds:", error);
-        } finally {
-            this.isLoading = false;
-        }
+        this.clickPlayer.volume = 0.35;
+        this.initialised = true;
     }
 
-    async click(): Promise<void> {
-        if (!this.clickSound) {
-            await this.initialise();
-        }
-
-        if (!this.clickSound) {
-            return;
-        }
-
+    click(): void {
         try {
-            await this.clickSound.setPositionAsync(0);
-            await this.clickSound.playAsync();
+            this.clickPlayer.seekTo(0);
+            this.clickPlayer.play();
         } catch (error) {
             console.warn("Unable to play click sound:", error);
         }
     }
 
-    async unload(): Promise<void> {
-        if (!this.clickSound) {
-            return;
-        }
-
+    unload(): void {
         try {
-            await this.clickSound.unloadAsync();
+            this.clickPlayer.remove();
         } catch (error) {
             console.warn("Unable to unload UI sounds:", error);
-        } finally {
-            this.clickSound = null;
-            this.isLoaded = false;
         }
     }
 }

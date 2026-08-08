@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/branding/adaptive-icon-foreground.png",
         "backgroundImage": "./assets/branding/adaptive-icon-background.png",
         "monochromeImage": "./assets/branding/adaptive-icon-monochrome.png"
-      }
+      },
+      "package": "au.com.supportscout.app"
     },
     "web": {
       "favicon": "./assets/branding/favicon.png"
@@ -32,7 +33,19 @@
         }
       ],
       "expo-sqlite",
-      "expo-secure-store"
-    ]
+      "expo-secure-store",
+      "expo-audio"
+    ],
+    "extra": {
+      "router": {
+        "headers": {
+          "Cross-Origin-Embedder-Policy": "credentialless",
+          "Cross-Origin-Opener-Policy": "same-origin"
+        }
+      },
+      "eas": {
+        "projectId": "f714970b-537a-44ed-9715-9c826e931418"
+      }
+    }
   }
 }
