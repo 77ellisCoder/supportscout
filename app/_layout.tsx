@@ -1,27 +1,22 @@
 import "../styles/theme.css";
 
 import { useEffect } from "react";
+import { SoundService } from "../services/SoundService";
 import { Stack } from "expo-router";
 import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
 
-import { importSupportBands } from "../database/sqlite/imports/SpreadsheetImporter";
-
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
   useEffect(() => {
-    importSupportBands()
-      .then(() => {
-        return queryClient.invalidateQueries({
-          queryKey: ["bands"],
-        });
-      })
-      .catch((error) => {
-        console.error("Spreadsheet import failed:", error);
-      });
+    SoundService.initialise();
+
+    return () => {
+      SoundService.unload();
+    };
   }, []);
 
   return (

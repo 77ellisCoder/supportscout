@@ -70,42 +70,6 @@ export const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
 
-  statCard: {
-    minWidth: 180,
-    flexGrow: 1,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.xl,
-    padding: spacing.xl,
-    ...shadows.card,
-  },
-
-  statLabel: {
-    ...typography.label,
-    color: colors.textMuted,
-  },
-
-  statValue: {
-    color: colors.primaryLight,
-    fontSize: 42,
-    fontWeight: "700",
-    marginTop: spacing.sm,
-  },
-
-  statValueMuted: {
-    color: colors.textMuted,
-    fontSize: 42,
-    fontWeight: "700",
-    marginTop: spacing.sm,
-  },
-
-  statCaption: {
-    ...typography.small,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-
   errorCard: {
     borderWidth: 1,
     borderColor: colors.danger,
@@ -125,30 +89,13 @@ export const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
 
-  exploreButton: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    minWidth: 320,
-    minHeight: 58,
-    paddingHorizontal: spacing.xxl,
-    paddingVertical: spacing.lg,
-    flexDirection: "row",
+  exploreWrapper: {
     alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.md,
-    alignSelf: "center",
     marginTop: spacing.xl,
     marginBottom: spacing.xxxl,
-    ...shadows.primary,
   },
 
-  exploreButtonText: {
-    color: colors.white,
-    fontSize: 17,
-    fontWeight: "700",
-  },
-
-  exploreButtonArrow: {
+  exploreArrow: {
     color: colors.white,
     fontSize: 22,
     fontWeight: "700",
@@ -172,60 +119,6 @@ export const styles = StyleSheet.create({
   navigationGrid: {
     gap: spacing.md,
     marginBottom: spacing.xxxl,
-  },
-
-  navigationCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    flexDirection: "row",
-    alignItems: "center",
-    ...shadows.card,
-  },
-
-  navigationCardPressed: {
-    backgroundColor: colors.surfaceHover,
-  },
-
-  navigationIcon: {
-    width: 44,
-    height: 44,
-    backgroundColor: colors.primaryMuted,
-    borderRadius: radius.md,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: spacing.lg,
-  },
-
-  navigationIconText: {
-    color: colors.primaryLight,
-    fontSize: 22,
-    fontWeight: "700",
-  },
-
-  navigationContent: {
-    flex: 1,
-  },
-
-  navigationTitle: {
-    ...typography.h3,
-    color: colors.text,
-    fontSize: 17,
-    lineHeight: 22,
-  },
-
-  navigationDescription: {
-    ...typography.small,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-
-  chevron: {
-    color: colors.textMuted,
-    fontSize: 28,
-    marginLeft: spacing.md,
   },
 
   intelligenceCard: {

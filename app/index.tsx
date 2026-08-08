@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -8,54 +8,11 @@ import {
   View,
 } from "react-native";
 
-import { colors } from "../theme";
 import { useBands } from "../hooks/useBands";
-import { styles } from "./index.styles"
-
-type NavigationCardProps = {
-  href:
-  | "/bands"
-  | "/rankings"
-  | "/events"
-  | "/lineups"
-  | "/venues"
-  | "/contacts"
-  | "/settings";
-  icon: string;
-  title: string;
-  description: string;
-};
-
-function NavigationCard({
-  href,
-  icon,
-  title,
-  description,
-}: NavigationCardProps) {
-  return (
-    <Link href={href} asChild>
-      <Pressable
-        style={({ pressed }) => [
-          styles.navigationCard,
-          pressed && styles.navigationCardPressed,
-        ]}
-      >
-        <View style={styles.navigationIcon}>
-          <Text style={styles.navigationIconText}>{icon}</Text>
-        </View>
-
-        <View style={styles.navigationContent}>
-          <Text style={styles.navigationTitle}>{title}</Text>
-          <Text style={styles.navigationDescription}>
-            {description}
-          </Text>
-        </View>
-
-        <Text style={styles.chevron}>›</Text>
-      </Pressable>
-    </Link>
-  );
-}
+import { styles } from "../styles/index.styles"
+import { Button } from "../components/Button";
+import { StatCard } from "../components/StatCard";
+import { NavigationCard } from "../components/NavigationCard";
 
 export default function HomeScreen() {
   const {
@@ -101,31 +58,25 @@ export default function HomeScreen() {
       {/* Stats */}
 
       <View style={styles.statsGrid}>
-        <View style={styles.statCard}>
-          <Text style={styles.statLabel}>BANDS</Text>
+        <StatCard
+          label="BANDS"
+          value={bandCount}
+          caption="in your database"
+          loading={isLoading}
+          highlighted
+        />
 
-          {isLoading ? (
-            <ActivityIndicator color={colors.primaryLight} />
-          ) : (
-            <Text style={styles.statValue}>{bandCount}</Text>
-          )}
+        <StatCard
+          label="VENUES"
+          value="—"
+          caption="coming next"
+        />
 
-          <Text style={styles.statCaption}>
-            in your database
-          </Text>
-        </View>
-
-        <View style={styles.statCard}>
-          <Text style={styles.statLabel}>VENUES</Text>
-          <Text style={styles.statValueMuted}>—</Text>
-          <Text style={styles.statCaption}>coming next</Text>
-        </View>
-
-        <View style={styles.statCard}>
-          <Text style={styles.statLabel}>LINEUPS</Text>
-          <Text style={styles.statValueMuted}>—</Text>
-          <Text style={styles.statCaption}>ready to build</Text>
-        </View>
+        <StatCard
+          label="LINEUPS"
+          value="—"
+          caption="ready to build"
+        />
       </View>
 
       {error && (
@@ -144,24 +95,18 @@ export default function HomeScreen() {
 
       {/* Primary Action */}
 
-      <Link href="/bands" asChild>
-        <Pressable
-          style={({ pressed }) => ({
-            opacity: pressed ? 0.9 : 1,
-            alignSelf: "center",
-          })}
-        >
-          <View style={styles.exploreButton}>
-            <Text style={styles.exploreButtonText}>
-              Start Scouting
-            </Text>
-
-            <Text style={styles.exploreButtonArrow}>
+      <View style={styles.exploreWrapper}>
+        <Button
+          title="Start Scouting"
+          sound={true}
+          onPress={() => router.push("/bands")}
+          iconRight={
+            <Text style={styles.exploreArrow}>
               →
             </Text>
-          </View>
-        </Pressable>
-      </Link>
+          }
+        />
+      </View>
 
       {/* Section heading */}
 
