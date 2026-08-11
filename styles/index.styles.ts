@@ -26,20 +26,21 @@ export const styles = StyleSheet.create({
     maxWidth: 1100,
     alignSelf: "center",
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xxl,
-    paddingBottom: spacing.huge,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
   },
 
   hero: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: spacing.xxxl,
+    marginBottom: spacing.xl,
   },
 
   logo: {
-    width: 600,
-    height: 200,
-    marginBottom: spacing.xl,
+    width: "82%",
+    maxWidth: 300,
+    height: 110,
+    resizeMode: "contain",
   },
 
   intro: {

@@ -34,7 +34,6 @@ export default function HomeScreen() {
         <Image
           source={require("../assets/branding/logo-horizontal.png")}
           style={styles.logo}
-          resizeMode="contain"
         />
       </View>
 
