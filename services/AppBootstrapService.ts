@@ -1,5 +1,6 @@
 import { getDatabase } from "../database/sqlite/Database";
 import { importSupportBands } from "../database/sqlite/imports/SpreadsheetImporter";
+import { importVenues } from "../database/sqlite/imports/VenueImporter";
 
 class AppBootstrapServiceClass {
     private started = false;
@@ -30,6 +31,24 @@ class AppBootstrapServiceClass {
                 const importResult = await importSupportBands();
 
                 console.log("Initial band import complete:", importResult);
+            }
+
+            const venueResult = await db.getFirstAsync<{
+                count: number;
+            }>(
+                "SELECT COUNT(*) AS count FROM venues"
+            );
+
+            const venueCount = venueResult?.count ?? 0;
+
+            console.log("Existing venues:", venueCount);
+
+            if (venueCount === 0) {
+                console.log(
+                    "No venues found. Importing bundled venue data..."
+                );
+
+                await importVenues();
             }
 
             console.log("SupportScout database ready.");

@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 
 import { migration001 } from "./001_initial";
+import { migration002 } from "./002_venues";
 
 type Migration = {
   version: number;
@@ -10,6 +11,7 @@ type Migration = {
 
 const migrations: Migration[] = [
   migration001,
+  migration002
 ];
 
 export async function runMigrations(

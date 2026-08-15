@@ -1,0 +1,128 @@
+[
+  {
+    "venueName": "Rosemount Hotel",
+    "slug": "rosemount-hotel",
+    "suburb": "North Perth",
+    "address": "459 Fitzgerald Street, North Perth WA 6006",
+    "venueType": "live_music_pub",
+    "websiteUrl": "https://rosemounthotel.com.au/",
+    "bookingEmail": "gigs@rosemounthotel.com.au",
+    "shortDescription": "Established mid-size Perth live music venue hosting local, national and international artists.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Mojo's Bar",
+    "slug": "mojos-bar",
+    "suburb": "North Fremantle",
+    "address": "237 Queen Victoria Street, North Fremantle WA 6159",
+    "venueType": "live_music_bar",
+    "websiteUrl": "https://www.mojosbar.com.au/",
+    "bookingEmail": "chippedpolishmgmt@gmail.com",
+    "shortDescription": "Long-running live music venue with a strong focus on emerging and established WA artists.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "The Bird",
+    "slug": "the-bird",
+    "suburb": "Northbridge",
+    "address": "181 William Street, Northbridge WA 6003",
+    "venueType": "live_music_bar",
+    "shortDescription": "Intimate Northbridge venue known for original live entertainment and emerging local artists.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Lyric's Underground",
+    "slug": "lyrics-underground",
+    "suburb": "Maylands",
+    "address": "Basement, 22 Lyric Lane, Maylands WA 6051",
+    "venueType": "band_room",
+    "shortDescription": "Dedicated underground live music room in Maylands.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Milk Bar",
+    "slug": "milk-bar",
+    "suburb": "Inglewood",
+    "address": "Rear, 981 Beaufort Street, Inglewood WA 6052",
+    "venueType": "band_room",
+    "websiteUrl": "https://milkbarperth.com.au/",
+    "shortDescription": "Large band room behind The Civic Hotel hosting local and touring artists.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Amplifier Bar",
+    "slug": "amplifier-bar",
+    "suburb": "Perth",
+    "address": "393 Murray Street, Perth WA",
+    "venueType": "live_music_bar",
+    "websiteUrl": "https://www.amplifierbar.com/",
+    "shortDescription": "Central Perth rock and live music venue with regular gigs.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Port Beach Brewery",
+    "slug": "port-beach-brewery",
+    "suburb": "North Fremantle",
+    "address": "44 Tydeman Road, North Fremantle WA 6159",
+    "venueType": "brewery_live_music",
+    "shortDescription": "North Fremantle brewery and live music venue.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Fremantle Buffalo Club",
+    "slug": "fremantle-buffalo-club",
+    "suburb": "Fremantle",
+    "address": "54 High Street, Fremantle WA 6160",
+    "venueType": "live_music_venue",
+    "shortDescription": "Fremantle club and live music space supporting a range of local events.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Ode To Sirens",
+    "slug": "ode-to-sirens",
+    "suburb": "Fremantle",
+    "address": "25 High Street, Fremantle WA 6160",
+    "venueType": "live_music_bar",
+    "shortDescription": "Fremantle bar and intimate live music venue.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "The Ellington Jazz Club",
+    "slug": "ellington-jazz-club",
+    "suburb": "Perth",
+    "address": "193 Beaufort Street, Perth WA 6000",
+    "venueType": "jazz_club",
+    "shortDescription": "Dedicated Perth live music club with a strong jazz and contemporary music focus.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Astor Theatre Perth",
+    "slug": "astor-theatre-perth",
+    "suburb": "Mount Lawley",
+    "address": "659 Beaufort Street, Mount Lawley WA 6050",
+    "venueType": "theatre",
+    "shortDescription": "Larger theatre-style live performance venue on Beaufort Street.",
+    "status": "active",
+    "isVerified": true
+  },
+  {
+    "venueName": "Fremantle Arts Centre",
+    "slug": "fremantle-arts-centre",
+    "suburb": "Fremantle",
+    "address": "1 Finnerty Street, Fremantle WA 6160",
+    "venueType": "arts_centre",
+    "shortDescription": "Arts and cultural venue hosting concerts and live music events.",
+    "status": "active",
+    "isVerified": true
+  }
+]

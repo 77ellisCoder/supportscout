@@ -4,6 +4,7 @@ import {
 } from "react-native";
 
 import { useBands } from "../../hooks/useBands";
+import { useVenues } from "../../hooks/useVenues";
 import { styles } from "../../styles/index.styles"
 import { StatCard } from "../StatCard";
 
@@ -25,6 +26,12 @@ export default function StatsSection() {
 
     const bandCount = bands.length;
 
+    const {
+        data: venues = [],
+    } = useVenues();
+
+    const venueCount = venues.length;
+
     return (
         <View style={styles.statsGrid}>
             <StatCard
@@ -37,8 +44,10 @@ export default function StatsSection() {
 
             <StatCard
                 label="VENUES"
-                value="—"
-                caption="coming next"
+                value={venueCount}
+                caption="in your database"
+                loading={isLoading}
+                highlighted
             />
 
             <StatCard
