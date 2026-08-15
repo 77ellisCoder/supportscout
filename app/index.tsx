@@ -1,19 +1,13 @@
-import { Link, router } from "expo-router";
 import {
-  Image,
   ScrollView,
-  Text,
-  View,
 } from "react-native";
 
-import { useBands } from "../hooks/useBands";
 import { styles } from "../styles/index.styles"
-import { Button } from "../components/Button";
 
-import Header from "./header";
-import Stats from "./stats";
-import Footer from "./footer";
-
+import AppHeader from "../components/home/AppHeader";
+import AppStats from "../components/home/AppStats";
+import AppFooter from "../components/home/AppFooter";
+import StartScoutingButton from "../components/home/StartScoutingButton";
 
 /**
  * HomeScreen is the main landing page for the app, providing an overview of key features and statistics.
@@ -33,30 +27,16 @@ export default function HomeScreen() {
       contentContainerStyle={styles.container}
     >
       {/* Header */}
-      <Header />
+      <AppHeader />
 
-      {/* Stats */}
-      <Stats />
+      {/* Application Stats */}
+      <AppStats />
 
       {/* Primary Action */}
-      <View style={styles.exploreWrapper}>
-        <Button
-          title="Start Scouting"
-          sound={true}
-          onPress={() => router.push("/bands")}
-          iconRight={
-            <Text style={styles.exploreArrow}>
-              →
-            </Text>
-          }
-        />
-      </View>
-
-      {/* Workspace */}
-      {/* Navigation */}
+      <StartScoutingButton />
 
       {/* Footer */}
-      <Footer />
+      <AppFooter />
 
     </ScrollView>
   );

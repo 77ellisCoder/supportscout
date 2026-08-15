@@ -4,25 +4,24 @@ import {
     View,
 } from "react-native";
 
-import { styles } from "../styles/index.styles"
+import { styles } from "../../styles/index.styles"
 
 /**
- * WorkspaceScreen is the main screen for the workspace section, providing a centralized location for managing scouting, planning, and booking activities.
+ * WorkspaceSection is the main section for the workspace, providing a centralized location for managing scouting, planning, and booking activities.
  * @component
  * @example
  * return (
- *   <WorkspaceScreen />
+ *   <WorkspaceSection />
  * )
  * @returns 
  */
-export default function WorkspaceScreen() {
+export default function WorkspaceSection() {
     return (
         <ScrollView
             style={styles.page}
             contentContainerStyle={styles.container}
         >
             {/* Section heading */}
-
             <View style={styles.sectionHeading}>
                 <View>
                     <Text style={styles.sectionEyebrow}>

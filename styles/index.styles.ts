@@ -19,8 +19,8 @@ export const styles = StyleSheet.create({
     maxWidth: 1100,
     alignSelf: "center",
 
-    paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingHorizontal: 18,
+    paddingTop: 10,
     paddingBottom: spacing.xl,
   },
 
@@ -32,6 +32,24 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
 
     marginBottom: 18,
+  },
+
+  menu: {
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    paddingBottom: spacing.xl,
+
+    backgroundColor: colors.backgroundDeep,
+
+    borderWidth: 1,
+    borderColor: colors.primaryMuted,
+    borderRadius: radius.xxl,
+
+    ...shadows.card,
   },
 
   menuButton: {

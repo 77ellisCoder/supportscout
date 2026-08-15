@@ -1,11 +1,9 @@
 import {
-    Image,
-    Pressable,
     Text,
     View,
 } from "react-native";
 
-import { styles } from "../styles/index.styles"
+import { styles } from "../../styles/index.styles"
 
 /**
  * Footer is the main header screen for the app, providing a centralized location for managing scouting, planning, and booking activities.
@@ -16,7 +14,7 @@ import { styles } from "../styles/index.styles"
  * )
  * @returns 
  */
-export default function Footer() {
+export default function AppFooter() {
     return (
         <View style={styles.footer}>
             <View style={styles.footerLine} />

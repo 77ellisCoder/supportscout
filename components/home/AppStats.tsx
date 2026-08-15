@@ -3,9 +3,9 @@ import {
     View,
 } from "react-native";
 
-import { useBands } from "../hooks/useBands";
-import { styles } from "../styles/index.styles"
-import { StatCard } from "../components/StatCard";
+import { useBands } from "../../hooks/useBands";
+import { styles } from "../../styles/index.styles"
+import { StatCard } from "../StatCard";
 
 /**
  * Stats is the main header screen for the app, providing a centralized location for managing scouting, planning, and booking activities.
@@ -16,7 +16,7 @@ import { StatCard } from "../components/StatCard";
  * )
  * @returns 
  */
-export default function Stats() {
+export default function AppStats() {
     const {
         data: bands = [],
         isLoading,
