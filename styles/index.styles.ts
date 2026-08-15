@@ -14,77 +14,85 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
-  chipRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-
   container: {
     width: "100%",
     maxWidth: 1100,
     alignSelf: "center",
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
+
+    paddingHorizontal: 20,
+    paddingTop: 12,
     paddingBottom: spacing.xl,
   },
 
   hero: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: spacing.xl,
+
+    marginBottom: 16,
   },
 
   logo: {
-    width: "82%",
-    maxWidth: 300,
-    height: 110,
+    width: "78%",
+    maxWidth: 280,
+    height: 88,
     resizeMode: "contain",
   },
 
   intro: {
     alignItems: "center",
-    maxWidth: 720,
     alignSelf: "center",
-    marginBottom: spacing.xxl,
+
+    maxWidth: 720,
+
+    marginBottom: 18,
   },
 
   eyebrow: {
     ...typography.label,
+
     color: colors.primaryLight,
     textAlign: "center",
-    marginBottom: spacing.md,
+
+    marginBottom: spacing.sm,
   },
 
   heading: {
     ...typography.hero,
+
     color: colors.text,
     textAlign: "center",
   },
 
   introText: {
     ...typography.bodyLarge,
+
     color: colors.textSecondary,
     textAlign: "center",
-    marginTop: spacing.md,
+
     maxWidth: 620,
+
+    marginTop: spacing.sm,
   },
 
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: spacing.md,
-    marginBottom: spacing.xl,
+
+    gap: 10,
+
+    marginBottom: 16,
   },
 
   errorCard: {
+    backgroundColor: "#27171A",
+
     borderWidth: 1,
     borderColor: colors.danger,
-    backgroundColor: "#27171A",
-    padding: spacing.lg,
     borderRadius: radius.lg,
-    marginBottom: spacing.xl,
+
+    padding: spacing.lg,
+
+    marginBottom: spacing.lg,
   },
 
   errorTitle: {
@@ -99,8 +107,9 @@ export const styles = StyleSheet.create({
 
   exploreWrapper: {
     alignItems: "center",
-    marginTop: spacing.xl,
-    marginBottom: spacing.xxxl,
+
+    marginTop: 14,
+    marginBottom: 28,
   },
 
   exploreArrow: {
@@ -110,7 +119,7 @@ export const styles = StyleSheet.create({
   },
 
   sectionHeading: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
 
   sectionEyebrow: {
@@ -120,50 +129,65 @@ export const styles = StyleSheet.create({
 
   sectionTitle: {
     ...typography.h2,
+
     color: colors.text,
+
     marginTop: spacing.xs,
   },
 
   navigationGrid: {
-    gap: spacing.md,
-    marginBottom: spacing.xxxl,
+    gap: 10,
+    marginBottom: 28,
   },
 
   intelligenceCard: {
+    backgroundColor: colors.backgroundDeep,
+
     borderWidth: 1,
     borderColor: "rgba(142,91,255,0.32)",
-    backgroundColor: colors.backgroundDeep,
     borderRadius: radius.xxl,
-    padding: spacing.xl,
-    marginBottom: spacing.xxxl,
+
+    padding: spacing.lg,
+
+    marginBottom: spacing.xxl,
+
     ...shadows.card,
   },
 
   intelligenceBadge: {
     alignSelf: "flex-start",
+
+    backgroundColor: colors.primaryMuted,
+
+    borderRadius: radius.pill,
+
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primaryMuted,
-    marginBottom: spacing.lg,
+
+    marginBottom: spacing.md,
   },
 
   intelligenceBadgeText: {
     ...typography.label,
+
     color: colors.primaryLight,
     fontSize: 9,
   },
 
   intelligenceTitle: {
     ...typography.h2,
+
     color: colors.text,
     fontSize: 25,
   },
 
   intelligenceText: {
     ...typography.body,
+
     color: colors.textSecondary,
+
     maxWidth: 700,
+
     marginTop: spacing.sm,
   },
 
@@ -174,6 +198,7 @@ export const styles = StyleSheet.create({
 
   feature: {
     ...typography.small,
+
     color: colors.textSecondary,
     fontSize: 14,
   },
@@ -182,26 +207,41 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+
     gap: spacing.sm,
-    paddingVertical: spacing.lg,
+
+    paddingVertical: spacing.md,
   },
 
   footerLine: {
     flex: 1,
+
     maxWidth: 90,
     height: 1,
+
     backgroundColor: "rgba(142,91,255,0.35)",
   },
 
   footerText: {
     color: colors.textMuted,
+
     fontSize: 8,
     fontWeight: "700",
+
     letterSpacing: 1.2,
   },
 
   footerStar: {
     color: colors.primary,
     fontSize: 12,
+  },
+
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+
+    gap: spacing.sm,
+
+    marginTop: spacing.lg,
   },
 });
