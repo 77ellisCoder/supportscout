@@ -24,18 +24,77 @@ export const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
 
-  hero: {
+  appHeader: {
+    width: "100%",
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+
+    marginBottom: 18,
+  },
+
+  menuButton: {
+    width: 48,
+    height: 48,
+
     alignItems: "center",
     justifyContent: "center",
 
-    marginBottom: 16,
+    borderRadius: radius.pill,
   },
 
-  logo: {
-    width: "78%",
-    maxWidth: 280,
-    height: 88,
-    resizeMode: "contain",
+  menuButtonPressed: {
+    backgroundColor: colors.primaryMuted,
+    opacity: 0.9,
+  },
+
+  menuIcon: {
+    width: 42,
+    height: 42,
+  },
+
+  brandBlock: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+
+    paddingHorizontal: spacing.sm,
+  },
+
+  brandName: {
+    color: colors.text,
+
+    fontSize: 28,
+    lineHeight: 32,
+    fontWeight: "700",
+
+    letterSpacing: -0.8,
+
+    textAlign: "center",
+  },
+
+  brandAccent: {
+    color: colors.primaryLight,
+  },
+
+  brandTagline: {
+    color: colors.textMuted,
+
+    fontSize: 7,
+    lineHeight: 10,
+    fontWeight: "700",
+
+    letterSpacing: 0.8,
+
+    textAlign: "center",
+
+    marginTop: 2,
+  },
+
+  headerSpacer: {
+    width: 48,
+    height: 48,
   },
 
   intro: {
@@ -108,8 +167,8 @@ export const styles = StyleSheet.create({
   exploreWrapper: {
     alignItems: "center",
 
-    marginTop: 14,
-    marginBottom: 28,
+    marginTop: 20,
+    marginBottom: 24,
   },
 
   exploreArrow: {
