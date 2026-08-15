@@ -5,7 +5,7 @@ import {
 import { styles } from "../styles/index.styles"
 
 import AppHeader from "../components/home/AppHeader";
-import AppStats from "../components/home/AppStats";
+import StatsSection from "../components/home/StatsSection";
 import AppFooter from "../components/home/AppFooter";
 import StartScoutingButton from "../components/home/StartScoutingButton";
 
@@ -30,7 +30,7 @@ export default function HomeScreen() {
       <AppHeader />
 
       {/* Application Stats */}
-      <AppStats />
+      <StatsSection />
 
       {/* Primary Action */}
       <StartScoutingButton />

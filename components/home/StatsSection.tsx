@@ -16,7 +16,7 @@ import { StatCard } from "../StatCard";
  * )
  * @returns 
  */
-export default function AppStats() {
+export default function StatsSection() {
     const {
         data: bands = [],
         isLoading,
