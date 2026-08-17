@@ -84,6 +84,59 @@ export const VenueRepository = {
     return row ? mapVenue(row) : null;
   },
 
+  async create(
+    venue: {
+      venueName: string;
+      suburb: string | null;
+      address: string | null;
+      capacity: number | null;
+      venueType: string | null;
+      websiteUrl: string | null;
+      bookingUrl: string | null;
+      bookingEmail: string | null;
+      shortDescription: string | null;
+      internalNotes: string | null;
+      status: Venue["status"];
+      isVerified: boolean;
+    }
+  ): Promise<number> {
+    const db = await getDatabase();
+
+    const result = await db.runAsync(
+      `
+      INSERT INTO venues (
+        venue_name,
+        suburb,
+        address,
+        capacity,
+        venue_type,
+        website_url,
+        booking_url,
+        booking_email,
+        short_description,
+        internal_notes,
+        status,
+        is_verified
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+      venue.venueName,
+      venue.suburb,
+      venue.address,
+      venue.capacity,
+      venue.venueType,
+      venue.websiteUrl,
+      venue.bookingUrl,
+      venue.bookingEmail,
+      venue.shortDescription,
+      venue.internalNotes,
+      venue.status,
+      venue.isVerified ? 1 : 0
+    );
+
+    return Number(result.lastInsertRowId);
+  },
+
   async update(
     id: number,
     venue: Partial<{

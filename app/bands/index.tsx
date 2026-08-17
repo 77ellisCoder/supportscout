@@ -1,17 +1,17 @@
-import { router } from "expo-router";
 import { useMemo, useState } from "react";
 
 
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   Text,
   View,
 } from "react-native";
 
+import { router } from "expo-router";
+import { Button } from "../../components/Button";
 import { Chip } from "../../components/Chip";
-import { BandCard } from "../../components/BandCard";
+import { BandCard } from "../../components/bands/BandCard";
 import { SearchBar } from "../../components/SearchBar";
 import { useBands } from "../../hooks/useBands";
 import { colors } from "../../theme";
@@ -96,6 +96,13 @@ export default function BandsScreen() {
         <Text style={styles.subtitle}>
           Search Perth artists already in SupportScout.
         </Text>
+
+        <Button
+          title="Add Venue"
+          onPress={() =>
+            router.push("/venues/create")
+          }
+        />
       </View>
 
       <SearchBar
@@ -132,6 +139,8 @@ export default function BandsScreen() {
           onPress={() => setSortBy("name-desc")}
         />
       </View>
+
+
 
       <View style={styles.resultHeader}>
         <Text style={styles.resultCount}>

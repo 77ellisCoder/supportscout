@@ -143,6 +143,13 @@ export default function RootLayout() {
         />
 
         <Stack.Screen
+          name="venues/create"
+          options={{
+            title: "Add Venue",
+          }}
+        />
+
+        <Stack.Screen
           name="venues/edit"
           options={{
             title: "Edit Venue",

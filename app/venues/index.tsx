@@ -3,13 +3,16 @@ import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   Text,
   View,
 } from "react-native";
 
+import { router } from "expo-router";
+import { Button } from "../../components/Button";
 import { Chip } from "../../components/Chip";
 import { SearchBar } from "../../components/SearchBar";
-import { VenueCard } from "../../components/VenueCard/VenueCard";
+import { VenueCard } from "../../components/venues/VenueCard";
 import { useVenues } from "../../hooks/useVenues";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venues.styles";
@@ -169,6 +172,20 @@ export default function VenuesScreen() {
             ? "venue"
             : "venues"}
         </Text>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Add venue"
+          onPress={() => router.push("/venues/create")}
+          style={({ pressed }) => [
+            styles.addButton,
+            pressed && styles.addButtonPressed,
+          ]}
+        >
+          <Text style={styles.addButtonText}>
+            + Add Venue
+          </Text>
+        </Pressable>
       </View>
 
       {isLoading ? (
