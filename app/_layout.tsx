@@ -10,6 +10,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppBootstrapService } from "../services/AppBootstrapService";
 import { SoundService } from "../services/SoundService";
 import { colors } from "../theme";
@@ -46,130 +47,136 @@ export default function RootLayout() {
 
   if (startupError) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 24,
-        }}
-      >
-        <Text
+      <SafeAreaProvider>
+        <View
           style={{
-            color: colors.text,
-            fontSize: 20,
-            fontWeight: "700",
+            flex: 1,
+            backgroundColor: colors.background,
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
           }}
         >
-          SupportScout couldn't start
-        </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 20,
+              fontWeight: "700",
+            }}
+          >
+            SupportScout couldn't start
+          </Text>
 
-        <Text
-          style={{
-            color: colors.danger,
-            marginTop: 12,
-            textAlign: "center",
-          }}
-        >
-          {startupError}
-        </Text>
-      </View>
+          <Text
+            style={{
+              color: colors.danger,
+              marginTop: 12,
+              textAlign: "center",
+            }}
+          >
+            {startupError}
+          </Text>
+        </View>
+      </SafeAreaProvider>
     );
   }
 
   if (!ready) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <ActivityIndicator
-          color={colors.primaryLight}
-        />
-
-        <Text
+      <SafeAreaProvider>
+        <View
           style={{
-            color: colors.textSecondary,
-            marginTop: 12,
+            flex: 1,
+            backgroundColor: colors.background,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          Preparing SupportScout...
-        </Text>
-      </View>
+          <ActivityIndicator
+            color={colors.primaryLight}
+          />
+
+          <Text
+            style={{
+              color: colors.textSecondary,
+              marginTop: 12,
+            }}
+          >
+            Preparing SupportScout...
+          </Text>
+        </View>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: false,
-          }}
-        />
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+            }}
+          />
 
-        <Stack.Screen
-          name="bands/index"
-          options={{
-            title: "Bands",
-          }}
-        />
+          <Stack.Screen
+            name="bands/index"
+            options={{
+              title: "Bands",
+            }}
+          />
 
-        <Stack.Screen
-          name="bands/[id]"
-          options={{
-            title: "Band Details",
-          }}
-        />
+          <Stack.Screen
+            name="bands/[id]"
+            options={{
+              title: "Band Details",
+            }}
+          />
 
-        <Stack.Screen
-          name="bands/create"
-          options={{
-            title: "Add Band",
-          }}
-        />
+          <Stack.Screen
+            name="bands/create"
+            options={{
+              title: "Add Band",
+            }}
+          />
 
-        <Stack.Screen
-          name="bands/edit"
-          options={{
-            title: "Edit Band",
-          }}
-        />
+          <Stack.Screen
+            name="bands/edit"
+            options={{
+              title: "Edit Band",
+            }}
+          />
 
-        <Stack.Screen
-          name="venues/index"
-          options={{
-            title: "Venues",
-          }}
-        />
+          <Stack.Screen
+            name="venues/index"
+            options={{
+              title: "Venues",
+            }}
+          />
 
-        <Stack.Screen
-          name="venues/[id]"
-          options={{
-            title: "Venue Details",
-          }}
-        />
+          <Stack.Screen
+            name="venues/[id]"
+            options={{
+              title: "Venue Details",
+            }}
+          />
 
-        <Stack.Screen
-          name="venues/create"
-          options={{
-            title: "Add Venue",
-          }}
-        />
+          <Stack.Screen
+            name="venues/create"
+            options={{
+              title: "Add Venue",
+            }}
+          />
 
-        <Stack.Screen
-          name="venues/edit"
-          options={{
-            title: "Edit Venue",
-          }}
-        />
-      </Stack>
-    </QueryClientProvider>
+          <Stack.Screen
+            name="venues/edit"
+            options={{
+              title: "Edit Venue",
+            }}
+          />
+        </Stack>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
