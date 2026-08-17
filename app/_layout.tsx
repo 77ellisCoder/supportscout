@@ -109,17 +109,37 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen
           name="index"
-          options={{ headerShown: false }}
+          options={{
+            headerShown: false,
+          }}
         />
 
         <Stack.Screen
           name="bands/index"
-          options={{ title: "Bands" }}
+          options={{
+            title: "Bands",
+          }}
         />
 
         <Stack.Screen
           name="bands/[id]"
-          options={{ title: "Band Details" }}
+          options={{
+            title: "Band Details",
+          }}
+        />
+
+        <Stack.Screen
+          name="venues/index"
+          options={{
+            title: "Venues",
+          }}
+        />
+
+        <Stack.Screen
+          name="venues/[id]"
+          options={{
+            title: "Venue Details",
+          }}
         />
       </Stack>
     </QueryClientProvider>

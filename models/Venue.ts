@@ -27,4 +27,6 @@ export type Venue = {
 
     status: VenueStatus;
     isVerified: boolean;
+
+    hometown: string | null;
 };

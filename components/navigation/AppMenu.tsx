@@ -9,7 +9,7 @@ type AppMenuProps = {
 };
 
 export function AppMenu({ onClose }: AppMenuProps) {
-    const goTo = (path: "/" | "/bands") => {
+    const goTo = (path: "/" | "/bands" | "/venues") => {
         onClose();
         router.push(path);
     };
@@ -37,7 +37,7 @@ export function AppMenu({ onClose }: AppMenuProps) {
             <MenuItem
                 title="Venues"
                 description="Research Perth venues"
-                disabled
+                onPress={() => goTo("/venues")}
             />
 
             <MenuItem

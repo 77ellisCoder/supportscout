@@ -2,30 +2,30 @@ import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 import { entityCardStyles as shared } from "../../styles/shared/EntityCard";
-import { styles } from "./BandCard.styles";
+import { styles } from "./VenueCard.styles";
 
-type BandCardProps = {
+type VenueCardProps = {
   id: number;
   name: string;
+  suburb?: string | null;
+  venueType?: string | null;
   description?: string | null;
-  hometown?: string | null;
-  memberCount?: number | null;
-  score?: number | null;
+  capacity?: number | null;
 };
 
-export function BandCard({
+export function VenueCard({
   id,
   name,
+  suburb,
+  venueType,
   description,
-  hometown,
-  memberCount,
-  score,
-}: BandCardProps) {
+  capacity,
+}: VenueCardProps) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`View ${name}`}
-      onPress={() => router.push(`/bands/${id}`)}
+      onPress={() => router.push(`/venues/${id}`)}
       style={({ pressed }) => [
         shared.card,
         pressed && shared.cardPressed,
@@ -33,22 +33,14 @@ export function BandCard({
     >
       <View style={shared.content}>
         <View style={shared.headingRow}>
-          <Text style={shared.name}>
+          <Text style={styles.name}>
             {name}
           </Text>
-
-          {score != null && (
-            <View style={styles.scoreBadge}>
-              <Text style={styles.score}>
-                {score}
-              </Text>
-            </View>
-          )}
         </View>
 
         {description && (
           <Text
-            style={shared.description}
+            style={styles.description}
             numberOfLines={2}
           >
             {description}
@@ -57,16 +49,25 @@ export function BandCard({
 
         <View style={shared.metaRow}>
           <Text style={shared.meta}>
-            {hometown || "Perth"}
+            {suburb || "Perth"}
           </Text>
 
-          {memberCount != null && (
+          {venueType && (
             <>
               <Text style={shared.metaDot}>•</Text>
 
               <Text style={shared.meta}>
-                {memberCount}{" "}
-                {memberCount === 1 ? "member" : "members"}
+                {formatVenueType(venueType)}
+              </Text>
+            </>
+          )}
+
+          {capacity != null && (
+            <>
+              <Text style={shared.metaDot}>•</Text>
+
+              <Text style={shared.meta}>
+                {capacity} capacity
               </Text>
             </>
           )}
@@ -78,4 +79,15 @@ export function BandCard({
       </Text>
     </Pressable>
   );
+}
+
+function formatVenueType(value: string): string {
+  return value
+    .split("_")
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() +
+        word.slice(1)
+    )
+    .join(" ");
 }
