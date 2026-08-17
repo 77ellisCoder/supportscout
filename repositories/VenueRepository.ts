@@ -50,6 +50,7 @@ function mapVenue(row: VenueRow): Venue {
 
     status: row.status,
     isVerified: row.is_verified === 1,
+    hometown: null, // TODO: Implement this field
   };
 }
 
@@ -81,5 +82,59 @@ export const VenueRepository = {
     );
 
     return row ? mapVenue(row) : null;
+  },
+
+  async update(
+    id: number,
+    venue: Partial<{
+      venueName: string;
+      suburb: string | null;
+      address: string | null;
+      capacity: number | null;
+      venueType: string | null;
+      websiteUrl: string | null;
+      bookingUrl: string | null;
+      bookingEmail: string | null;
+      shortDescription: string | null;
+      internalNotes: string | null;
+      status: Venue["status"];
+      isVerified: boolean;
+    }>
+  ): Promise<void> {
+    const db = await getDatabase();
+
+    await db.runAsync(
+      `
+      UPDATE venues
+      SET
+        venue_name = ?,
+        suburb = ?,
+        address = ?,
+        capacity = ?,
+        venue_type = ?,
+        website_url = ?,
+        booking_url = ?,
+        booking_email = ?,
+        short_description = ?,
+        internal_notes = ?,
+        status = ?,
+        is_verified = ?,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE venue_id = ?
+    `,
+      venue.venueName ?? "",
+      venue.suburb ?? null,
+      venue.address ?? null,
+      venue.capacity ?? null,
+      venue.venueType ?? null,
+      venue.websiteUrl ?? null,
+      venue.bookingUrl ?? null,
+      venue.bookingEmail ?? null,
+      venue.shortDescription ?? null,
+      venue.internalNotes ?? null,
+      venue.status ?? "active",
+      venue.isVerified ? 1 : 0,
+      id
+    );
   },
 };

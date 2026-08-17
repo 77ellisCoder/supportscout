@@ -131,6 +131,17 @@ export const styles = StyleSheet.create({
         marginBottom: spacing.md,
     },
 
+    bodyText: {
+        ...typography.body,
+        color: colors.textSecondary,
+    },
+
+    statusRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing.md,
+    },
+
     statusBadge: {
         alignSelf: "flex-start",
         backgroundColor: colors.primaryMuted,
@@ -145,9 +156,49 @@ export const styles = StyleSheet.create({
         fontWeight: "700",
     },
 
-    bodyText: {
-        ...typography.body,
+    verifiedInline: {
+        ...typography.small,
         color: colors.textSecondary,
+    },
+
+    detailRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        gap: spacing.lg,
+        paddingVertical: spacing.sm,
+    },
+
+    detailLabel: {
+        ...typography.small,
+        color: colors.textMuted,
+    },
+
+    detailValue: {
+        ...typography.small,
+        color: colors.text,
+        textAlign: "right",
+        flexShrink: 1,
+    },
+
+    linkRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: spacing.lg,
+        paddingVertical: spacing.sm,
+    },
+
+    linkLabel: {
+        ...typography.small,
+        color: colors.textMuted,
+    },
+
+    linkText: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "600",
+        flexShrink: 1,
+        textAlign: "right",
     },
 
     actions: {

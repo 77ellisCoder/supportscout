@@ -141,6 +141,13 @@ export default function RootLayout() {
             title: "Venue Details",
           }}
         />
+
+        <Stack.Screen
+          name="venues/edit"
+          options={{
+            title: "Edit Venue",
+          }}
+        />
       </Stack>
     </QueryClientProvider>
   );

@@ -1,5 +1,4 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -8,52 +7,22 @@ import {
   View,
 } from "react-native";
 
-import type { Band } from "../../models/Band";
-import { BandRepository } from "../../repositories/BandRepository";
+import { useBand } from "../../hooks/useBand";
 import { colors } from "../../theme";
 import { styles } from "../../styles/band-details.styles";
 
 export default function BandDetailsScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-
-  const [band, setBand] = useState<Band | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadBand() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const bandId = Number(id);
-
-        if (!Number.isFinite(bandId)) {
-          throw new Error("Invalid band ID.");
-        }
-
-        const result = await BandRepository.getById(bandId);
-
-        if (!result) {
-          throw new Error("Band not found.");
-        }
-
-        setBand(result);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Unable to load band."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadBand();
-  }, [id]);
-
-  if (loading) {
+    const { id } = useLocalSearchParams<{ id: string }>();
+  
+    const bandId = Number(id);
+  
+    const {
+      data: band,
+      isLoading,
+      error,
+    } = useBand(bandId);
+  
+    if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator color={colors.primaryLight} />
@@ -72,7 +41,7 @@ export default function BandDetailsScreen() {
         </Text>
 
         <Text style={styles.errorText}>
-          {error ?? "Band not found."}
+          {error ? error.message : "Band not found."}
         </Text>
       </View>
     );

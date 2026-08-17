@@ -1,59 +1,29 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Linking,
   Pressable,
   ScrollView,
   Text,
   View,
 } from "react-native";
 
-import type { Venue } from "../../models/Venue";
-import { VenueRepository } from "../../repositories/VenueRepository";
+import { useVenue } from "../../hooks/useVenue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-details.styles";
 
 export default function VenueDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const [venue, setVenue] = useState<Venue | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const venueId = Number(id);
 
-  useEffect(() => {
-    async function loadVenue() {
-      try {
-        setLoading(true);
-        setError(null);
+  const {
+    data: venue,
+    isLoading,
+    error,
+  } = useVenue(venueId);
 
-        const venueId = Number(id);
-
-        if (!Number.isFinite(venueId)) {
-          throw new Error("Invalid venue ID.");
-        }
-
-        const result = await VenueRepository.getById(venueId);
-
-        if (!result) {
-          throw new Error("Venue not found.");
-        }
-
-        setVenue(result);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Unable to load venue."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadVenue();
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator color={colors.primaryLight} />
@@ -72,7 +42,7 @@ export default function VenueDetailsScreen() {
         </Text>
 
         <Text style={styles.errorText}>
-          {error ?? "Venue not found."}
+          {error ? error.message : "Venue not found."}
         </Text>
       </View>
     );
@@ -111,32 +81,152 @@ export default function VenueDetailsScreen() {
         </View>
 
         <View style={styles.metaRow}>
-          <Text style={styles.meta}>
-            {venue.hometown ?? "Perth"}
-          </Text>
+          {venue.suburb && (
+            <Text style={styles.meta}>
+              {venue.suburb}
+            </Text>
+          )}
 
-          {venue.stateRegion && (
+          {venue.venueType && (
             <>
               <Text style={styles.metaDot}>•</Text>
+
               <Text style={styles.meta}>
-                {venue.stateRegion}
+                {formatVenueType(venue.venueType)}
+              </Text>
+            </>
+          )}
+
+          {venue.capacity != null && (
+            <>
+              <Text style={styles.metaDot}>•</Text>
+
+              <Text style={styles.meta}>
+                {venue.capacity} capacity
               </Text>
             </>
           )}
         </View>
       </View>
 
+      {venue.address && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>
+            ADDRESS
+          </Text>
+
+          <Text style={styles.bodyText}>
+            {venue.address}
+          </Text>
+        </View>
+      )}
+
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>
           STATUS
         </Text>
 
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>
-            {venue.status.toUpperCase()}
-          </Text>
+        <View style={styles.statusRow}>
+          <View style={styles.statusBadge}>
+            <Text style={styles.statusText}>
+              {venue.status.toUpperCase()}
+            </Text>
+          </View>
+
+          {venue.isVerified && (
+            <Text style={styles.verifiedInline}>
+              Verified
+            </Text>
+          )}
         </View>
       </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>
+          VENUE DETAILS
+        </Text>
+
+        <DetailRow
+          label="Type"
+          value={
+            venue.venueType
+              ? formatVenueType(venue.venueType)
+              : "Not recorded"
+          }
+        />
+
+        <DetailRow
+          label="Capacity"
+          value={
+            venue.capacity != null
+              ? String(venue.capacity)
+              : "Not recorded"
+          }
+        />
+      </View>
+
+      {(venue.websiteUrl ||
+        venue.bookingUrl ||
+        venue.bookingEmail) && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>
+              CONTACT & BOOKING
+            </Text>
+
+            {venue.websiteUrl && (
+              <Pressable
+                onPress={() =>
+                  Linking.openURL(venue.websiteUrl!)
+                }
+                style={styles.linkRow}
+              >
+                <Text style={styles.linkLabel}>
+                  Website
+                </Text>
+
+                <Text style={styles.linkText}>
+                  Open ↗
+                </Text>
+              </Pressable>
+            )}
+
+            {venue.bookingUrl && (
+              <Pressable
+                onPress={() =>
+                  Linking.openURL(venue.bookingUrl!)
+                }
+                style={styles.linkRow}
+              >
+                <Text style={styles.linkLabel}>
+                  Booking
+                </Text>
+
+                <Text style={styles.linkText}>
+                  Open ↗
+                </Text>
+              </Pressable>
+            )}
+
+            {venue.bookingEmail && (
+              <Pressable
+                onPress={() =>
+                  Linking.openURL(
+                    `mailto:${venue.bookingEmail}`
+                  )
+                }
+                style={styles.linkRow}
+              >
+                <Text style={styles.linkLabel}>
+                  Booking email
+                </Text>
+
+                <Text style={styles.linkText}>
+                  {venue.bookingEmail}
+                </Text>
+              </Pressable>
+            )}
+          </View>
+        )}
 
       {venue.internalNotes && (
         <View style={styles.section}>
@@ -170,4 +260,39 @@ export default function VenueDetailsScreen() {
       </View>
     </ScrollView>
   );
+}
+
+type DetailRowProps = {
+  label: string;
+  value: string;
+};
+
+function DetailRow({
+  label,
+  value,
+}: DetailRowProps) {
+  return (
+    <View style={styles.detailRow}>
+      <Text style={styles.detailLabel}>
+        {label}
+      </Text>
+
+      <Text style={styles.detailValue}>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function formatVenueType(
+  venueType: string
+): string {
+  return venueType
+    .split("_")
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() +
+        word.slice(1)
+    )
+    .join(" ");
 }
