@@ -6,6 +6,7 @@ import {
     View,
 } from "react-native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { styles } from "../../styles/index.styles"
 import { headerStyles } from "../../styles/header.styles"
 import { AppMenu } from "../navigation/AppMenu";
@@ -20,11 +21,12 @@ import { AppMenu } from "../navigation/AppMenu";
  * @returns 
  */
 export default function AppHeader() {
+    const insets = useSafeAreaInsets();
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
         <>
-            <View style={styles.appHeader}>
+            <View style={[styles.appHeader, { paddingTop: insets.top }]}>
                 <Pressable
                     onPress={() => setMenuOpen((current) => !current)}
                     style={styles.menuButton}
