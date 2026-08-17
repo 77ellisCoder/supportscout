@@ -129,6 +129,20 @@ export default function RootLayout() {
         />
 
         <Stack.Screen
+          name="bands/create"
+          options={{
+            title: "Add Band",
+          }}
+        />
+
+        <Stack.Screen
+          name="bands/edit"
+          options={{
+            title: "Edit Band",
+          }}
+        />
+
+        <Stack.Screen
           name="venues/index"
           options={{
             title: "Venues",

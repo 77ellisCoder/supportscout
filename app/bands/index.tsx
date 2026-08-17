@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   Text,
   View,
 } from "react-native";
@@ -96,13 +97,6 @@ export default function BandsScreen() {
         <Text style={styles.subtitle}>
           Search Perth artists already in SupportScout.
         </Text>
-
-        <Button
-          title="Add Venue"
-          onPress={() =>
-            router.push("/venues/create")
-          }
-        />
       </View>
 
       <SearchBar
@@ -140,12 +134,27 @@ export default function BandsScreen() {
         />
       </View>
 
-
-
       <View style={styles.resultHeader}>
         <Text style={styles.resultCount}>
-          {filteredBands.length} {filteredBands.length === 1 ? "band" : "bands"}
+          {filteredBands.length}{" "}
+          {filteredBands.length === 1
+            ? "band"
+            : "bands"}
         </Text>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Add band"
+          onPress={() => router.push("/bands/create")}
+          style={({ pressed }) => [
+            styles.addButton,
+            pressed && styles.addButtonPressed,
+          ]}
+        >
+          <Text style={styles.addButtonText}>
+            + Add Band
+          </Text>
+        </Pressable>
       </View>
 
       {isLoading ? (

@@ -117,6 +117,48 @@ export const BandRepository = {
     return created;
   },
 
+  async update(bandId: number, input: Partial<CreateBandInput>): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync(
+      `UPDATE bands SET
+        band_name = COALESCE(?, band_name),
+        slug = COALESCE(?, slug),
+        hometown = COALESCE(?, hometown),
+        state_region = COALESCE(?, state_region),
+        country_code = COALESCE(?, country_code),
+        member_count = COALESCE(?, member_count),
+        formation_year = COALESCE(?, formation_year),
+        status = COALESCE(?, status),
+        short_description = COALESCE(?, short_description),
+        internal_notes = COALESCE(?, internal_notes),
+        is_our_band = COALESCE(?, is_our_band),
+        is_verified = COALESCE(?, is_verified),
+        updated_at = CURRENT_TIMESTAMP
+      WHERE band_id = ?`,
+      input.bandName?.trim() ?? null,
+      input.slug?.trim() ?? null,
+      input.hometown?.trim() ?? null,
+      input.stateRegion?.trim() ?? null,
+      input.countryCode?.trim() ?? null,
+      input.memberCount ?? null,
+      input.formationYear ?? null,
+      input.status ?? null,
+      input.shortDescription?.trim() ?? null,
+      input.internalNotes?.trim() ?? null,
+      input.isOurBand !== undefined ? (input.isOurBand ? 1 : 0) : null,
+      input.isVerified !== undefined ? (input.isVerified ? 1 : 0) : null,
+      bandId
+    );
+  },
+
+  async delete(bandId: number): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync(
+      "DELETE FROM bands WHERE band_id = ?",
+      bandId
+    );
+  },
+
   async archive(bandId: number): Promise<void> {
     const db = await getDatabase();
     await db.runAsync(

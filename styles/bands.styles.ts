@@ -10,6 +10,34 @@ import {
 
 export const styles = StyleSheet.create({
 
+    resultHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: spacing.md,
+    },
+
+    addButton: {
+        backgroundColor: colors.primaryMuted,
+
+        borderWidth: 1,
+        borderColor: colors.primary,
+        borderRadius: radius.pill,
+
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+    },
+
+    addButtonPressed: {
+        backgroundColor: colors.primary,
+    },
+
+    addButtonText: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "700",
+    },
+
     sortRow: {
         flexDirection: "row",
         flexWrap: "wrap",
@@ -58,10 +86,7 @@ export const styles = StyleSheet.create({
         marginTop: spacing.sm,
     },
 
-    resultHeader: {
-        marginTop: spacing.lg,
-        marginBottom: spacing.md,
-    },
+
 
     resultCount: {
         ...typography.small,
