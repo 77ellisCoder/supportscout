@@ -1,5 +1,6 @@
 import {
     ActivityIndicator,
+    Pressable,
     Text,
     View,
 } from "react-native";
@@ -13,6 +14,7 @@ type StatCardProps = {
     caption?: string;
     loading?: boolean;
     highlighted?: boolean;
+    onPress?: () => void;
 };
 
 export function StatCard({
@@ -21,9 +23,18 @@ export function StatCard({
     caption,
     loading = false,
     highlighted = false,
+    onPress,
 }: StatCardProps) {
     return (
-        <View style={styles.card}>
+        <Pressable
+            disabled={!onPress}
+            onPress={onPress}
+            accessibilityRole={onPress ? "button" : undefined}
+            style={({ pressed }) => [
+                styles.card,
+                pressed && onPress && styles.cardPressed,
+            ]}
+        >
             <Text style={styles.label}>
                 {label}
             </Text>
@@ -53,6 +64,6 @@ export function StatCard({
                     {caption}
                 </Text>
             )}
-        </View>
+        </Pressable>
     );
 }

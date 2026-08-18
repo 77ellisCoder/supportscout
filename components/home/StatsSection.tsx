@@ -3,6 +3,7 @@ import {
     View,
 } from "react-native";
 
+import { router } from "expo-router";
 import { useBands } from "../../hooks/useBands";
 import { useVenues } from "../../hooks/useVenues";
 import { styles } from "../../styles/index.styles"
@@ -40,6 +41,7 @@ export default function StatsSection() {
                 caption="in your database"
                 loading={isLoading}
                 highlighted
+                onPress={() => router.push("/bands")}
             />
 
             <StatCard
@@ -48,6 +50,7 @@ export default function StatsSection() {
                 caption="in your database"
                 loading={isLoading}
                 highlighted
+                onPress={() => router.push("/venues")}
             />
 
             <StatCard

@@ -24,6 +24,11 @@ export const styles = StyleSheet.create({
         ...shadows.card,
     },
 
+    cardPressed: {
+        borderColor: colors.primary,
+        transform: [{ scale: 0.98 }],
+    },
+
     label: {
         ...typography.label,
         color: colors.textMuted,
