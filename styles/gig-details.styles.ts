@@ -9,6 +9,14 @@ import {
 } from "../theme";
 
 export const styles = StyleSheet.create({
+
+    currentRole: {
+        ...typography.label,
+        color: colors.primaryLight,
+        fontSize: 9,
+        marginTop: 2,
+    },
+    
     page: {
         flex: 1,
         backgroundColor: colors.background,

@@ -9,15 +9,23 @@ import {
 
 import { useBands } from "../../hooks/useBands";
 import { useVenues } from "../../hooks/useVenues";
+
 import { GigRepository } from "../../repositories/GigRepository";
 
 export default function CreateGigScreen() {
     const queryClient = useQueryClient();
 
-    const { data: bands = [] } = useBands("");
-    const { data: venues = [] } = useVenues();
+    const {
+        data: bands = [],
+    } = useBands("");
 
-    const [saving, setSaving] = useState(false);
+    const {
+        data: venues = [],
+    } = useVenues();
+
+    const [saving, setSaving] =
+        useState(false);
+
     const [error, setError] =
         useState<string | null>(null);
 
@@ -49,8 +57,8 @@ export default function CreateGigScreen() {
                     status:
                         values.status,
 
-                    bandIds:
-                        values.bandIds,
+                    lineup:
+                        values.lineup,
                 });
 
             queryClient.setQueryData(

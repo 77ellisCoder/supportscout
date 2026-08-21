@@ -160,8 +160,8 @@ export default function GigDetailsScreen() {
                                     </Text>
 
                                     {band.role && (
-                                        <Text style={styles.bandRole}>
-                                            {band.role}
+                                        <Text style={styles.currentRole}>
+                                            {formatRole(band.role)}
                                         </Text>
                                     )}
                                 </View>
@@ -220,4 +220,15 @@ function formatGigDate(
         month: "long",
         year: "numeric",
     });
+}
+
+function formatRole(role: string): string {
+  return role
+    .split("_")
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() +
+        word.slice(1)
+    )
+    .join(" ").toUpperCase();
 }

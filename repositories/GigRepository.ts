@@ -208,14 +208,20 @@ export const GigRepository = {
         };
     },
 
-    async create(input: {
-        venueId: number | null;
-        gigDate: string;
-        eventName: string | null;
-        notes: string | null;
-        status: GigStatus;
-        bandIds: number[];
-    }): Promise<Gig> {
+    async create(
+        input: {
+            venueId: number | null;
+            gigDate: string;
+            eventName: string | null;
+            notes: string | null;
+            status: GigStatus;
+
+            lineup: {
+                bandId: number;
+                role: string;
+            }[];
+        }
+    ): Promise<Gig> {
         const db = await getDatabase();
 
         let gigId = 0;
@@ -239,29 +245,43 @@ export const GigRepository = {
                 input.status
             );
 
-            gigId = Number(result.lastInsertRowId);
+            gigId = Number(
+                result.lastInsertRowId
+            );
 
-            for (let index = 0; index < input.bandIds.length; index++) {
+            for (
+                let index = 0;
+                index < input.lineup.length;
+                index++
+            ) {
+                const item =
+                    input.lineup[index];
+
                 await db.runAsync(
                     `
-          INSERT INTO gig_bands (
-            gig_id,
-            band_id,
-            billing_order
-          )
-          VALUES (?, ?, ?)
-        `,
+                    INSERT INTO gig_bands (
+                        gig_id,
+                        band_id,
+                        billing_order,
+                        role
+                    )
+                    VALUES (?, ?, ?, ?)
+                    `,
                     gigId,
-                    input.bandIds[index],
-                    index + 1
+                    item.bandId,
+                    index + 1,
+                    item.role
                 );
             }
         });
 
-        const created = await this.getById(gigId);
+        const created =
+            await this.getById(gigId);
 
         if (!created) {
-            throw new Error("Unable to reload created gig.");
+            throw new Error(
+                "Unable to reload created gig."
+            );
         }
 
         return created;
@@ -275,7 +295,11 @@ export const GigRepository = {
             eventName: string | null;
             notes: string | null;
             status: GigStatus;
-            bandIds: number[];
+
+            lineup: {
+                bandId: number;
+                role: string;
+            }[];
         }
     ): Promise<void> {
         const db = await getDatabase();
@@ -311,21 +335,25 @@ export const GigRepository = {
 
             for (
                 let index = 0;
-                index < input.bandIds.length;
+                index < input.lineup.length;
                 index++
             ) {
+                const item = input.lineup[index];
+
                 await db.runAsync(
                     `
-          INSERT INTO gig_bands (
-            gig_id,
-            band_id,
-            billing_order
-          )
-          VALUES (?, ?, ?)
-        `,
+                    INSERT INTO gig_bands (
+                        gig_id,
+                        band_id,
+                        billing_order,
+                        role
+                    )
+                    VALUES (?, ?, ?, ?)
+                    `,
                     gigId,
-                    input.bandIds[index],
-                    index + 1
+                    item.bandId,
+                    index + 1,
+                    item.role
                 );
             }
         });

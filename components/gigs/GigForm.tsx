@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+
 import {
+    ActivityIndicator,
     Pressable,
     ScrollView,
     Text,
@@ -10,9 +12,16 @@ import {
 import type { Band } from "../../models/Band";
 import type { GigStatus } from "../../models/Gig";
 import type { Venue } from "../../models/Venue";
+
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-form.styles";
+
 import { GigDatePicker } from "./GigDatePicker";
+
+import {
+    LineupBuilder,
+    type LineupItem,
+} from "./LineupBuilder";
 
 export type GigFormValues = {
     eventName: string;
@@ -20,19 +29,25 @@ export type GigFormValues = {
     venueId: number | null;
     status: GigStatus;
     notes: string;
-    bandIds: number[];
+    lineup: LineupItem[];
 };
 
 type GigFormProps = {
     venues: Venue[];
     bands: Band[];
+
     initialValues?: Partial<GigFormValues>;
+
     title: string;
     eyebrow: string;
     submitLabel: string;
+
     saving?: boolean;
     error?: string | null;
-    onSubmit: (values: GigFormValues) => Promise<void> | void;
+
+    onSubmit: (
+        values: GigFormValues
+    ) => Promise<void> | void;
 };
 
 const DEFAULT_VALUES: GigFormValues = {
@@ -41,7 +56,7 @@ const DEFAULT_VALUES: GigFormValues = {
     venueId: null,
     status: "confirmed",
     notes: "",
-    bandIds: [],
+    lineup: [],
 };
 
 export function GigForm({
@@ -55,13 +70,15 @@ export function GigForm({
     error,
     onSubmit,
 }: GigFormProps) {
+    const [values, setValues] =
+        useState<GigFormValues>({
+            ...DEFAULT_VALUES,
+            ...initialValues,
+        });
 
-    const [values, setValues] = useState<GigFormValues>({
-        ...DEFAULT_VALUES,
-        ...initialValues,
-    });
-
-    const updateField = <K extends keyof GigFormValues>(
+    const updateField = <
+        K extends keyof GigFormValues
+    >(
         key: K,
         value: GigFormValues[K]
     ) => {
@@ -71,43 +88,37 @@ export function GigForm({
         }));
     };
 
-    const toggleBand = (bandId: number) => {
-        updateField(
-            "bandIds",
-            values.bandIds.includes(bandId)
-                ? values.bandIds.filter((id) => id !== bandId)
-                : [...values.bandIds, bandId]
-        );
-    };
-
     const sortedVenues = useMemo(
         () =>
             [...venues].sort((a, b) =>
-                a.venueName.localeCompare(b.venueName)
+                a.venueName.localeCompare(
+                    b.venueName
+                )
             ),
         [venues]
-    );
-
-    const sortedBands = useMemo(
-        () =>
-            [...bands].sort((a, b) =>
-                a.bandName.localeCompare(b.bandName)
-            ),
-        [bands]
     );
 
     return (
         <ScrollView
             style={styles.page}
-            contentContainerStyle={styles.container}
+            contentContainerStyle={
+                styles.container
+            }
             keyboardShouldPersistTaps="handled"
         >
-            <Text style={styles.eyebrow}>{eyebrow}</Text>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.eyebrow}>
+                {eyebrow}
+            </Text>
+
+            <Text style={styles.title}>
+                {title}
+            </Text>
 
             {error && (
                 <View style={styles.errorCard}>
-                    <Text style={styles.errorText}>{error}</Text>
+                    <Text style={styles.errorText}>
+                        {error}
+                    </Text>
                 </View>
             )}
 
@@ -115,7 +126,10 @@ export function GigForm({
                 label="Event name"
                 value={values.eventName}
                 onChangeText={(value) =>
-                    updateField("eventName", value)
+                    updateField(
+                        "eventName",
+                        value
+                    )
                 }
                 placeholder="Friday Night at Mojos"
             />
@@ -123,88 +137,36 @@ export function GigForm({
             <GigDatePicker
                 value={values.gigDate}
                 onChange={(value) =>
-                    updateField("gigDate", value)
+                    updateField(
+                        "gigDate",
+                        value
+                    )
                 }
             />
 
-            <Text style={styles.sectionLabel}>Venue</Text>
+            <Text style={styles.sectionLabel}>
+                Venue
+            </Text>
 
             <View style={styles.optionGrid}>
-                {sortedVenues.map((venue) => (
-                    <Pressable
-                        key={venue.venueId}
-                        onPress={() =>
-                            updateField("venueId", venue.venueId)
-                        }
-                        style={[
-                            styles.optionChip,
-                            values.venueId === venue.venueId &&
-                            styles.optionChipSelected,
-                        ]}
-                    >
-                        <Text
-                            style={[
-                                styles.optionChipText,
-                                values.venueId === venue.venueId &&
-                                styles.optionChipTextSelected,
-                            ]}
-                        >
-                            {venue.venueName}
-                        </Text>
-                    </Pressable>
-                ))}
-            </View>
-
-            <Text style={styles.sectionLabel}>Status</Text>
-
-            <View style={styles.optionGrid}>
-                {(
-                    [
-                        "tentative",
-                        "confirmed",
-                        "completed",
-                        "cancelled",
-                    ] as GigStatus[]
-                ).map((status) => (
-                    <Pressable
-                        key={status}
-                        onPress={() =>
-                            updateField("status", status)
-                        }
-                        style={[
-                            styles.optionChip,
-                            values.status === status &&
-                            styles.optionChipSelected,
-                        ]}
-                    >
-                        <Text
-                            style={[
-                                styles.optionChipText,
-                                values.status === status &&
-                                styles.optionChipTextSelected,
-                            ]}
-                        >
-                            {status}
-                        </Text>
-                    </Pressable>
-                ))}
-            </View>
-
-            <Text style={styles.sectionLabel}>Lineup</Text>
-
-            <View style={styles.optionGrid}>
-                {sortedBands.map((band) => {
-                    const selected = values.bandIds.includes(
-                        band.bandId
-                    );
+                {sortedVenues.map((venue) => {
+                    const selected =
+                        values.venueId ===
+                        venue.venueId;
 
                     return (
                         <Pressable
-                            key={band.bandId}
-                            onPress={() => toggleBand(band.bandId)}
+                            key={venue.venueId}
+                            onPress={() =>
+                                updateField(
+                                    "venueId",
+                                    venue.venueId
+                                )
+                            }
                             style={[
                                 styles.optionChip,
-                                selected && styles.optionChipSelected,
+                                selected &&
+                                styles.optionChipSelected,
                             ]}
                         >
                             <Text
@@ -214,34 +176,107 @@ export function GigForm({
                                     styles.optionChipTextSelected,
                                 ]}
                             >
-                                {band.bandName}
+                                {venue.venueName}
                             </Text>
                         </Pressable>
                     );
                 })}
             </View>
 
+            <Text style={styles.sectionLabel}>
+                Status
+            </Text>
+
+            <View style={styles.optionGrid}>
+                {(
+                    [
+                        "tentative",
+                        "confirmed",
+                        "completed",
+                        "cancelled",
+                    ] as GigStatus[]
+                ).map((status) => {
+                    const selected =
+                        values.status === status;
+
+                    return (
+                        <Pressable
+                            key={status}
+                            onPress={() =>
+                                updateField(
+                                    "status",
+                                    status
+                                )
+                            }
+                            style={[
+                                styles.optionChip,
+                                selected &&
+                                styles.optionChipSelected,
+                            ]}
+                        >
+                            <Text
+                                style={[
+                                    styles.optionChipText,
+                                    selected &&
+                                    styles.optionChipTextSelected,
+                                ]}
+                            >
+                                {formatStatus(status)}
+                            </Text>
+                        </Pressable>
+                    );
+                })}
+            </View>
+
+            <LineupBuilder
+                bands={bands}
+                value={values.lineup}
+                onChange={(lineup) =>
+                    updateField(
+                        "lineup",
+                        lineup
+                    )
+                }
+            />
+
             <Field
                 label="Notes"
                 value={values.notes}
                 onChangeText={(value) =>
-                    updateField("notes", value)
+                    updateField(
+                        "notes",
+                        value
+                    )
                 }
                 multiline
             />
 
             <Pressable
                 disabled={saving}
-                onPress={() => onSubmit(values)}
+                onPress={() =>
+                    onSubmit(values)
+                }
                 style={({ pressed }) => [
                     styles.saveButton,
-                    pressed && styles.saveButtonPressed,
-                    saving && styles.saveButtonDisabled,
+                    pressed &&
+                    styles.saveButtonPressed,
+                    saving &&
+                    styles.saveButtonDisabled,
                 ]}
             >
-                <Text style={styles.saveButtonText}>
-                    {saving ? "Saving..." : submitLabel}
-                </Text>
+                {saving ? (
+                    <ActivityIndicator
+                        color={colors.white}
+                    />
+                ) : (
+                    <Text
+                        style={
+                            styles.saveButtonText
+                        }
+                    >
+                        {submitLabel}
+                    </Text>
+                )}
             </Pressable>
         </ScrollView>
     );
@@ -250,9 +285,17 @@ export function GigForm({
 type FieldProps = {
     label: string;
     value: string;
-    onChangeText: (value: string) => void;
+    onChangeText: (
+        value: string
+    ) => void;
+
     placeholder?: string;
     multiline?: boolean;
+
+    keyboardType?: React.ComponentProps<
+        typeof TextInput
+    >["keyboardType"];
+
     autoCapitalize?: React.ComponentProps<
         typeof TextInput
     >["autoCapitalize"];
@@ -264,67 +307,50 @@ function Field({
     onChangeText,
     placeholder,
     multiline = false,
+    keyboardType,
     autoCapitalize,
 }: FieldProps) {
     return (
         <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{label}</Text>
+            <Text style={styles.fieldLabel}>
+                {label}
+            </Text>
 
             <TextInput
                 value={value}
-                onChangeText={onChangeText}
+                onChangeText={
+                    onChangeText
+                }
                 placeholder={placeholder}
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={
+                    colors.textMuted
+                }
+                keyboardType={
+                    keyboardType
+                }
+                autoCapitalize={
+                    autoCapitalize
+                }
                 multiline={multiline}
-                autoCapitalize={autoCapitalize}
                 style={[
                     styles.input,
-                    multiline && styles.textArea,
+                    multiline &&
+                    styles.textArea,
                 ]}
             />
         </View>
     );
 }
 
-function formatDatabaseDate(
-    date: Date
+function formatStatus(
+    status: GigStatus
 ): string {
-    const year = date.getFullYear();
-
-    const month = String(
-        date.getMonth() + 1
-    ).padStart(2, "0");
-
-    const day = String(
-        date.getDate()
-    ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-}
-
-function parseDate(
-    value: string
-): Date {
-    const [year, month, day] =
-        value.split("-").map(Number);
-
-    return new Date(
-        year,
-        month - 1,
-        day
-    );
-}
-
-function formatDisplayDate(
-    value: string
-): string {
-    return parseDate(value).toLocaleDateString(
-        "en-AU",
-        {
-            weekday: "short",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-        }
-    );
+    return status
+        .split("_")
+        .map(
+            (word) =>
+                word.charAt(0).toUpperCase() +
+                word.slice(1)
+        )
+        .join(" ");
 }
