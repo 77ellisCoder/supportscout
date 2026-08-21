@@ -120,9 +120,8 @@ export default function EditBandScreen() {
         queryKey: ["bands"],
       });
 
-      router.replace(
-        `/bands/${bandId}`
-      );
+      // Navigate back to the band details page after saving
+      router.back();
     } catch (err) {
       setError(
         err instanceof Error

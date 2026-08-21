@@ -95,9 +95,8 @@ export default function EditVenueScreen() {
         queryKey: ["venues"],
       });
 
-      router.replace(
-        `/venues/${venueId}`
-      );
+      // Navigate back to the venue details page after saving
+      router.back();
     } catch (err) {
       setError(
         err instanceof Error

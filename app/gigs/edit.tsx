@@ -148,9 +148,8 @@ export default function EditGigScreen() {
         queryKey: ["gigs"],
       });
 
-      router.replace(
-        `/gigs/${gigId}`
-      );
+      // Navigate back to the gig details page after saving
+      router.back();
     } catch (err) {
       setError(
         err instanceof Error
