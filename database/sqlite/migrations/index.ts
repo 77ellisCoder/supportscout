@@ -2,6 +2,7 @@ import type { SQLiteDatabase } from "expo-sqlite";
 
 import { migration001 } from "./001_initial";
 import { migration002 } from "./002_venues";
+import { migration003 } from "./003_gigs";
 
 type Migration = {
   version: number;
@@ -11,7 +12,8 @@ type Migration = {
 
 const migrations: Migration[] = [
   migration001,
-  migration002
+  migration002,
+  migration003,
 ];
 
 export async function runMigrations(
@@ -85,4 +87,14 @@ export async function runMigrations(
       throw error;
     }
   }
+
+  const gigs =
+    await database.getAllAsync(
+      "SELECT * FROM gigs"
+    );
+
+  console.log(
+    "Existing gigs:",
+    gigs.length
+  );
 }

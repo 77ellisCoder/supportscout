@@ -9,7 +9,13 @@ type AppMenuProps = {
 };
 
 export function AppMenu({ onClose }: AppMenuProps) {
-    const goTo = (path: "/" | "/bands" | "/venues") => {
+    const goTo = (
+        path:
+            | "/"
+            | "/bands"
+            | "/venues"
+            | "/gigs"
+    ) => {
         onClose();
         router.push(path);
     };
@@ -44,6 +50,12 @@ export function AppMenu({ onClose }: AppMenuProps) {
                 title="Lineups"
                 description="Build and save show lineups"
                 disabled
+            />
+
+            <MenuItem
+                title="Gigs"
+                description="Track upcoming and past shows"
+                onPress={() => goTo("/gigs")}
             />
         </View>
     );

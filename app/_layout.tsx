@@ -175,6 +175,34 @@ export default function RootLayout() {
               title: "Edit Venue",
             }}
           />
+
+          <Stack.Screen
+            name="gigs/index"
+            options={{
+              title: "Gigs",
+            }}
+          />
+
+          <Stack.Screen
+            name="gigs/[id]"
+            options={{
+              title: "Gig Details",
+            }}
+          />
+
+          <Stack.Screen
+            name="gigs/create"
+            options={{
+              title: "Add Gig",
+            }}
+          />
+
+          <Stack.Screen
+            name="gigs/edit"
+            options={{
+              title: "Edit Gig",
+            }}
+          />
         </Stack>
       </QueryClientProvider>
     </SafeAreaProvider>
