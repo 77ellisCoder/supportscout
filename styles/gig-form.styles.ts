@@ -8,6 +8,41 @@ import {
 } from "../theme";
 
 export const styles = StyleSheet.create({
+    dateButton: {
+        minHeight: 52,
+
+        backgroundColor: colors.surface,
+
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: radius.lg,
+
+        paddingHorizontal: spacing.lg,
+        paddingVertical: spacing.md,
+
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+
+    dateButtonPressed: {
+        borderColor: colors.primary,
+        backgroundColor: colors.surfaceHover,
+    },
+
+    dateButtonText: {
+        ...typography.body,
+        color: colors.text,
+    },
+
+    dateButtonPlaceholder: {
+        color: colors.textMuted,
+    },
+
+    calendarIcon: {
+        fontSize: 18,
+        marginLeft: spacing.md,
+    },
     page: {
         flex: 1,
         backgroundColor: colors.background,

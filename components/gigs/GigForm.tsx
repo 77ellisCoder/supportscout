@@ -12,6 +12,7 @@ import type { GigStatus } from "../../models/Gig";
 import type { Venue } from "../../models/Venue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-form.styles";
+import { GigDatePicker } from "./GigDatePicker";
 
 export type GigFormValues = {
     eventName: string;
@@ -54,6 +55,7 @@ export function GigForm({
     error,
     onSubmit,
 }: GigFormProps) {
+
     const [values, setValues] = useState<GigFormValues>({
         ...DEFAULT_VALUES,
         ...initialValues,
@@ -118,14 +120,11 @@ export function GigForm({
                 placeholder="Friday Night at Mojos"
             />
 
-            <Field
-                label="Gig date"
+            <GigDatePicker
                 value={values.gigDate}
-                onChangeText={(value) =>
+                onChange={(value) =>
                     updateField("gigDate", value)
                 }
-                placeholder="2026-09-18"
-                autoCapitalize="none"
             />
 
             <Text style={styles.sectionLabel}>Venue</Text>
@@ -284,5 +283,48 @@ function Field({
                 ]}
             />
         </View>
+    );
+}
+
+function formatDatabaseDate(
+    date: Date
+): string {
+    const year = date.getFullYear();
+
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function parseDate(
+    value: string
+): Date {
+    const [year, month, day] =
+        value.split("-").map(Number);
+
+    return new Date(
+        year,
+        month - 1,
+        day
+    );
+}
+
+function formatDisplayDate(
+    value: string
+): string {
+    return parseDate(value).toLocaleDateString(
+        "en-AU",
+        {
+            weekday: "short",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        }
     );
 }
