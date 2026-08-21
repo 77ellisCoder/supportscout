@@ -64,7 +64,7 @@ export default function GigDetailsScreen() {
         >
             <BackButton 
                 label="Back to Gigs" 
-                fallbackRoute="/"
+                fallbackRoute="/gigs"
             />
 
             <View style={styles.hero}>
