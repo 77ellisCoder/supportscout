@@ -9,6 +9,8 @@ import {
   View,
 } from "react-native";
 
+import { BackButton } from "../../components/navigation/BackButton/BackButton";
+
 import { useGigs } from "../../hooks/useGigs";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gigs.styles";
@@ -88,17 +90,11 @@ export default function GigsScreen() {
       ListHeaderComponent={
         <>
           <View style={styles.header}>
-            <Pressable
-                onPress={() => router.back()}
-                style={({ pressed }) => [
-                    styles.backButton,
-                    pressed && styles.backButtonPressed,
-                ]}
-            >
-                <Text style={styles.backButtonText}>
-                    ‹
-                </Text>
-            </Pressable>
+
+            <BackButton 
+              label="" 
+              fallbackRoute="/"
+            />
 
             <View style={styles.headerText}>
               <Text style={styles.eyebrow}>

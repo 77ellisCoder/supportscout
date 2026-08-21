@@ -1,210 +1,108 @@
 import { StyleSheet } from "react-native";
 
 import {
-    colors,
-    radius,
-    shadows,
-    spacing,
-    typography,
+  colors,
+  radius,
+  spacing,
+  typography,
 } from "../theme";
+import { detailStyles } from "./shared/details.styles";
 
-export const styles = StyleSheet.create({
+const gigDetailStyles = StyleSheet.create({
+  currentRole: {
+    ...typography.label,
+    color: colors.primaryLight,
+    fontSize: 9,
+    marginTop: 2,
+  },
 
-    currentRole: {
-        ...typography.label,
-        color: colors.primaryLight,
-        fontSize: 9,
-        marginTop: 2,
-    },
-    
-    page: {
-        flex: 1,
-        backgroundColor: colors.background,
-    },
+  date: {
+    ...typography.small,
+    color: colors.textMuted,
+    marginBottom: spacing.xs,
+  },
 
-    container: {
-        width: "100%",
-        maxWidth: 900,
-        alignSelf: "center",
-        padding: spacing.xl,
-        paddingBottom: spacing.huge,
-    },
+  metaRow: {
+    marginTop: spacing.lg,
+  },
 
-    center: {
-        flex: 1,
-        backgroundColor: colors.background,
-        alignItems: "center",
-        justifyContent: "center",
-        padding: spacing.xl,
-    },
+  meta: {
+    ...typography.small,
+    color: colors.primaryLight,
+    fontWeight: "700",
+  },
 
-    loadingText: {
-        ...typography.small,
-        color: colors.textSecondary,
-        marginTop: spacing.sm,
-    },
+  backButton: {
+    alignSelf: "flex-start",
+    marginBottom: spacing.lg,
+    paddingVertical: spacing.xs,
+  },
 
-    errorTitle: {
-        ...typography.h3,
-        color: colors.text,
-    },
+  backButtonPressed: {
+    opacity: 0.6,
+  },
 
-    errorText: {
-        ...typography.body,
-        color: colors.danger,
-        marginTop: spacing.sm,
-    },
+  backButtonText: {
+    ...typography.small,
+    color: colors.primaryLight,
+    fontWeight: "700",
+  },
 
-    hero: {
-        backgroundColor: colors.surface,
-        borderWidth: 1,
-        borderColor: colors.border,
-        borderRadius: radius.xl,
-        padding: spacing.xl,
-        marginBottom: spacing.xl,
-        ...shadows.card,
-    },
+  linkTitle: {
+    ...typography.h3,
+    color: colors.primaryLight,
+  },
 
-    eyebrow: {
-        ...typography.label,
-        color: colors.primaryLight,
-        marginBottom: spacing.sm,
-    },
+  lineup: {
+    gap: spacing.sm,
+  },
 
-    date: {
-        ...typography.small,
-        color: colors.textMuted,
-        marginBottom: spacing.xs,
-    },
+  lineupRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
 
-    title: {
-        ...typography.h1,
-        color: colors.text,
-    },
+  lineupRowPressed: {
+    opacity: 0.7,
+  },
 
-    metaRow: {
-        marginTop: spacing.lg,
-    },
+  billingOrder: {
+    width: 30,
+    height: 30,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primaryMuted,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: spacing.md,
+  },
 
-    meta: {
-        ...typography.small,
-        color: colors.primaryLight,
-        fontWeight: "700",
-    },
+  billingOrderText: {
+    ...typography.small,
+    color: colors.primaryLight,
+    fontWeight: "700",
+  },
 
-    section: {
-        backgroundColor: colors.surface,
-        borderWidth: 1,
-        borderColor: colors.border,
-        borderRadius: radius.lg,
-        padding: spacing.xl,
-        marginBottom: spacing.lg,
-    },
+  lineupContent: {
+    flex: 1,
+  },
 
-    sectionLabel: {
-        ...typography.label,
-        color: colors.textMuted,
-        marginBottom: spacing.md,
-    },
+  bandRole: {
+    ...typography.small,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+  },
 
-    bodyText: {
-        ...typography.body,
-        color: colors.textSecondary,
-    },
-
-    actions: {
-        marginTop: spacing.sm,
-    },
-
-    editButton: {
-        alignSelf: "flex-start",
-        backgroundColor: colors.primary,
-        borderRadius: radius.pill,
-        paddingHorizontal: spacing.xl,
-        paddingVertical: spacing.md,
-    },
-
-    editButtonPressed: {
-        opacity: 0.9,
-    },
-
-    editButtonText: {
-        color: colors.white,
-        fontWeight: "700",
-        fontSize: 16,
-    },
-
-    backButton: {
-        alignSelf: "flex-start",
-        marginBottom: spacing.lg,
-        paddingVertical: spacing.xs,
-    },
-
-    backButtonPressed: {
-        opacity: 0.6,
-    },
-
-    backButtonText: {
-        ...typography.small,
-        color: colors.primaryLight,
-        fontWeight: "700",
-    },
-
-    linkTitle: {
-        ...typography.h3,
-        color: colors.primaryLight,
-    },
-
-    lineup: {
-        gap: spacing.sm,
-    },
-
-    lineupRow: {
-        flexDirection: "row",
-        alignItems: "center",
-
-        paddingVertical: spacing.sm,
-
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-    },
-
-    lineupRowPressed: {
-        opacity: 0.7,
-    },
-
-    billingOrder: {
-        width: 30,
-        height: 30,
-
-        borderRadius: radius.pill,
-        backgroundColor: colors.primaryMuted,
-
-        alignItems: "center",
-        justifyContent: "center",
-
-        marginRight: spacing.md,
-    },
-
-    billingOrderText: {
-        ...typography.small,
-        color: colors.primaryLight,
-        fontWeight: "700",
-    },
-
-    lineupContent: {
-        flex: 1,
-    },
-
-    bandRole: {
-        ...typography.small,
-        color: colors.textMuted,
-        marginTop: spacing.xs,
-    },
-
-    chevron: {
-        color: colors.textMuted,
-        fontSize: 24,
-        marginLeft: spacing.md,
-    },
+  chevron: {
+    color: colors.textMuted,
+    fontSize: 24,
+    marginLeft: spacing.md,
+  },
 });
+
+export const styles = {
+  ...detailStyles,
+  ...gigDetailStyles,
+};

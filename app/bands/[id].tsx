@@ -10,19 +10,20 @@ import {
 import { useBand } from "../../hooks/useBand";
 import { colors } from "../../theme";
 import { styles } from "../../styles/band-details.styles";
+import { BackButton } from "../../components/navigation/BackButton";
 
 export default function BandDetailsScreen() {
-    const { id } = useLocalSearchParams<{ id: string }>();
-  
-    const bandId = Number(id);
-  
-    const {
-      data: band,
-      isLoading,
-      error,
-    } = useBand(bandId);
-  
-    if (isLoading) {
+  const { id } = useLocalSearchParams<{ id: string }>();
+
+  const bandId = Number(id);
+
+  const {
+    data: band,
+    isLoading,
+    error,
+  } = useBand(bandId);
+
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator color={colors.primaryLight} />
@@ -52,6 +53,11 @@ export default function BandDetailsScreen() {
       style={styles.page}
       contentContainerStyle={styles.container}
     >
+      <BackButton 
+        label="Back to Gigs" 
+        fallbackRoute="/"
+      />
+
       <View style={styles.hero}>
         <View style={styles.titleRow}>
           <View style={styles.titleContent}>

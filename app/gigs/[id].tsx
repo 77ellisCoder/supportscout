@@ -14,6 +14,8 @@ import {
 import { useGigDetail } from "../../hooks/useGigDetail";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
+import { buttonStyles } from "../../styles/shared/button.styles";
+import { BackButton } from "../../components/navigation/BackButton";
 
 export default function GigDetailsScreen() {
     const { id } =
@@ -60,17 +62,10 @@ export default function GigDetailsScreen() {
             style={styles.page}
             contentContainerStyle={styles.container}
         >
-            <Pressable
-                onPress={() => router.back()}
-                style={({ pressed }) => [
-                    styles.backButton,
-                    pressed && styles.backButtonPressed,
-                ]}
-            >
-                <Text style={styles.backButtonText}>
-                    ‹ Back to Gigs
-                </Text>
-            </Pressable>
+            <BackButton 
+                label="Back to Gigs" 
+                fallbackRoute="/"
+            />
 
             <View style={styles.hero}>
                 <Text style={styles.eyebrow}>
