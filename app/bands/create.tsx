@@ -57,48 +57,50 @@ export default function CreateBandScreen() {
                 return;
             }
 
-            const bandId =
-                await BandRepository.create({
-                    bandName: values.bandName.trim(),
+            const createdBand = await BandRepository.create({
+                bandName: values.bandName.trim(),
 
-                    slug:
-                        values.slug.trim() || null,
+                slug:
+                    values.slug.trim() || null,
 
-                    hometown:
-                        values.hometown.trim() || null,
+                hometown:
+                    values.hometown.trim() || null,
 
-                    stateRegion:
-                        values.stateRegion.trim() ||
-                        "Western Australia",
+                stateRegion:
+                    values.stateRegion.trim() ||
+                    "Western Australia",
 
-                    countryCode:
-                        values.countryCode.trim() || "AU",
+                countryCode:
+                    values.countryCode.trim() || "AU",
 
-                    memberCount,
+                memberCount,
 
-                    formationYear,
+                formationYear,
 
-                    shortDescription:
-                        values.shortDescription.trim() ||
-                        null,
+                shortDescription:
+                    values.shortDescription.trim() || null,
 
-                    internalNotes:
-                        values.internalNotes.trim() ||
-                        null,
+                internalNotes:
+                    values.internalNotes.trim() || null,
 
-                    status: values.status,
+                status: values.status,
 
-                    isOurBand: values.isOurBand,
+                isOurBand: values.isOurBand,
 
-                    isVerified: values.isVerified,
-                });
+                isVerified: values.isVerified,
+            });
+
+            queryClient.setQueryData(
+                ["bands", createdBand.bandId],
+                createdBand
+            );
 
             await queryClient.invalidateQueries({
                 queryKey: ["bands"],
             });
 
             router.replace(
-                `/bands/${bandId}`
+                `/bands/${createdBand.bandId}`
             );
         } catch (err) {
             setError(
