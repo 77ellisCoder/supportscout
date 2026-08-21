@@ -238,4 +238,20 @@ export const styles =
 
             marginLeft: spacing.lg,
         },
+
+        backButton: {
+            alignSelf: "flex-start",
+            marginBottom: spacing.lg,
+            paddingVertical: spacing.xs,
+        },
+
+        backButtonPressed: {
+            opacity: 0.6,
+        },
+
+        backButtonText: {
+            ...typography.small,
+            color: colors.primaryLight,
+            fontWeight: "700",
+        },
     });

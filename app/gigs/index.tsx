@@ -88,6 +88,18 @@ export default function GigsScreen() {
       ListHeaderComponent={
         <>
           <View style={styles.header}>
+            <Pressable
+                onPress={() => router.back()}
+                style={({ pressed }) => [
+                    styles.backButton,
+                    pressed && styles.backButtonPressed,
+                ]}
+            >
+                <Text style={styles.backButtonText}>
+                    ‹
+                </Text>
+            </Pressable>
+
             <View style={styles.headerText}>
               <Text style={styles.eyebrow}>
                 GIGS

@@ -101,6 +101,65 @@ export const GigRepository = {
 
         return mapGigRow(row);
     },
+
+    async create(input: {
+        venueId: number | null;
+        gigDate: string;
+        eventName: string | null;
+        notes: string | null;
+        status: GigStatus;
+        bandIds: number[];
+    }): Promise<Gig> {
+        const db = await getDatabase();
+
+        let gigId = 0;
+
+        await db.withTransactionAsync(async () => {
+            const result = await db.runAsync(
+                `
+        INSERT INTO gigs (
+          venue_id,
+          gig_date,
+          event_name,
+          notes,
+          status
+        )
+        VALUES (?, ?, ?, ?, ?)
+      `,
+                input.venueId,
+                input.gigDate,
+                input.eventName,
+                input.notes,
+                input.status
+            );
+
+            gigId = Number(result.lastInsertRowId);
+
+            for (let index = 0; index < input.bandIds.length; index++) {
+                await db.runAsync(
+                    `
+          INSERT INTO gig_bands (
+            gig_id,
+            band_id,
+            billing_order
+          )
+          VALUES (?, ?, ?)
+        `,
+                    gigId,
+                    input.bandIds[index],
+                    index + 1
+                );
+            }
+        });
+
+        const created = await this.getById(gigId);
+
+        if (!created) {
+            throw new Error("Unable to reload created gig.");
+        }
+
+        return created;
+    },
 };
 
 function mapGigRow(
