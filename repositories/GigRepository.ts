@@ -2,6 +2,7 @@ import { getDatabase } from "../database/sqlite/Database";
 
 import type {
     Gig,
+    GigDetail,
     GigListItem,
     GigStatus,
 } from "../models/Gig";
@@ -99,7 +100,112 @@ export const GigRepository = {
             return null;
         }
 
-        return mapGigRow(row);
+        const bandRows =
+            await db.getAllAsync<{
+                band_id: number;
+            }>(
+                `
+                SELECT band_id
+                FROM gig_bands
+                WHERE gig_id = ?
+                ORDER BY billing_order
+                `,
+                gigId
+            );
+
+        return {
+            ...mapGigRow(row),
+            bandIds: bandRows.map(
+                (band) => band.band_id
+            ),
+        };
+    },
+
+    async getDetailById(
+        gigId: number
+    ): Promise<GigDetail | null> {
+        const db = await getDatabase();
+
+        const row =
+            await db.getFirstAsync<
+                GigRow & {
+                    venue_name: string | null;
+                    suburb: string | null;
+                }
+            >(
+                `
+        SELECT
+          g.gig_id,
+          g.venue_id,
+          g.gig_date,
+          g.event_name,
+          g.notes,
+          g.status,
+          g.created_at,
+          g.updated_at,
+
+          v.venue_name,
+          v.suburb
+
+        FROM gigs g
+
+        LEFT JOIN venues v
+          ON v.venue_id = g.venue_id
+
+        WHERE g.gig_id = ?
+      `,
+                gigId
+            );
+
+        if (!row) {
+            return null;
+        }
+
+        const bandRows =
+            await db.getAllAsync<{
+                band_id: number;
+                band_name: string;
+                billing_order: number | null;
+                role: string | null;
+            }>(
+                `
+        SELECT
+          b.band_id,
+          b.band_name,
+          gb.billing_order,
+          gb.role
+
+        FROM gig_bands gb
+
+        INNER JOIN bands b
+          ON b.band_id = gb.band_id
+
+        WHERE gb.gig_id = ?
+
+        ORDER BY
+          gb.billing_order ASC,
+          b.band_name ASC
+      `,
+                gigId
+            );
+
+        return {
+            ...mapGigRow(row),
+
+            bandIds: bandRows.map(
+                (band) => band.band_id
+            ),
+
+            venueName: row.venue_name,
+            suburb: row.suburb,
+
+            bands: bandRows.map((band) => ({
+                bandId: band.band_id,
+                bandName: band.band_name,
+                billingOrder: band.billing_order,
+                role: band.role,
+            })),
+        };
     },
 
     async create(input: {
@@ -160,6 +266,70 @@ export const GigRepository = {
 
         return created;
     },
+
+    async update(
+        gigId: number,
+        input: {
+            venueId: number | null;
+            gigDate: string;
+            eventName: string | null;
+            notes: string | null;
+            status: GigStatus;
+            bandIds: number[];
+        }
+    ): Promise<void> {
+        const db = await getDatabase();
+
+        await db.withTransactionAsync(async () => {
+            await db.runAsync(
+                `
+        UPDATE gigs
+        SET
+          venue_id = ?,
+          gig_date = ?,
+          event_name = ?,
+          notes = ?,
+          status = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE gig_id = ?
+      `,
+                input.venueId,
+                input.gigDate,
+                input.eventName,
+                input.notes,
+                input.status,
+                gigId
+            );
+
+            await db.runAsync(
+                `
+        DELETE FROM gig_bands
+        WHERE gig_id = ?
+      `,
+                gigId
+            );
+
+            for (
+                let index = 0;
+                index < input.bandIds.length;
+                index++
+            ) {
+                await db.runAsync(
+                    `
+          INSERT INTO gig_bands (
+            gig_id,
+            band_id,
+            billing_order
+          )
+          VALUES (?, ?, ?)
+        `,
+                    gigId,
+                    input.bandIds[index],
+                    index + 1
+                );
+            }
+        });
+    },
 };
 
 function mapGigRow(
@@ -172,6 +342,7 @@ function mapGigRow(
         eventName: row.event_name,
         notes: row.notes,
         status: row.status,
+        bandIds: [],
         createdAt: row.created_at,
         updatedAt: row.updated_at,
     };

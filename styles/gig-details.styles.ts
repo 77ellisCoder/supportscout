@@ -141,4 +141,62 @@ export const styles = StyleSheet.create({
         color: colors.primaryLight,
         fontWeight: "700",
     },
+
+    linkTitle: {
+        ...typography.h3,
+        color: colors.primaryLight,
+    },
+
+    lineup: {
+        gap: spacing.sm,
+    },
+
+    lineupRow: {
+        flexDirection: "row",
+        alignItems: "center",
+
+        paddingVertical: spacing.sm,
+
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+    },
+
+    lineupRowPressed: {
+        opacity: 0.7,
+    },
+
+    billingOrder: {
+        width: 30,
+        height: 30,
+
+        borderRadius: radius.pill,
+        backgroundColor: colors.primaryMuted,
+
+        alignItems: "center",
+        justifyContent: "center",
+
+        marginRight: spacing.md,
+    },
+
+    billingOrderText: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "700",
+    },
+
+    lineupContent: {
+        flex: 1,
+    },
+
+    bandRole: {
+        ...typography.small,
+        color: colors.textMuted,
+        marginTop: spacing.xs,
+    },
+
+    chevron: {
+        color: colors.textMuted,
+        fontSize: 24,
+        marginLeft: spacing.md,
+    },
 });

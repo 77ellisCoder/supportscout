@@ -11,7 +11,7 @@ import {
     View,
 } from "react-native";
 
-import { useGig } from "../../hooks/useGig";
+import { useGigDetail } from "../../hooks/useGigDetail";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
 
@@ -25,7 +25,7 @@ export default function GigDetailsScreen() {
         data: gig,
         isLoading,
         error,
-    } = useGig(gigId);
+    } = useGigDetail(gigId);
 
     if (isLoading) {
         return (
@@ -97,11 +97,82 @@ export default function GigDetailsScreen() {
                     VENUE
                 </Text>
 
-                <Text style={styles.bodyText}>
-                    {gig.venueId != null
-                        ? `Venue ID: ${gig.venueId}`
-                        : "No venue assigned"}
+                {gig.venueId && gig.venueName ? (
+                    <Pressable
+                        onPress={() =>
+                            router.push(
+                                `/venues/${gig.venueId}`
+                            )
+                        }
+                    >
+                        <Text style={styles.linkTitle}>
+                            {gig.venueName}
+                        </Text>
+
+                        {gig.suburb && (
+                            <Text style={styles.bodyText}>
+                                {gig.suburb}
+                            </Text>
+                        )}
+                    </Pressable>
+                ) : (
+                    <Text style={styles.bodyText}>
+                        No venue assigned
+                    </Text>
+                )}
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionLabel}>
+                    LINEUP
                 </Text>
+
+                {gig.bands.length === 0 ? (
+                    <Text style={styles.bodyText}>
+                        No bands assigned
+                    </Text>
+                ) : (
+                    <View style={styles.lineup}>
+                        {gig.bands.map((band, index) => (
+                            <Pressable
+                                key={band.bandId}
+                                onPress={() =>
+                                    router.push(
+                                        `/bands/${band.bandId}`
+                                    )
+                                }
+                                style={({ pressed }) => [
+                                    styles.lineupRow,
+                                    pressed &&
+                                    styles.lineupRowPressed,
+                                ]}
+                            >
+                                <View style={styles.billingOrder}>
+                                    <Text style={styles.billingOrderText}>
+                                        {band.billingOrder ??
+                                            index + 1}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.lineupContent}>
+                                    <Text style={styles.linkTitle}>
+                                        {band.bandName}
+                                    </Text>
+
+                                    {band.role && (
+                                        <Text style={styles.bandRole}>
+                                            {band.role}
+                                        </Text>
+                                    )}
+                                </View>
+
+                                <Text style={styles.chevron}>
+                                    ›
+                                </Text>
+                            </Pressable>
+                        ))}
+                    </View>
+                )}
             </View>
 
             {gig.notes && (
