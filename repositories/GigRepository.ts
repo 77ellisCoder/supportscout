@@ -121,6 +121,75 @@ export const GigRepository = {
         };
     },
 
+    async getByBandId(
+        bandId: number,
+        period: "upcoming" | "past"
+    ): Promise<GigListItem[]> {
+        const db = await getDatabase();
+
+        const dateCondition =
+            period === "upcoming"
+                ? "g.gig_date >= date('now', 'localtime')"
+                : "g.gig_date < date('now', 'localtime')";
+
+        const orderDirection =
+            period === "upcoming"
+                ? "ASC"
+                : "DESC";
+
+        const rows =
+            await db.getAllAsync<GigListRow>(
+                `
+            SELECT
+                g.gig_id,
+                g.venue_id,
+                g.gig_date,
+                g.event_name,
+                g.notes,
+                g.status,
+                g.created_at,
+                g.updated_at,
+
+                v.venue_name,
+                v.suburb,
+
+                COUNT(gb_all.band_id) AS band_count
+
+            FROM gigs g
+
+            INNER JOIN gig_bands gb_filter
+                ON gb_filter.gig_id = g.gig_id
+                AND gb_filter.band_id = ?
+
+            LEFT JOIN venues v
+                ON v.venue_id = g.venue_id
+
+            LEFT JOIN gig_bands gb_all
+                ON gb_all.gig_id = g.gig_id
+
+            WHERE ${dateCondition}
+
+            GROUP BY
+                g.gig_id,
+                g.venue_id,
+                g.gig_date,
+                g.event_name,
+                g.notes,
+                g.status,
+                g.created_at,
+                g.updated_at,
+                v.venue_name,
+                v.suburb
+
+            ORDER BY
+                g.gig_date ${orderDirection}
+            `,
+                bandId
+            );
+
+        return rows.map(mapGigListRow);
+    },
+
     async getDetailById(
         gigId: number
     ): Promise<GigDetail | null> {
