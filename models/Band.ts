@@ -1,3 +1,7 @@
+/**
+ * This type represents a band, including its ID, name, slug, location details, member count, formation year, status, descriptions, verification status, and timestamps for creation, last update, and archival.
+ */
+
 export type BandStatus = "active" | "inactive" | "hiatus" | "unknown";
 
 export type Band = {

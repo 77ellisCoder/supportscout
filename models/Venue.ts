@@ -1,3 +1,6 @@
+/**
+ * This type represents a venue, including its ID, name, location details, capacity, type, website and booking information, descriptions, status, verification status, and hometown.
+ */
 export type VenueStatus =
     | "active"
     | "inactive"

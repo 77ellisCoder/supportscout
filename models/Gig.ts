@@ -1,3 +1,7 @@
+/**
+ * This type represents a gig, including its ID, associated venue ID, date, event name, notes, status, associated band IDs, and timestamps for creation and last update.
+ */
+
 export type GigStatus =
     | "tentative"
     | "confirmed"

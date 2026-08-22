@@ -6,6 +6,7 @@ import type {
     GigListItem,
     GigStatus,
 } from "../models/Gig";
+import { VenueBand } from "../models/VenueBand";
 
 type GigRow = {
     gig_id: number;
@@ -342,6 +343,56 @@ export const GigRepository = {
             );
 
         return rows.map(mapGigListRow);
+    },
+
+    async getBandsByVenueId(
+        venueId: number
+    ): Promise<VenueBand[]> {
+        const db = await getDatabase();
+
+        const rows = await db.getAllAsync<{
+            band_id: number;
+            band_name: string;
+            short_description: string | null;
+            gig_count: number;
+        }>(
+            `
+      SELECT
+        b.band_id,
+        b.band_name,
+        b.short_description,
+        COUNT(DISTINCT g.gig_id) AS gig_count
+
+      FROM bands b
+
+      INNER JOIN gig_bands gb
+        ON gb.band_id = b.band_id
+
+      INNER JOIN gigs g
+        ON g.gig_id = gb.gig_id
+
+      WHERE
+        g.venue_id = ?
+
+      GROUP BY
+        b.band_id,
+        b.band_name,
+        b.short_description
+
+      ORDER BY
+        gig_count DESC,
+        b.band_name ASC
+    `,
+            venueId
+        );
+
+        return rows.map((row) => ({
+            bandId: row.band_id,
+            bandName: row.band_name,
+            shortDescription:
+                row.short_description,
+            gigCount: row.gig_count,
+        }));
     },
 
     async create(

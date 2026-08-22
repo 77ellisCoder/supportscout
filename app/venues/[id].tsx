@@ -12,7 +12,11 @@ import { useVenue } from "../../hooks/useVenue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-details.styles";
 import { BackButton } from "../../components/navigation/BackButton";
+import { GigSection } from "../../components/gigs/GigSection";
+import { BandAppearanceList } from "../../components/venues/BandAppearanceList";
+
 import { useVenueGigs } from "../../hooks/useVenueGigs";
+import { useVenueBands } from "../../hooks/useVenueBands";
 
 export default function VenueDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -40,6 +44,11 @@ export default function VenueDetailsScreen() {
     venueId,
     "past"
   );
+
+  const {
+    data: venueBands = [],
+    isLoading: venueBandsLoading,
+  } = useVenueBands(venueId);
 
   if (isLoading) {
     return (
@@ -262,6 +271,38 @@ export default function VenueDetailsScreen() {
           </Text>
         </View>
       )}
+
+      <GigSection
+        title="UPCOMING GIGS"
+        gigs={upcomingGigs}
+        loading={upcomingGigsLoading}
+        emptyMessage="No upcoming gigs recorded at this venue."
+      />
+
+      <GigSection
+        title="RECENT GIGS"
+        gigs={recentGigs}
+        loading={recentGigsLoading}
+        emptyMessage="No past gigs recorded at this venue."
+      />
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>
+          BANDS PLAYED HERE
+        </Text>
+
+        {venueBandsLoading ? (
+          <ActivityIndicator
+            color={colors.primaryLight}
+          />
+        ) : venueBands.length === 0 ? (
+          <Text style={styles.bodyText}>
+            No bands recorded at this venue yet.
+          </Text>
+        ) : (
+          <BandAppearanceList bands={venueBands} />
+        )}
+      </View>
 
       <View style={styles.actions}>
         <Pressable
