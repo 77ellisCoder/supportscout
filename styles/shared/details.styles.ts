@@ -29,6 +29,10 @@ export const detailStyles = StyleSheet.create({
     padding: spacing.xl,
   },
 
+  list: {
+    gap: spacing.sm,
+  },
+
   loadingText: {
     ...typography.small,
     color: colors.textSecondary,

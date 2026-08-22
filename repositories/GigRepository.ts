@@ -1,4 +1,5 @@
 import { getDatabase } from "../database/sqlite/Database";
+import { BandRecommendation } from "../models/BandRecommendation";
 
 import type {
     Gig,
@@ -393,6 +394,97 @@ export const GigRepository = {
                 row.short_description,
             gigCount: row.gig_count,
         }));
+    },
+
+    async getBandRecommendations(
+        bandId: number
+    ): Promise<BandRecommendation[]> {
+        const db = await getDatabase();
+
+        const rows = await db.getAllAsync<{
+            band_id: number;
+            band_name: string;
+            short_description: string | null;
+            shared_gig_count: number;
+            shared_venue_count: number;
+        }>(
+            `
+      SELECT
+        candidate.band_id,
+        candidate.band_name,
+        candidate.short_description,
+
+        COUNT(
+          DISTINCT CASE
+            WHEN candidate_gb.gig_id = source_gb.gig_id
+            THEN candidate_gb.gig_id
+          END
+        ) AS shared_gig_count,
+
+        COUNT(
+          DISTINCT CASE
+            WHEN candidate_gig.venue_id = source_gig.venue_id
+                 AND candidate_gig.venue_id IS NOT NULL
+            THEN candidate_gig.venue_id
+          END
+        ) AS shared_venue_count
+
+      FROM bands candidate
+
+      INNER JOIN gig_bands candidate_gb
+        ON candidate_gb.band_id = candidate.band_id
+
+      INNER JOIN gigs candidate_gig
+        ON candidate_gig.gig_id = candidate_gb.gig_id
+
+      CROSS JOIN gig_bands source_gb
+
+      INNER JOIN gigs source_gig
+        ON source_gig.gig_id = source_gb.gig_id
+
+      WHERE
+        source_gb.band_id = ?
+        AND candidate.band_id != ?
+
+      GROUP BY
+        candidate.band_id,
+        candidate.band_name,
+        candidate.short_description
+
+      HAVING
+        shared_gig_count > 0
+        OR shared_venue_count > 0
+
+      ORDER BY
+        shared_gig_count DESC,
+        shared_venue_count DESC,
+        candidate.band_name ASC
+    `,
+            bandId,
+            bandId
+        );
+
+        return rows.map((row) => {
+            const sharedGigCount =
+                Number(row.shared_gig_count);
+
+            const sharedVenueCount =
+                Number(row.shared_venue_count);
+
+            return {
+                bandId: row.band_id,
+                bandName: row.band_name,
+                shortDescription:
+                    row.short_description,
+
+                sharedGigCount,
+                sharedVenueCount,
+
+                score:
+                    sharedGigCount * 3 +
+                    sharedVenueCount * 2,
+            };
+        });
     },
 
     async create(

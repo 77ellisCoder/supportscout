@@ -10,11 +10,14 @@ import {
 
 import { BackButton } from "../../components/navigation/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
+
 import { useBand } from "../../hooks/useBand";
 import { useBandGigs } from "../../hooks/useBandGigs";
+import { useBandRecommendations } from "../../hooks/useBandRecommendations";
 
 import { detailStyles as styles } from "../../styles/shared/details.styles";
 import { colors } from "../../theme";
+import { BandRecommendationCard } from "../../components/bands/BandRecommendationCard";
 
 export default function BandDetailsScreen() {
   const { id } =
@@ -43,6 +46,11 @@ export default function BandDetailsScreen() {
     bandId,
     "past"
   );
+
+  const {
+    data: recommendations = [],
+    isLoading: recommendationsLoading,
+  } = useBandRecommendations(bandId);
 
   if (isLoading) {
     return (
@@ -170,6 +178,33 @@ export default function BandDetailsScreen() {
         loading={recentGigsLoading}
         emptyMessage="No past gigs recorded."
       />
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>
+            SUPPORTSCOUT MATCHES
+        </Text>
+
+        {recommendationsLoading ? (
+            <ActivityIndicator
+                color={colors.primaryLight}
+            />
+        ) : recommendations.length === 0 ? (
+            <Text style={styles.bodyText}>
+                Not enough gig history yet to suggest matches.
+            </Text>
+        ) : (
+            <View style={styles.list}>
+                {recommendations.map(
+                    (recommendation) => (
+                        <BandRecommendationCard
+                            key={recommendation.bandId}
+                            recommendation={recommendation}
+                        />
+                    )
+                )}
+            </View>
+        )}
+    </View>
 
       {band.internalNotes && (
         <View style={styles.section}>
