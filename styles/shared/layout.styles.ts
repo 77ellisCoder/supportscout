@@ -9,6 +9,7 @@ export const layout = {
 
 export const layoutStyles = StyleSheet.create({
     contentContainer: {
+        flex: 1,
         width: "100%",
         maxWidth: layout.contentMaxWidth,
         alignSelf: "center",

@@ -13,7 +13,7 @@ import { GigSection } from "../../components/gigs/GigSection";
 import { useBand } from "../../hooks/useBand";
 import { useBandGigs } from "../../hooks/useBandGigs";
 
-import { styles } from "../../styles/band-details.styles";
+import { detailStyles as styles } from "../../styles/shared/details.styles";
 import { colors } from "../../theme";
 
 export default function BandDetailsScreen() {

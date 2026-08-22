@@ -10,7 +10,6 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
-import { Button } from "../../components/Button";
 import { Chip } from "../../components/Chip";
 import { BandCard } from "../../components/bands/BandCard";
 import { SearchBar } from "../../components/SearchBar";
