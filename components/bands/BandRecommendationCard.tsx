@@ -21,6 +21,7 @@ export function BandRecommendationCard({
         shortDescription,
         sharedGigCount,
         sharedVenueCount,
+        sharedGenreTerms,
         score,
     } = recommendation;
 
@@ -73,7 +74,20 @@ export function BandRecommendationCard({
                                 : "shared venues"}
                         </Text>
                     )}
+
                 </View>
+
+                {sharedGenreTerms.length > 0 && (
+                    <View style={styles.genreRow}>
+                        <Text style={styles.genreLabel}>
+                            Genre match:
+                        </Text>
+
+                        <Text style={styles.genreTerms}>
+                            {sharedGenreTerms.join(", ")}
+                        </Text>
+                    </View>
+                )}
             </View>
 
             <View style={styles.scoreContainer}>

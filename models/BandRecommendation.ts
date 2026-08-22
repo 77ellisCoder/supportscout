@@ -3,12 +3,15 @@
  */
 
 export type BandRecommendation = {
-  bandId: number;
-  bandName: string;
-  shortDescription: string | null;
+    bandId: number;
+    bandName: string;
+    shortDescription: string | null;
 
-  sharedGigCount: number;
-  sharedVenueCount: number;
+    sharedGigCount: number;
+    sharedVenueCount: number;
 
-  score: number;
+    sharedGenreTerms: string[];
+    genreScore: number;
+
+    score: number;
 };

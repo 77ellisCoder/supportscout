@@ -42,6 +42,24 @@ export const styles = StyleSheet.create({
         marginTop: spacing.xs,
     },
 
+    genreRow: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: spacing.xs,
+        marginTop: spacing.xs,
+    },
+
+    genreLabel: {
+        ...typography.small,
+        color: colors.textMuted,
+    },
+
+    genreTerms: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "600",
+    },
+
     reasons: {
         flexDirection: "row",
         alignItems: "center",

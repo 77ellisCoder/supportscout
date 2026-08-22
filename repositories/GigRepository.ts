@@ -9,6 +9,11 @@ import type {
 } from "../models/Gig";
 import { VenueBand } from "../models/VenueBand";
 
+import {
+    calculateGenreScore,
+    getSharedGenreTerms,
+} from "../services/scoring/BandMatchScorer";
+
 type GigRow = {
     gig_id: number;
     venue_id: number | null;
@@ -401,6 +406,21 @@ export const GigRepository = {
     ): Promise<BandRecommendation[]> {
         const db = await getDatabase();
 
+        const sourceBand =
+            await db.getFirstAsync<{
+                short_description: string | null;
+            }>(
+                `
+                SELECT short_description
+                FROM bands
+                WHERE band_id = ?
+                `,
+                bandId
+            );
+
+        const sourceDescription =
+            sourceBand?.short_description ?? null;
+
         const rows = await db.getAllAsync<{
             band_id: number;
             band_name: string;
@@ -464,27 +484,56 @@ export const GigRepository = {
             bandId
         );
 
-        return rows.map((row) => {
-            const sharedGigCount =
-                Number(row.shared_gig_count);
+        return rows
+            .map((row) => {
+                const sharedGigCount =
+                    Number(row.shared_gig_count);
 
-            const sharedVenueCount =
-                Number(row.shared_venue_count);
+                const sharedVenueCount =
+                    Number(row.shared_venue_count);
 
-            return {
-                bandId: row.band_id,
-                bandName: row.band_name,
-                shortDescription:
-                    row.short_description,
+                const sharedGenreTerms =
+                    getSharedGenreTerms(
+                        sourceDescription,
+                        row.short_description
+                    );
 
-                sharedGigCount,
-                sharedVenueCount,
+                const genreScore =
+                    calculateGenreScore(
+                        sharedGenreTerms
+                    );
 
-                score:
-                    sharedGigCount * 3 +
-                    sharedVenueCount * 2,
-            };
-        });
+                return {
+                    bandId: row.band_id,
+                    bandName: row.band_name,
+
+                    shortDescription:
+                        row.short_description,
+
+                    sharedGigCount,
+                    sharedVenueCount,
+
+                    sharedGenreTerms,
+                    genreScore,
+
+                    score:
+                        sharedGigCount * 3 +
+                        sharedVenueCount * 2 +
+                        genreScore,
+                };
+            })
+
+            .sort(
+                (a, b) =>
+                    b.score - a.score ||
+                    b.sharedGigCount -
+                    a.sharedGigCount ||
+                    b.sharedVenueCount -
+                    a.sharedVenueCount ||
+                    a.bandName.localeCompare(
+                        b.bandName
+                    )
+            );
     },
 
     async create(
