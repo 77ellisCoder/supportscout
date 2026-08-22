@@ -11,6 +11,7 @@ import {
 import { useVenue } from "../../hooks/useVenue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-details.styles";
+import { BackButton } from "../../components/navigation/BackButton";
 
 export default function VenueDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -53,6 +54,11 @@ export default function VenueDetailsScreen() {
       style={styles.page}
       contentContainerStyle={styles.container}
     >
+      <BackButton 
+        label="Back to Venues"
+        fallbackRoute="/venues"
+      />
+      
       <View style={styles.hero}>
         <View style={styles.titleRow}>
           <View style={styles.titleContent}>

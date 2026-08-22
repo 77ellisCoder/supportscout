@@ -6,6 +6,7 @@ import {
   spacing,
   typography,
 } from "../../theme";
+import { layoutStyles } from "./layout.styles";
 
 /** Shared styles for create/edit entity forms. */
 export const formStyles = StyleSheet.create({
@@ -15,11 +16,7 @@ export const formStyles = StyleSheet.create({
   },
 
   container: {
-    width: "100%",
-    maxWidth: 800,
-    alignSelf: "center",
-    padding: spacing.xl,
-    paddingBottom: spacing.huge,
+    ...layoutStyles.contentContainer,
   },
 
   center: {
@@ -167,5 +164,16 @@ export const formStyles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: "700",
+  },
+
+  header: {
+    ...layoutStyles.contentWidth,
+    paddingHorizontal: spacing.xl,
+  },
+
+  list: {
+    ...layoutStyles.contentWidth,
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.huge,
   },
 });

@@ -90,114 +90,116 @@ export default function BandsScreen() {
 
   return (
     <View style={styles.page}>
-      <View style={styles.header}>
-        <Text style={styles.eyebrow}>BAND FINDER</Text>
-        <Text style={styles.title}>Find the right act.</Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.eyebrow}>BAND FINDER</Text>
+          <Text style={styles.title}>Find the right act.</Text>
 
-        <Text style={styles.subtitle}>
-          Search Perth artists already in SupportScout.
-        </Text>
-      </View>
+          <Text style={styles.subtitle}>
+            Search Perth artists already in SupportScout.
+          </Text>
+        </View>
 
-      <SearchBar
-        value={search}
-        onChangeText={setSearch}
-      />
+        <SearchBar
+          value={search}
+          onChangeText={setSearch}
+        />
 
-      <View style={styles.chipRow}>
         <View style={styles.chipRow}>
-          {GENRES.map((genre) => (
-            <Chip
-              key={genre}
-              label={genre}
-              selected={selectedGenre === genre}
-              onPress={() => setSelectedGenre(genre)}
-            />
-          ))}
+          <View style={styles.chipRow}>
+            {GENRES.map((genre) => (
+              <Chip
+                key={genre}
+                label={genre}
+                selected={selectedGenre === genre}
+                onPress={() => setSelectedGenre(genre)}
+              />
+            ))}
+          </View>
         </View>
-      </View>
 
-      {/* Sorting */}
-      <View style={styles.sortRow}>
-        <Text style={styles.sortLabel}>SORT</Text>
+        {/* Sorting */}
+        <View style={styles.sortRow}>
+          <Text style={styles.sortLabel}>SORT</Text>
 
-        <Chip
-          label="A–Z"
-          selected={sortBy === "name-asc"}
-          onPress={() => setSortBy("name-asc")}
-        />
+          <Chip
+            label="A–Z"
+            selected={sortBy === "name-asc"}
+            onPress={() => setSortBy("name-asc")}
+          />
 
-        <Chip
-          label="Z–A"
-          selected={sortBy === "name-desc"}
-          onPress={() => setSortBy("name-desc")}
-        />
-      </View>
+          <Chip
+            label="Z–A"
+            selected={sortBy === "name-desc"}
+            onPress={() => setSortBy("name-desc")}
+          />
+        </View>
 
-      <View style={styles.resultHeader}>
-        <Text style={styles.resultCount}>
-          {filteredBands.length}{" "}
-          {filteredBands.length === 1
-            ? "band"
-            : "bands"}
-        </Text>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Add band"
-          onPress={() => router.push("/bands/create")}
-          style={({ pressed }) => [
-            styles.addButton,
-            pressed && styles.addButtonPressed,
-          ]}
-        >
-          <Text style={styles.addButtonText}>
-            + Add Band
+        <View style={styles.resultHeader}>
+          <Text style={styles.resultCount}>
+            {filteredBands.length}{" "}
+            {filteredBands.length === 1
+              ? "band"
+              : "bands"}
           </Text>
-        </Pressable>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add band"
+            onPress={() => router.push("/bands/create")}
+            style={({ pressed }) => [
+              styles.addButton,
+              pressed && styles.addButtonPressed,
+            ]}
+          >
+            <Text style={styles.addButtonText}>
+              + Add Band
+            </Text>
+          </Pressable>
+        </View>
+
+        {isLoading ? (
+          <View style={styles.center}>
+            <ActivityIndicator color={colors.primaryLight} />
+            <Text style={styles.loadingText}>Searching...</Text>
+          </View>
+        ) : error ? (
+          <View style={styles.center}>
+            <Text style={styles.errorText}>
+              Unable to load bands.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={sortedBands}
+            keyExtractor={(item) => String(item.bandId)}
+            contentContainerStyle={styles.list}
+            renderItem={({ item }) => (
+              <BandCard
+                id={item.bandId}
+                name={item.bandName}
+                description={item.shortDescription}
+                hometown={item.hometown}
+                memberCount={item.memberCount}
+              //score={item.score}
+              />
+            )}
+            ListEmptyComponent={
+              <View style={styles.center}>
+                <Text style={styles.emptyTitle}>
+                  No bands found
+                </Text>
+
+                <Text style={styles.emptyText}>
+                  {selectedGenre === "All"
+                    ? "Try a different search."
+                    : `No bands match ${selectedGenre}.`}
+                </Text>
+              </View>
+            }
+          />
+        )}
       </View>
-
-      {isLoading ? (
-        <View style={styles.center}>
-          <ActivityIndicator color={colors.primaryLight} />
-          <Text style={styles.loadingText}>Searching...</Text>
-        </View>
-      ) : error ? (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>
-            Unable to load bands.
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={sortedBands}
-          keyExtractor={(item) => String(item.bandId)}
-          contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <BandCard
-              id={item.bandId}
-              name={item.bandName}
-              description={item.shortDescription}
-              hometown={item.hometown}
-              memberCount={item.memberCount}
-            //score={item.score}
-            />
-          )}
-          ListEmptyComponent={
-            <View style={styles.center}>
-              <Text style={styles.emptyTitle}>
-                No bands found
-              </Text>
-
-              <Text style={styles.emptyText}>
-                {selectedGenre === "All"
-                  ? "Try a different search."
-                  : `No bands match ${selectedGenre}.`}
-              </Text>
-            </View>
-          }
-        />
-      )}
     </View>
   );
 }

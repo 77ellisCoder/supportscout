@@ -103,147 +103,149 @@ export default function VenuesScreen() {
 
   return (
     <View style={styles.page}>
-      <View style={styles.header}>
-        <Text style={styles.eyebrow}>
-          VENUE FINDER
-        </Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.eyebrow}>
+            VENUE FINDER
+          </Text>
 
-        <Text style={styles.title}>
-          Find the right room.
-        </Text>
+          <Text style={styles.title}>
+            Find the right room.
+          </Text>
 
-        <Text style={styles.subtitle}>
-          Search Perth venues already in
-          SupportScout.
-        </Text>
-      </View>
+          <Text style={styles.subtitle}>
+            Search Perth venues already in
+            SupportScout.
+          </Text>
+        </View>
 
-      <SearchBar
-        value={search}
-        onChangeText={setSearch}
-        placeholder="Search venues..."
-      />
+        <SearchBar
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Search venues..."
+        />
 
-      <View style={styles.chipRow}>
-        {VENUE_TYPES.map((type) => (
+        <View style={styles.chipRow}>
+          {VENUE_TYPES.map((type) => (
+            <Chip
+              key={type}
+              label={type}
+              selected={
+                selectedType === type
+              }
+              onPress={() =>
+                setSelectedType(type)
+              }
+            />
+          ))}
+        </View>
+
+        <View style={styles.sortRow}>
+          <Text style={styles.sortLabel}>
+            SORT
+          </Text>
+
           <Chip
-            key={type}
-            label={type}
+            label="A–Z"
             selected={
-              selectedType === type
+              sortBy === "name-asc"
             }
             onPress={() =>
-              setSelectedType(type)
+              setSortBy("name-asc")
             }
           />
-        ))}
-      </View>
 
-      <View style={styles.sortRow}>
-        <Text style={styles.sortLabel}>
-          SORT
-        </Text>
-
-        <Chip
-          label="A–Z"
-          selected={
-            sortBy === "name-asc"
-          }
-          onPress={() =>
-            setSortBy("name-asc")
-          }
-        />
-
-        <Chip
-          label="Z–A"
-          selected={
-            sortBy === "name-desc"
-          }
-          onPress={() =>
-            setSortBy("name-desc")
-          }
-        />
-      </View>
-
-      <View style={styles.resultHeader}>
-        <Text style={styles.resultCount}>
-          {filteredVenues.length}{" "}
-          {filteredVenues.length === 1
-            ? "venue"
-            : "venues"}
-        </Text>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Add venue"
-          onPress={() => router.push("/venues/create")}
-          style={({ pressed }) => [
-            styles.addButton,
-            pressed && styles.addButtonPressed,
-          ]}
-        >
-          <Text style={styles.addButtonText}>
-            + Add Venue
-          </Text>
-        </Pressable>
-      </View>
-
-      {isLoading ? (
-        <View style={styles.center}>
-          <ActivityIndicator
-            color={colors.primaryLight}
+          <Chip
+            label="Z–A"
+            selected={
+              sortBy === "name-desc"
+            }
+            onPress={() =>
+              setSortBy("name-desc")
+            }
           />
+        </View>
 
-          <Text style={styles.loadingText}>
-            Searching...
+        <View style={styles.resultHeader}>
+          <Text style={styles.resultCount}>
+            {filteredVenues.length}{" "}
+            {filteredVenues.length === 1
+              ? "venue"
+              : "venues"}
           </Text>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add venue"
+            onPress={() => router.push("/venues/create")}
+            style={({ pressed }) => [
+              styles.addButton,
+              pressed && styles.addButtonPressed,
+            ]}
+          >
+            <Text style={styles.addButtonText}>
+              + Add Venue
+            </Text>
+          </Pressable>
         </View>
-      ) : error ? (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>
-            Unable to load venues.
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={sortedVenues}
-          keyExtractor={(item) =>
-            String(item.venueId)
-          }
-          contentContainerStyle={
-            styles.list
-          }
-          renderItem={({ item }) => (
-            <VenueCard
-              id={item.venueId}
-              name={item.venueName}
-              suburb={item.suburb}
-              venueType={item.venueType}
-              description={
-                item.shortDescription
-              }
-              capacity={item.capacity}
+
+        {isLoading ? (
+          <View style={styles.center}>
+            <ActivityIndicator
+              color={colors.primaryLight}
             />
-          )}
-          ListEmptyComponent={
-            <View style={styles.center}>
-              <Text
-                style={styles.emptyTitle}
-              >
-                No venues found
-              </Text>
 
-              <Text
-                style={styles.emptyText}
-              >
-                {selectedType === "All"
-                  ? "Try a different search."
-                  : `No venues match ${selectedType}.`}
-              </Text>
-            </View>
-          }
-        />
-      )}
+            <Text style={styles.loadingText}>
+              Searching...
+            </Text>
+          </View>
+        ) : error ? (
+          <View style={styles.center}>
+            <Text style={styles.errorText}>
+              Unable to load venues.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={sortedVenues}
+            keyExtractor={(item) =>
+              String(item.venueId)
+            }
+            contentContainerStyle={
+              styles.list
+            }
+            renderItem={({ item }) => (
+              <VenueCard
+                id={item.venueId}
+                name={item.venueName}
+                suburb={item.suburb}
+                venueType={item.venueType}
+                description={
+                  item.shortDescription
+                }
+                capacity={item.capacity}
+              />
+            )}
+            ListEmptyComponent={
+              <View style={styles.center}>
+                <Text
+                  style={styles.emptyTitle}
+                >
+                  No venues found
+                </Text>
+
+                <Text
+                  style={styles.emptyText}
+                >
+                  {selectedType === "All"
+                    ? "Try a different search."
+                    : `No venues match ${selectedType}.`}
+                </Text>
+              </View>
+            }
+          />
+        )}
+      </View>
     </View>
   );
 }

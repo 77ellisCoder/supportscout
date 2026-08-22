@@ -8,6 +8,8 @@ import {
   typography,
 } from "../../theme";
 
+import { layoutStyles } from "./layout.styles";
+
 /** Shared shell and content styles for entity detail screens. */
 export const detailStyles = StyleSheet.create({
   page: {
@@ -16,11 +18,7 @@ export const detailStyles = StyleSheet.create({
   },
 
   container: {
-    width: "100%",
-    maxWidth: 900,
-    alignSelf: "center",
-    padding: spacing.xl,
-    paddingBottom: spacing.huge,
+    ...layoutStyles.contentContainer,
   },
 
   center: {

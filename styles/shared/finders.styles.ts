@@ -3,12 +3,21 @@ import { StyleSheet } from "react-native";
 import {
     colors,
     radius,
-    shadows,
     spacing,
     typography,
 } from "../../theme";
 
+import { layoutStyles } from "./layout.styles";
+
 export const finderStyles = StyleSheet.create({
+    page: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
+
+    container: {
+        ...layoutStyles.contentContainer,
+    },
 
     resultHeader: {
         flexDirection: "row",
@@ -59,16 +68,6 @@ export const finderStyles = StyleSheet.create({
         marginTop: spacing.lg,
     },
 
-    page: {
-        flex: 1,
-        backgroundColor: colors.background,
-        padding: spacing.xl,
-    },
-
-    header: {
-        marginBottom: spacing.xl,
-    },
-
     eyebrow: {
         ...typography.label,
         color: colors.primaryLight,
@@ -86,16 +85,9 @@ export const finderStyles = StyleSheet.create({
         marginTop: spacing.sm,
     },
 
-
-
     resultCount: {
         ...typography.small,
         color: colors.textMuted,
-    },
-
-    list: {
-        gap: spacing.md,
-        paddingBottom: spacing.huge,
     },
 
     center: {
@@ -124,5 +116,18 @@ export const finderStyles = StyleSheet.create({
         ...typography.small,
         color: colors.textMuted,
         marginTop: spacing.sm,
+    },
+
+    header: {
+        ...layoutStyles.contentWidth,
+        paddingHorizontal: spacing.xl,
+        marginBottom: spacing.lg,
+        marginTop: spacing.xl,
+    },
+
+    list: {
+        ...layoutStyles.contentWidth,
+        paddingHorizontal: spacing.xl,
+        paddingBottom: spacing.huge,
     },
 });
