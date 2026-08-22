@@ -8,7 +8,10 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "au.com.supportscout.app"
+      "bundleIdentifier": "au.com.supportscout.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "icon": "./assets/branding/app-icon.png",
     "android": {
@@ -17,7 +20,13 @@
         "backgroundImage": "./assets/branding/adaptive-icon-background.png",
         "monochromeImage": "./assets/branding/adaptive-icon-monochrome.png"
       },
-      "package": "au.com.supportscout.app"
+      "package": "au.com.supportscout.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
     },
     "web": {
       "favicon": "./assets/branding/favicon.png"
