@@ -114,50 +114,7 @@ export const styles =
             fontWeight: "700",
         },
 
-        section: {
-            marginBottom: spacing.xxl,
-        },
-
-        sectionHeader: {
-            flexDirection: "row",
-            alignItems: "center",
-
-            gap: spacing.sm,
-
-            marginBottom: spacing.md,
-        },
-
-        sectionTitle: {
-            ...typography.label,
-
-            color: colors.textMuted,
-        },
-
-        sectionCount: {
-            ...typography.small,
-
-            color: colors.primaryLight,
-
-            fontWeight: "700",
-        },
-
-        emptyCard: {
-            backgroundColor: colors.surface,
-
-            borderWidth: 1,
-            borderColor: colors.border,
-            borderRadius: radius.lg,
-
-            padding: spacing.xl,
-        },
-
-        emptyText: {
-            ...typography.body,
-
-            color: colors.textMuted,
-
-            textAlign: "center",
-        },
+        
 
         gigList: {
             gap: spacing.md,

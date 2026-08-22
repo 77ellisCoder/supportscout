@@ -12,6 +12,7 @@ import { useVenue } from "../../hooks/useVenue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-details.styles";
 import { BackButton } from "../../components/navigation/BackButton";
+import { useVenueGigs } from "../../hooks/useVenueGigs";
 
 export default function VenueDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,6 +24,22 @@ export default function VenueDetailsScreen() {
     isLoading,
     error,
   } = useVenue(venueId);
+
+  const {
+    data: upcomingGigs = [],
+    isLoading: upcomingGigsLoading,
+  } = useVenueGigs(
+    venueId,
+    "upcoming"
+  );
+
+  const {
+    data: recentGigs = [],
+    isLoading: recentGigsLoading,
+  } = useVenueGigs(
+    venueId,
+    "past"
+  );
 
   if (isLoading) {
     return (
@@ -54,11 +71,11 @@ export default function VenueDetailsScreen() {
       style={styles.page}
       contentContainerStyle={styles.container}
     >
-      <BackButton 
+      <BackButton
         label="Back to Venues"
         fallbackRoute="/venues"
       />
-      
+
       <View style={styles.hero}>
         <View style={styles.titleRow}>
           <View style={styles.titleContent}>

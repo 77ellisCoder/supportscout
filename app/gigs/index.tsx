@@ -10,6 +10,8 @@ import {
 } from "react-native";
 
 import { BackButton } from "../../components/navigation/BackButton/BackButton";
+import { GigSection } from "../../components/gigs/GigSection";
+import { GigCard } from "../../components/gigs/GigCard";
 
 import { useGigs } from "../../hooks/useGigs";
 import { colors } from "../../theme";
@@ -132,128 +134,18 @@ export default function GigsScreen() {
           <GigSection
             title="UPCOMING GIGS"
             gigs={upcomingGigs}
+            loading={isLoading}
             emptyMessage="No upcoming gigs yet."
           />
 
           <GigSection
             title="PAST GIGS"
             gigs={pastGigs}
+            loading={isLoading}
             emptyMessage="No past gigs yet."
           />
         </>
       }
     />
   );
-}
-
-type GigSectionProps = {
-  title: string;
-  gigs: ReturnType<typeof useGigs>["data"];
-  emptyMessage: string;
-};
-
-function GigSection({
-  title,
-  gigs = [],
-  emptyMessage,
-}: GigSectionProps) {
-  return (
-    <View style={styles.section}>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>
-          {title}
-        </Text>
-
-        <Text style={styles.sectionCount}>
-          {gigs.length}
-        </Text>
-      </View>
-
-      {gigs.length === 0 ? (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyText}>
-            {emptyMessage}
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.gigList}>
-          {gigs.map((gig) => (
-            <Pressable
-              key={gig.gigId}
-              onPress={() =>
-                router.push(
-                  `/gigs/${gig.gigId}`
-                )
-              }
-              style={({ pressed }) => [
-                styles.gigCard,
-                pressed &&
-                styles.gigCardPressed,
-              ]}
-            >
-              <View style={styles.gigContent}>
-                <Text style={styles.gigDate}>
-                  {formatGigDate(gig.gigDate)}
-                </Text>
-
-                <Text style={styles.gigTitle}>
-                  {gig.eventName ||
-                    gig.venueName ||
-                    "Untitled Gig"}
-                </Text>
-
-                <View style={styles.metaRow}>
-                  {gig.venueName && (
-                    <Text style={styles.meta}>
-                      {gig.venueName}
-                    </Text>
-                  )}
-
-                  {gig.suburb && (
-                    <>
-                      <Text style={styles.metaDot}>
-                        •
-                      </Text>
-
-                      <Text style={styles.meta}>
-                        {gig.suburb}
-                      </Text>
-                    </>
-                  )}
-
-                  <Text style={styles.metaDot}>
-                    •
-                  </Text>
-
-                  <Text style={styles.meta}>
-                    {gig.bandCount}{" "}
-                    {gig.bandCount === 1
-                      ? "band"
-                      : "bands"}
-                  </Text>
-                </View>
-              </View>
-
-              <Text style={styles.chevron}>
-                ›
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      )}
-    </View>
-  );
-}
-
-function formatGigDate(
-  value: string
-): string {
-  const date = new Date(value);
-
-  return date.toLocaleDateString("en-AU", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
 }

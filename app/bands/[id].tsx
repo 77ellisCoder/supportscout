@@ -9,9 +9,10 @@ import {
 } from "react-native";
 
 import { BackButton } from "../../components/navigation/BackButton";
+import { GigSection } from "../../components/gigs/GigSection";
 import { useBand } from "../../hooks/useBand";
 import { useBandGigs } from "../../hooks/useBandGigs";
-import type { GigListItem } from "../../models/Gig";
+
 import { styles } from "../../styles/band-details.styles";
 import { colors } from "../../theme";
 
@@ -205,139 +206,4 @@ export default function BandDetailsScreen() {
       </View>
     </ScrollView>
   );
-}
-
-type GigSectionProps = {
-  title: string;
-  gigs: GigListItem[];
-  loading: boolean;
-  emptyMessage: string;
-};
-
-function GigSection({
-  title,
-  gigs,
-  loading,
-  emptyMessage,
-}: GigSectionProps) {
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionLabel}>
-        {title}
-      </Text>
-
-      {loading ? (
-        <ActivityIndicator
-          color={colors.primaryLight}
-        />
-      ) : gigs.length === 0 ? (
-        <Text style={styles.bodyText}>
-          {emptyMessage}
-        </Text>
-      ) : (
-        <View style={styles.gigList}>
-          {gigs.map((gig) => (
-            <GigRow
-              key={gig.gigId}
-              gig={gig}
-            />
-          ))}
-        </View>
-      )}
-    </View>
-  );
-}
-
-type GigRowProps = {
-  gig: GigListItem;
-};
-
-function GigRow({
-  gig,
-}: GigRowProps) {
-  return (
-    <Pressable
-      onPress={() =>
-        router.push(
-          `/gigs/${gig.gigId}`
-        )
-      }
-      style={({ pressed }) => [
-        styles.gigRow,
-        pressed &&
-        styles.gigRowPressed,
-      ]}
-    >
-      <View style={styles.gigDate}>
-        <Text style={styles.gigDateDay}>
-          {formatGigDay(gig.gigDate)}
-        </Text>
-
-        <Text style={styles.gigDateMonth}>
-          {formatGigMonth(
-            gig.gigDate
-          )}
-        </Text>
-      </View>
-
-      <View style={styles.gigContent}>
-        <Text style={styles.gigTitle}>
-          {gig.eventName ||
-            gig.venueName ||
-            "Gig"}
-        </Text>
-
-        {gig.venueName && (
-          <Text style={styles.gigVenue}>
-            {gig.venueName}
-            {gig.suburb
-              ? ` · ${gig.suburb}`
-              : ""}
-          </Text>
-        )}
-
-        <Text style={styles.gigMeta}>
-          {gig.bandCount}{" "}
-          {gig.bandCount === 1
-            ? "band"
-            : "bands"}
-        </Text>
-      </View>
-
-      <Text style={styles.chevron}>
-        ›
-      </Text>
-    </Pressable>
-  );
-}
-
-function parseGigDate(
-  value: string
-): Date {
-  const [year, month, day] =
-    value.split("-").map(Number);
-
-  return new Date(
-    year,
-    month - 1,
-    day
-  );
-}
-
-function formatGigDay(
-  value: string
-): string {
-  return String(
-    parseGigDate(value).getDate()
-  );
-}
-
-function formatGigMonth(
-  value: string
-): string {
-  return parseGigDate(value)
-    .toLocaleDateString("en-AU", {
-      month: "short",
-    })
-    .toUpperCase();
 }

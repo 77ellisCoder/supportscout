@@ -277,6 +277,73 @@ export const GigRepository = {
         };
     },
 
+    async getByVenueId(
+        venueId: number,
+        period: "upcoming" | "past"
+    ): Promise<GigListItem[]> {
+        const db = await getDatabase();
+
+        const dateCondition =
+            period === "upcoming"
+                ? "g.gig_date >= date('now', 'localtime')"
+                : "g.gig_date < date('now', 'localtime')";
+
+        const orderDirection =
+            period === "upcoming"
+                ? "ASC"
+                : "DESC";
+
+        const rows =
+            await db.getAllAsync<GigListRow>(
+                `
+        SELECT
+          g.gig_id,
+          g.venue_id,
+          g.gig_date,
+          g.event_name,
+          g.notes,
+          g.status,
+          g.created_at,
+          g.updated_at,
+
+          v.venue_name,
+          v.suburb,
+
+          COUNT(gb.band_id) AS band_count
+
+        FROM gigs g
+
+        LEFT JOIN venues v
+          ON v.venue_id = g.venue_id
+
+        LEFT JOIN gig_bands gb
+          ON gb.gig_id = g.gig_id
+
+        WHERE
+          g.venue_id = ?
+          AND ${dateCondition}
+
+        GROUP BY
+          g.gig_id,
+          g.venue_id,
+          g.gig_date,
+          g.event_name,
+          g.notes,
+          g.status,
+          g.created_at,
+          g.updated_at,
+          v.venue_name,
+          v.suburb
+
+        ORDER BY
+          g.gig_date ${orderDirection}
+      `,
+                venueId
+            );
+
+        return rows.map(mapGigListRow);
+    },
+
     async create(
         input: {
             venueId: number | null;
