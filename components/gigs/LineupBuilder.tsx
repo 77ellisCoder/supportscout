@@ -6,6 +6,7 @@ import {
 
 import type { Band } from "../../models/Band";
 import { styles } from "../../styles/lineup-builder.styles";
+import { DrinkRiderEditor } from "./DrinkRiderEditor";
 
 export type LineupRole =
     | "headliner"
@@ -21,6 +22,7 @@ export type LineupItem = {
 type LineupBuilderProps = {
     bands: Band[];
     value: LineupItem[];
+    drinkRiderGigId?: number;
     onChange: (value: LineupItem[]) => void;
 };
 
@@ -49,6 +51,7 @@ const ROLES: {
 export function LineupBuilder({
     bands,
     value,
+    drinkRiderGigId,
     onChange,
 }: LineupBuilderProps) {
     const selectedIds = new Set(
@@ -210,6 +213,14 @@ export function LineupBuilder({
                                                 )}
                                             </Text>
                                         </View>
+
+                                        {drinkRiderGigId != null && (
+                                            <DrinkRiderEditor
+                                                gigId={drinkRiderGigId}
+                                                bandId={item.bandId}
+                                                bandName={band.bandName}
+                                            />
+                                        )}
 
                                         <View
                                             style={

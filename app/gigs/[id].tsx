@@ -16,6 +16,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
 import { buttonStyles } from "../../styles/shared/button.styles";
 import { BackButton } from "../../components/navigation/BackButton";
+import { DrinkRider } from "../../components/gigs/DrinkRider";
 
 export default function GigDetailsScreen() {
     const { id } =
@@ -62,8 +63,8 @@ export default function GigDetailsScreen() {
             style={styles.page}
             contentContainerStyle={styles.container}
         >
-            <BackButton 
-                label="Back to Gigs" 
+            <BackButton
+                label="Back to Gigs"
                 fallbackRoute="/gigs"
             />
 
@@ -129,42 +130,54 @@ export default function GigDetailsScreen() {
                 ) : (
                     <View style={styles.lineup}>
                         {gig.bands.map((band, index) => (
-                            <Pressable
+                            <View
                                 key={band.bandId}
-                                onPress={() =>
-                                    router.push(
-                                        `/bands/${band.bandId}`
-                                    )
-                                }
-                                style={({ pressed }) => [
-                                    styles.lineupRow,
-                                    pressed &&
-                                    styles.lineupRowPressed,
-                                ]}
+                                style={styles.lineupItem}
                             >
-                                <View style={styles.billingOrder}>
-                                    <Text style={styles.billingOrderText}>
-                                        {band.billingOrder ??
-                                            index + 1}
-                                    </Text>
-                                </View>
-
-                                <View style={styles.lineupContent}>
-                                    <Text style={styles.linkTitle}>
-                                        {band.bandName}
-                                    </Text>
-
-                                    {band.role && (
-                                        <Text style={styles.currentRole}>
-                                            {formatRole(band.role)}
+                                <Pressable
+                                    onPress={() =>
+                                        router.push(
+                                            `/bands/${band.bandId}`
+                                        )
+                                    }
+                                    style={({ pressed }) => [
+                                        styles.lineupRow,
+                                        pressed &&
+                                        styles.lineupRowPressed,
+                                    ]}
+                                >
+                                    <View style={styles.billingOrder}>
+                                        <Text style={styles.billingOrderText}>
+                                            {band.billingOrder ?? index + 1}
                                         </Text>
-                                    )}
-                                </View>
+                                    </View>
 
-                                <Text style={styles.chevron}>
-                                    ›
-                                </Text>
-                            </Pressable>
+                                    <View style={styles.lineupContent}>
+                                        <Text style={styles.linkTitle}>
+                                            {band.bandName}
+                                        </Text>
+
+                                        {band.role && (
+                                            <Text style={styles.currentRole}>
+                                                {formatRole(band.role)}
+                                            </Text>
+                                        )}
+                                    </View>
+
+                                    <Text style={styles.chevron}>
+                                        ›
+                                    </Text>
+                                </Pressable>
+
+                                {/* Render the DrinkRider component only if the band is our band */}
+                                {band.isOurBand && (
+                                    <DrinkRider
+                                        gigId={gig.gigId}
+                                        bandId={band.bandId}
+                                        bandName={band.bandName}
+                                    />
+                                )}
+                            </View>
                         ))}
                     </View>
                 )}
@@ -218,12 +231,12 @@ function formatGigDate(
 }
 
 function formatRole(role: string): string {
-  return role
-    .split("_")
-    .map(
-      (word) =>
-        word.charAt(0).toUpperCase() +
-        word.slice(1)
-    )
-    .join(" ").toUpperCase();
+    return role
+        .split("_")
+        .map(
+            (word) =>
+                word.charAt(0).toUpperCase() +
+                word.slice(1)
+        )
+        .join(" ").toUpperCase();
 }

@@ -141,6 +141,10 @@ export const gigDetailStyles = StyleSheet.create({
     gap: spacing.sm,
   },
 
+  lineupItem: {
+    gap: spacing.sm,
+  },
+
   lineupRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -243,11 +243,13 @@ export const GigRepository = {
                 band_name: string;
                 billing_order: number | null;
                 role: string | null;
+                is_our_band: number;
             }>(
                 `
         SELECT
           b.band_id,
           b.band_name,
+          b.is_our_band,
           gb.billing_order,
           gb.role
 
@@ -280,6 +282,7 @@ export const GigRepository = {
                 bandName: band.band_name,
                 billingOrder: band.billing_order,
                 role: band.role,
+                isOurBand: band.is_our_band === 1
             })),
         };
     },

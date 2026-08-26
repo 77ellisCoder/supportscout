@@ -41,6 +41,7 @@ export type GigBand = {
     bandName: string;
     billingOrder: number | null;
     role: string | null;
+    isOurBand: boolean;
 };
 
 export type GigDetail = Gig & {

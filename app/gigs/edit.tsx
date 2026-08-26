@@ -195,6 +195,7 @@ export default function EditGigScreen() {
 
       bands={bands}
       venues={venues}
+      drinkRiderGigId={gigId}
 
       saving={saving}
       error={error}

@@ -35,6 +35,7 @@ export type GigFormValues = {
 type GigFormProps = {
     venues: Venue[];
     bands: Band[];
+    drinkRiderGigId?: number;
 
     initialValues?: Partial<GigFormValues>;
 
@@ -62,6 +63,7 @@ const DEFAULT_VALUES: GigFormValues = {
 export function GigForm({
     venues,
     bands,
+    drinkRiderGigId,
     initialValues,
     title,
     eyebrow,
@@ -231,6 +233,7 @@ export function GigForm({
             <LineupBuilder
                 bands={bands}
                 value={values.lineup}
+                drinkRiderGigId={drinkRiderGigId}
                 onChange={(lineup) =>
                     updateField(
                         "lineup",
