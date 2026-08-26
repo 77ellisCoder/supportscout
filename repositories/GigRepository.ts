@@ -638,16 +638,16 @@ export const GigRepository = {
         await db.withTransactionAsync(async () => {
             await db.runAsync(
                 `
-        UPDATE gigs
-        SET
-          venue_id = ?,
-          gig_date = ?,
-          event_name = ?,
-          notes = ?,
-          status = ?,
-          updated_at = CURRENT_TIMESTAMP
-        WHERE gig_id = ?
-      `,
+                UPDATE gigs
+                SET
+                venue_id = ?,
+                gig_date = ?,
+                event_name = ?,
+                notes = ?,
+                status = ?,
+                updated_at = CURRENT_TIMESTAMP
+                WHERE gig_id = ?
+            `,
                 input.venueId,
                 input.gigDate,
                 input.eventName,
@@ -656,11 +656,13 @@ export const GigRepository = {
                 gigId
             );
 
+            
+            // Replace the existing lineup with the new lineup
             await db.runAsync(
                 `
-        DELETE FROM gig_bands
-        WHERE gig_id = ?
-      `,
+                    DELETE FROM gig_bands
+                    WHERE gig_id = ?
+                `,
                 gigId
             );
 
@@ -687,6 +689,21 @@ export const GigRepository = {
                     item.role
                 );
             }
+
+            // Remove any unused drink tokens for bands that are no longer in the lineup
+            await db.runAsync(
+                `
+                DELETE FROM gig_band_drink_tokens
+                WHERE gig_id = ?
+                AND band_id NOT IN (
+                    SELECT band_id
+                    FROM gig_bands
+                    WHERE gig_id = ?
+                )
+            `,
+                gigId,
+                gigId
+            );
         });
     },
 };
