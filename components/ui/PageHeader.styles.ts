@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
 
     content: {
         flex: 1,
+        gap: spacing.xs,
     },
 
     eyebrow: {
@@ -37,5 +38,14 @@ export const styles = StyleSheet.create({
 
     action: {
         flexShrink: 0,
+    },
+
+    wrapper: {
+        width: "100%",
+    },
+
+    backRow: {
+        alignSelf: "flex-start",
+        marginBottom: spacing.md,
     },
 });

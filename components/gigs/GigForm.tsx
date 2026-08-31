@@ -15,8 +15,7 @@ import type { Venue } from "../../models/Venue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-form.styles";
 
-import { Button } from "../ui/Button";
-
+import { FormActions } from "../ui/FormActions";
 import { GigDatePicker } from "./GigDatePicker";
 
 import {
@@ -255,15 +254,11 @@ export function GigForm({
                 multiline
             />
 
-            {/* Save button */}
-            <Button
-                title={submitLabel}
-                disabled={saving}
-                loading={saving}
-                onPress={() =>
-                    onSubmit(values)
-                }
-            /> 
+            <FormActions
+                submitLabel={submitLabel}
+                saving={saving}
+                onSubmit={() => onSubmit(values)}
+            />
         </ScrollView>
     );
 }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import {
-    ActivityIndicator,
     Pressable,
     ScrollView,
     Switch,
@@ -10,9 +9,10 @@ import {
     View,
 } from "react-native";
 
-import type { Venue, VenueStatus } from "../../models/Venue";
+import type { VenueStatus } from "../../models/Venue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-form.styles";
+import { FormActions } from "../ui/FormActions";
 
 export type VenueFormValues = {
     venueName: string;
@@ -252,23 +252,11 @@ export function VenueForm({
                 />
             </View>
 
-            <Pressable
-                disabled={saving}
-                onPress={() => onSubmit(values)}
-                style={({ pressed }) => [
-                    styles.saveButton,
-                    pressed && styles.saveButtonPressed,
-                    saving && styles.saveButtonDisabled,
-                ]}
-            >
-                {saving ? (
-                    <ActivityIndicator color={colors.white} />
-                ) : (
-                    <Text style={styles.saveButtonText}>
-                        {submitLabel}
-                    </Text>
-                )}
-            </Pressable>
+            <FormActions
+                submitLabel={submitLabel}
+                saving={saving}
+                onSubmit={() => onSubmit(values)}
+            />
         </ScrollView>
     );
 }

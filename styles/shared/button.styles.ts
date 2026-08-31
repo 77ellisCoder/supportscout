@@ -24,4 +24,6 @@ export const buttonStyles = StyleSheet.create({
         color: colors.primaryLight,
         fontWeight: "700",
     },
+
+    
 });

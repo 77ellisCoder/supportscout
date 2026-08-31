@@ -48,6 +48,10 @@ export const formStyles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
 
+  label: {
+    ...typography.label
+  },
+
   errorCard: {
     backgroundColor: "#27171A",
     borderWidth: 1,
@@ -182,5 +186,38 @@ export const formStyles = StyleSheet.create({
     ...layoutStyles.contentWidth,
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.huge,
+  },
+
+  toggleRow: {
+    flexDirection: "row",
+    gap: spacing.xl,
+
+    padding: spacing.lg,
+
+    backgroundColor: colors.surface,
+
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+  },
+
+  toggleItem: {
+    flex: 1,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+
+    gap: spacing.lg,
+  },
+
+  toggleContent: {
+    flex: 1,
+  },
+
+  toggleLabel: {
+    ...typography.small,
+    color: colors.text,
+    fontWeight: "700",
   },
 });

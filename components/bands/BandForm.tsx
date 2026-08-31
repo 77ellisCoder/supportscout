@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import {
-    ActivityIndicator,
     Pressable,
     ScrollView,
     Switch,
@@ -13,6 +12,8 @@ import {
 import type { BandStatus } from "../../models/Band";
 import { colors } from "../../theme";
 import { styles } from "../../styles/band-form.styles";
+import { PageHeader } from "../ui/PageHeader";
+import { FormActions } from "../ui/FormActions";
 
 export type BandFormValues = {
     bandName: string;
@@ -89,13 +90,11 @@ export function BandForm({
             contentContainerStyle={styles.container}
             keyboardShouldPersistTaps="handled"
         >
-            <Text style={styles.eyebrow}>
-                {eyebrow}
-            </Text>
-
-            <Text style={styles.title}>
-                {title}
-            </Text>
+            <PageHeader
+                showBack
+                eyebrow={eyebrow}
+                title={title}
+            />
 
             {error && (
                 <View style={styles.errorCard}>
@@ -228,73 +227,51 @@ export function BandForm({
                 </View>
             </View>
 
-            <View style={styles.switchRow}>
-                <View style={styles.switchContent}>
-                    <Text style={styles.fieldLabel}>
-                        Our Band
-                    </Text>
+            <View style={styles.toggleRow}>
+                <View style={styles.toggleItem}>
+                    <View style={styles.toggleContent}>
+                        <Text style={styles.toggleLabel}>
+                            Our Band
+                        </Text>
 
-                    <Text style={styles.helperText}>
-                        Mark this as your own band.
-                    </Text>
-                </View>
+                        <Text style={styles.helperText}>
+                            Mark this as your own band.
+                        </Text>
+                    </View>
 
-                <Switch
-                    value={values.isOurBand}
-                    onValueChange={(value) =>
-                        updateField("isOurBand", value)
-                    }
-                    trackColor={{
-                        false: colors.border,
-                        true: colors.primary,
-                    }}
-                />
-            </View>
-
-            <View style={styles.switchRow}>
-                <View style={styles.switchContent}>
-                    <Text style={styles.fieldLabel}>
-                        Verified
-                    </Text>
-
-                    <Text style={styles.helperText}>
-                        Mark this band research as verified.
-                    </Text>
-                </View>
-
-                <Switch
-                    value={values.isVerified}
-                    onValueChange={(value) =>
-                        updateField("isVerified", value)
-                    }
-                    trackColor={{
-                        false: colors.border,
-                        true: colors.primary,
-                    }}
-                />
-            </View>
-
-            <Pressable
-                disabled={saving}
-                onPress={() => onSubmit(values)}
-                style={({ pressed }) => [
-                    styles.saveButton,
-                    pressed &&
-                    styles.saveButtonPressed,
-                    saving &&
-                    styles.saveButtonDisabled,
-                ]}
-            >
-                {saving ? (
-                    <ActivityIndicator
-                        color={colors.white}
+                    <Switch
+                        value={values.isOurBand}
+                        onValueChange={(value) =>
+                            updateField("isOurBand", value)
+                        }
                     />
-                ) : (
-                    <Text style={styles.saveButtonText}>
-                        {submitLabel}
-                    </Text>
-                )}
-            </Pressable>
+                </View>
+
+                <View style={styles.toggleItem}>
+                    <View style={styles.toggleContent}>
+                        <Text style={styles.toggleLabel}>
+                            Verified
+                        </Text>
+
+                        <Text style={styles.helperText}>
+                            Mark this band research as verified.
+                        </Text>
+                    </View>
+
+                    <Switch
+                        value={values.isVerified}
+                        onValueChange={(value) =>
+                            updateField("isVerified", value)
+                        }
+                    />
+                </View>
+            </View>
+
+            <FormActions
+                submitLabel={submitLabel}
+                saving={saving}
+                onSubmit={() => onSubmit(values)}
+            />
         </ScrollView>
     );
 }
