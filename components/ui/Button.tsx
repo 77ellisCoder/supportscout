@@ -23,7 +23,8 @@ type ButtonVariant =
     | "secondary"
     | "ghost"
     | "danger"
-    | "add";
+    | "add"
+    | "counter";
 
 type ButtonProps = {
     align?: ButtonAlign;
@@ -143,6 +144,9 @@ export function Button({
 
                             variant === "add" &&
                             styles.addText,
+
+                            variant === "counter" &&
+                            styles.counterText,
                         ]}
                     >
                         {title}

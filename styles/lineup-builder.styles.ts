@@ -50,6 +50,17 @@ export const styles =
             justifyContent: "center",
         },
 
+        orderSection: {
+            alignItems: "center",
+            gap: spacing.sm,
+        },
+
+        orderLabel: {
+            ...typography.label,
+            color: colors.textMuted,
+            fontSize: 10,
+        },
+
         orderText: {
             ...typography.small,
 
@@ -70,31 +81,6 @@ export const styles =
         orderControls: {
             flexDirection: "row",
             gap: spacing.xs,
-        },
-
-        orderButton: {
-            width: 34,
-            height: 34,
-
-            alignItems: "center",
-            justifyContent: "center",
-
-            borderWidth: 1,
-            borderColor:
-                colors.border,
-
-            borderRadius: radius.md,
-
-            backgroundColor:
-                colors.backgroundDeep,
-        },
-
-        orderButtonText: {
-            color:
-                colors.primaryLight,
-
-            fontSize: 18,
-            fontWeight: "700",
         },
 
         roleRow: {
@@ -234,15 +220,6 @@ export const styles =
             color: colors.primaryLight,
             fontSize: 9,
             marginTop: 2,
-        },
-
-        orderButtonPressed: {
-            borderColor: colors.primary,
-            backgroundColor: colors.primaryMuted,
-        },
-
-        orderButtonDisabled: {
-            opacity: 0.25,
         },
 
         removeButton: {

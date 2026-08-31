@@ -59,6 +59,25 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
     },
 
+    counter: {
+        minHeight: 36,
+
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+
+        backgroundColor: colors.backgroundDeep,
+
+        borderWidth: 1,
+        borderColor: colors.primary,
+        borderRadius: radius.pill,
+    },
+
+    counterText: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "700",
+    },
+
     primary: {
         backgroundColor: colors.primary,
         ...shadows.primary,

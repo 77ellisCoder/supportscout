@@ -18,6 +18,8 @@ export const styles = StyleSheet.create({
         borderRadius: radius.lg,
 
         padding: spacing.md,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.md,
     },
 
     header: {
@@ -130,5 +132,7 @@ export const styles = StyleSheet.create({
         color: colors.textMuted,
 
         marginTop: spacing.sm,
+
+        fontSize: 12,
     },
 });

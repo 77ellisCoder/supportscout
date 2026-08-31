@@ -1,24 +1,27 @@
 import {
     ActivityIndicator,
-    Pressable,
     Text,
     View,
 } from "react-native";
 
 import { useDrinkTokens } from "../../hooks/useDrinkTokens";
+import { Button } from "../ui/Button";
 import { styles } from "./DrinkRiderEditor.styles";
 
 type Props = {
     gigId: number;
     bandId: number;
     bandName: string;
+    memberCount: number;
 };
 
 export function DrinkRiderEditor({
     gigId,
     bandId,
     bandName,
+    memberCount,
 }: Props) {
+    
     const {
         data: tokens = [],
         isLoading,
@@ -37,6 +40,8 @@ export function DrinkRiderEditor({
         );
     }
 
+    const maxTokens = memberCount * 2;
+
     const total = tokens.length;
 
     const used = tokens.filter(
@@ -44,6 +49,10 @@ export function DrinkRiderEditor({
     ).length;
 
     const remaining = total - used;
+
+    const canAdd =
+        memberCount > 0 &&
+        total < maxTokens;
 
     const canRemove =
         remaining > 0;
@@ -53,65 +62,59 @@ export function DrinkRiderEditor({
             <View style={styles.header}>
                 <View style={styles.content}>
                     <Text style={styles.title}>
-                        {bandName?.toUpperCase() ?? "BAND"} DRINK RIDERS
+                        {bandName.toUpperCase()} DRINK RIDER
                     </Text>
 
                     <Text style={styles.summary}>
-                        {total} allocated · {used} used ·{" "}
+                        {total} allocated ·{" "}
+                        {used} used ·{" "}
                         {remaining} remaining
                     </Text>
+
+                    {memberCount > 0 ? (
+                        <Text style={styles.helper}>
+                            Maximum {maxTokens} drinks ·{" "}
+                            {memberCount} members × 2
+                        </Text>
+                    ) : (
+                        <Text style={styles.helper}>
+                            Set the band member count to allocate drinks.
+                        </Text>
+                    )}
                 </View>
 
                 <View style={styles.controls}>
-                    <Pressable
+                    <Button
+                        title="−"
+                        variant="counter"
                         disabled={!canRemove}
-                        accessibilityRole="button"
-                        accessibilityLabel="Remove drink token"
                         onPress={removeToken}
-                        style={({ pressed }) => [
-                            styles.button,
-                            !canRemove &&
-                            styles.buttonDisabled,
-                            pressed &&
-                            canRemove &&
-                            styles.buttonPressed,
-                        ]}
-                    >
-                        <Text
-                            style={[
-                                styles.buttonText,
-                                !canRemove &&
-                                styles.buttonTextDisabled,
-                            ]}
-                        >
-                            −
-                        </Text>
-                    </Pressable>
+                    />
 
-                    <View style={styles.countContainer}>
+                    <View
+                        style={
+                            styles.countContainer
+                        }
+                    >
                         <Text style={styles.count}>
                             {total}
                         </Text>
 
-                        <Text style={styles.countLabel}>
+                        <Text
+                            style={
+                                styles.countLabel
+                            }
+                        >
                             DRINKS
                         </Text>
                     </View>
 
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel="Add drink token"
+                    <Button
+                        title="+"
+                        variant="counter"
+                        disabled={!canAdd}
                         onPress={addToken}
-                        style={({ pressed }) => [
-                            styles.button,
-                            pressed &&
-                            styles.buttonPressed,
-                        ]}
-                    >
-                        <Text style={styles.buttonText}>
-                            +
-                        </Text>
-                    </Pressable>
+                    />
                 </View>
             </View>
 

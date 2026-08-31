@@ -7,6 +7,7 @@ import {
 import type { Band } from "../../models/Band";
 import { styles } from "../../styles/lineup-builder.styles";
 import { DrinkRiderEditor } from "./DrinkRiderEditor";
+import { Button } from "../ui/Button";
 
 export type LineupRole =
     | "headliner"
@@ -48,6 +49,33 @@ const ROLES: {
         },
     ];
 
+function applyRolesFromOrder(
+    lineup: LineupItem[]
+): LineupItem[] {
+    return lineup.map((item, index) => {
+        const isFirst = index === 0;
+        const isLast =
+            index === lineup.length - 1;
+
+        let role: LineupRole;
+
+        if (isFirst) {
+            role = "headliner";
+        } else if (isLast) {
+            role = "opener";
+        } else if (index === 1) {
+            role = "main_support";
+        } else {
+            role = "support";
+        }
+
+        return {
+            ...item,
+            role,
+        };
+    });
+}
+
 export function LineupBuilder({
     bands,
     value,
@@ -64,45 +92,37 @@ export function LineupBuilder({
                 !selectedIds.has(band.bandId)
         )
         .sort((a, b) =>
-            a.bandName.localeCompare(b.bandName)
+            a.bandName.localeCompare(
+                b.bandName
+            )
         );
 
     function addBand(
         bandId: number
     ) {
-        onChange([
+        const next: LineupItem[] = [
             ...value,
             {
                 bandId,
                 role: "support",
             },
-        ]);
+        ];
+
+        onChange(
+            applyRolesFromOrder(next)
+        );
     }
 
     function removeBand(
         bandId: number
     ) {
-        onChange(
-            value.filter(
-                (item) =>
-                    item.bandId !== bandId
-            )
+        const next = value.filter(
+            (item) =>
+                item.bandId !== bandId
         );
-    }
 
-    function setRole(
-        bandId: number,
-        role: LineupRole
-    ) {
         onChange(
-            value.map((item) =>
-                item.bandId === bandId
-                    ? {
-                        ...item,
-                        role,
-                    }
-                    : item
-            )
+            applyRolesFromOrder(next)
         );
     }
 
@@ -110,27 +130,30 @@ export function LineupBuilder({
         index: number,
         direction: -1 | 1
     ) {
-        const targetIndex =
+        const newIndex =
             index + direction;
 
         if (
-            targetIndex < 0 ||
-            targetIndex >= value.length
+            newIndex < 0 ||
+            newIndex >= value.length
         ) {
             return;
         }
 
         const next = [...value];
 
-        [
-            next[index],
-            next[targetIndex],
-        ] = [
-                next[targetIndex],
-                next[index],
-            ];
+        const [moved] =
+            next.splice(index, 1);
 
-        onChange(next);
+        next.splice(
+            newIndex,
+            0,
+            moved
+        );
+
+        onChange(
+            applyRolesFromOrder(next)
+        );
     }
 
     return (
@@ -168,8 +191,12 @@ export function LineupBuilder({
 
                             return (
                                 <View
-                                    key={item.bandId}
-                                    style={styles.lineupCard}
+                                    key={
+                                        item.bandId
+                                    }
+                                    style={
+                                        styles.lineupCard
+                                    }
                                 >
                                     <View
                                         style={
@@ -200,7 +227,9 @@ export function LineupBuilder({
                                                     styles.bandName
                                                 }
                                             >
-                                                {band.bandName}
+                                                {
+                                                    band.bandName
+                                                }
                                             </Text>
 
                                             <Text
@@ -214,77 +243,74 @@ export function LineupBuilder({
                                             </Text>
                                         </View>
 
-                                        {drinkRiderGigId != null && (
-                                            <DrinkRiderEditor
-                                                gigId={drinkRiderGigId}
-                                                bandId={item.bandId}
-                                                bandName={band.bandName}
-                                            />
-                                        )}
+                                        {drinkRiderGigId !=
+                                            null && (
+                                                <DrinkRiderEditor
+                                                    gigId={
+                                                        drinkRiderGigId
+                                                    }
+                                                    bandId={
+                                                        item.bandId
+                                                    }
+                                                    bandName={
+                                                        band.bandName
+                                                    }
+                                                    memberCount={
+                                                        band.memberCount ??
+                                                        0
+                                                    }
+                                                />
+                                            )}
 
                                         <View
                                             style={
-                                                styles.orderControls
+                                                styles.orderSection
                                             }
                                         >
-                                            <Pressable
-                                                disabled={
-                                                    index === 0
+                                            <Text
+                                                style={
+                                                    styles.orderLabel
                                                 }
-                                                onPress={() =>
-                                                    moveBand(
-                                                        index,
-                                                        -1
-                                                    )
-                                                }
-                                                style={({ pressed }) => [
-                                                    styles.orderButton,
-                                                    index === 0 &&
-                                                    styles.orderButtonDisabled,
-                                                    pressed &&
-                                                    index !== 0 &&
-                                                    styles.orderButtonPressed,
-                                                ]}
                                             >
-                                                <Text
-                                                    style={
-                                                        styles.orderButtonText
-                                                    }
-                                                >
-                                                    ↑
-                                                </Text>
-                                            </Pressable>
+                                                LINEUP ORDER
+                                            </Text>
 
-                                            <Pressable
-                                                disabled={
-                                                    index ===
-                                                    value.length - 1
+                                            <View
+                                                style={
+                                                    styles.orderControls
                                                 }
-                                                onPress={() =>
-                                                    moveBand(
-                                                        index,
-                                                        1
-                                                    )
-                                                }
-                                                style={({ pressed }) => [
-                                                    styles.orderButton,
-                                                    index ===
-                                                    value.length - 1 &&
-                                                    styles.orderButtonDisabled,
-                                                    pressed &&
-                                                    index !==
-                                                    value.length - 1 &&
-                                                    styles.orderButtonPressed,
-                                                ]}
                                             >
-                                                <Text
-                                                    style={
-                                                        styles.orderButtonText
+                                                <Button
+                                                    title="↑"
+                                                    variant="counter"
+                                                    disabled={
+                                                        index ===
+                                                        0
                                                     }
-                                                >
-                                                    ↓
-                                                </Text>
-                                            </Pressable>
+                                                    onPress={() =>
+                                                        moveBand(
+                                                            index,
+                                                            -1
+                                                        )
+                                                    }
+                                                />
+
+                                                <Button
+                                                    title="↓"
+                                                    variant="counter"
+                                                    disabled={
+                                                        index ===
+                                                        value.length -
+                                                        1
+                                                    }
+                                                    onPress={() =>
+                                                        moveBand(
+                                                            index,
+                                                            1
+                                                        )
+                                                    }
+                                                />
+                                            </View>
                                         </View>
                                     </View>
 
@@ -300,15 +326,9 @@ export function LineupBuilder({
                                                     role.value;
 
                                                 return (
-                                                    <Pressable
+                                                    <View
                                                         key={
                                                             role.value
-                                                        }
-                                                        onPress={() =>
-                                                            setRole(
-                                                                item.bandId,
-                                                                role.value
-                                                            )
                                                         }
                                                         style={[
                                                             styles.roleChip,
@@ -323,32 +343,25 @@ export function LineupBuilder({
                                                                 styles.roleTextSelected,
                                                             ]}
                                                         >
-                                                            {role.label}
+                                                            {
+                                                                role.label
+                                                            }
                                                         </Text>
-                                                    </Pressable>
+                                                    </View>
                                                 );
                                             }
                                         )}
                                     </View>
 
-                                    <Pressable
+                                    <Button
+                                        title="Remove"
+                                        variant="ghost"
                                         onPress={() =>
                                             removeBand(
                                                 item.bandId
                                             )
                                         }
-                                        style={
-                                            styles.removeButton
-                                        }
-                                    >
-                                        <Text
-                                            style={
-                                                styles.removeText
-                                            }
-                                        >
-                                            Remove
-                                        </Text>
-                                    </Pressable>
+                                    />
                                 </View>
                             );
                         }
@@ -374,24 +387,31 @@ export function LineupBuilder({
                         {availableBands.map(
                             (band) => (
                                 <Pressable
-                                    key={band.bandId}
+                                    key={
+                                        band.bandId
+                                    }
                                     onPress={() =>
                                         addBand(
                                             band.bandId
                                         )
                                     }
-                                    style={({ pressed }) => [
-                                        styles.addBandChip,
-                                        pressed &&
-                                        styles.addBandChipPressed,
-                                    ]}
+                                    style={({
+                                        pressed,
+                                    }) => [
+                                            styles.addBandChip,
+                                            pressed &&
+                                            styles.addBandChipPressed,
+                                        ]}
                                 >
                                     <Text
                                         style={
                                             styles.addBandText
                                         }
                                     >
-                                        + {band.bandName}
+                                        +{" "}
+                                        {
+                                            band.bandName
+                                        }
                                     </Text>
                                 </Pressable>
                             )
