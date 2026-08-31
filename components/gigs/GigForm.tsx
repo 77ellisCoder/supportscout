@@ -15,7 +15,7 @@ import type { Venue } from "../../models/Venue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-form.styles";
 
-import { Button } from "../Button/Button";
+import { Button } from "../ui/Button";
 
 import { GigDatePicker } from "./GigDatePicker";
 

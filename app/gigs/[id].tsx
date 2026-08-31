@@ -16,7 +16,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
 import { BackButton } from "../../components/navigation/BackButton";
 import { DrinkRider } from "../../components/gigs/DrinkRider";
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../components/ui/Button";
 
 export default function GigDetailsScreen() {
     const { id } =

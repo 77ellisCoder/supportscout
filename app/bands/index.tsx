@@ -16,7 +16,7 @@ import { SearchBar } from "../../components/SearchBar";
 import { useBands } from "../../hooks/useBands";
 import { colors } from "../../theme";
 import { styles } from "../../styles/bands.styles";
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../components/ui/Button";
 
 export default function BandsScreen() {
   const [search, setSearch] = useState("");

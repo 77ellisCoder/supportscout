@@ -15,7 +15,7 @@ import { GigSection } from "../../components/gigs/GigSection";
 import { useGigs } from "../../hooks/useGigs";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gigs.styles";
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../components/ui/Button";
 
 export default function GigsScreen() {
   const {

@@ -16,7 +16,7 @@ import { useVenues } from "../../hooks/useVenues";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venues.styles";
 
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../components/ui/Button";
 import { BackButton } from "../../components/navigation/BackButton";
 
 export default function VenuesScreen() {
