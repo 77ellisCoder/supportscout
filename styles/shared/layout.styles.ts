@@ -18,10 +18,15 @@ export const layoutStyles = StyleSheet.create({
     },
 
     formContainer: {
+        flexGrow: 1,
+
         width: "100%",
         maxWidth: layout.formMaxWidth,
+
         alignSelf: "center",
+
         paddingHorizontal: spacing.xl,
+        paddingTop: spacing.xl,
         paddingBottom: spacing.huge,
     },
 
@@ -35,5 +40,11 @@ export const layoutStyles = StyleSheet.create({
         width: "100%",
         maxWidth: 800,
         alignSelf: "center",
+    },
+
+    header: {
+        paddingHorizontal: spacing.xl,
+        marginBottom: spacing.lg,
+        marginTop: spacing.xl,
     },
 });

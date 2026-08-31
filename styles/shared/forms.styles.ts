@@ -19,6 +19,10 @@ export const formStyles = StyleSheet.create({
     ...layoutStyles.contentContainer,
   },
 
+  formContainer: {
+    ...layoutStyles.formContainer,
+  },
+
   center: {
     flex: 1,
     backgroundColor: colors.background,
@@ -142,14 +146,17 @@ export const formStyles = StyleSheet.create({
   },
 
   saveButton: {
+    alignSelf: "flex-start",
+
     backgroundColor: colors.primary,
+
     borderRadius: radius.pill,
-    minHeight: 54,
-    alignItems: "center",
-    justifyContent: "center",
+
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
-    marginTop: spacing.sm,
+
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   saveButtonPressed: {

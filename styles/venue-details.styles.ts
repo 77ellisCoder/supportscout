@@ -58,6 +58,16 @@ const venueDetailStyles = StyleSheet.create({
     flexShrink: 1,
     textAlign: "right",
   },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+
+    gap: spacing.lg,
+
+    marginBottom: spacing.xxl,
+  },
 });
 
 export const styles = {

@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 
 import {
-    ActivityIndicator,
     Pressable,
     ScrollView,
     Text,
@@ -15,6 +14,8 @@ import type { Venue } from "../../models/Venue";
 
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-form.styles";
+
+import { Button } from "../Button/Button";
 
 import { GigDatePicker } from "./GigDatePicker";
 
@@ -104,7 +105,7 @@ export function GigForm({
         <ScrollView
             style={styles.page}
             contentContainerStyle={
-                styles.container
+                styles.formContainer
             }
             keyboardShouldPersistTaps="handled"
         >
@@ -254,33 +255,15 @@ export function GigForm({
                 multiline
             />
 
-            <Pressable
+            {/* Save button */}
+            <Button
+                title={submitLabel}
                 disabled={saving}
+                loading={saving}
                 onPress={() =>
                     onSubmit(values)
                 }
-                style={({ pressed }) => [
-                    styles.saveButton,
-                    pressed &&
-                    styles.saveButtonPressed,
-                    saving &&
-                    styles.saveButtonDisabled,
-                ]}
-            >
-                {saving ? (
-                    <ActivityIndicator
-                        color={colors.white}
-                    />
-                ) : (
-                    <Text
-                        style={
-                            styles.saveButtonText
-                        }
-                    >
-                        {submitLabel}
-                    </Text>
-                )}
-            </Pressable>
+            /> 
         </ScrollView>
     );
 }

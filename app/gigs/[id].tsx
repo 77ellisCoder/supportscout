@@ -14,9 +14,9 @@ import {
 import { useGigDetail } from "../../hooks/useGigDetail";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
-import { buttonStyles } from "../../styles/shared/button.styles";
 import { BackButton } from "../../components/navigation/BackButton";
 import { DrinkRider } from "../../components/gigs/DrinkRider";
+import { Button } from "../../components/Button/Button";
 
 export default function GigDetailsScreen() {
     const { id } =
@@ -196,22 +196,18 @@ export default function GigDetailsScreen() {
             )}
 
             <View style={styles.actions}>
-                <Pressable
-                    onPress={() =>
-                        router.push({
-                            pathname: "/gigs/edit",
-                            params: { id: gig.gigId },
-                        })
-                    }
-                    style={({ pressed }) => [
-                        styles.editButton,
-                        pressed && styles.editButtonPressed,
-                    ]}
-                >
-                    <Text style={styles.editButtonText}>
-                        Edit Gig
-                    </Text>
-                </Pressable>
+                {/* Edit button */}
+                <Button
+                title="Edit Gig"
+                onPress={() =>
+                    router.push({
+                    pathname: "/gigs/edit",
+                    params: {
+                        id: gig.gigId,
+                    },
+                    })
+                }
+                />
             </View>
         </ScrollView>
     );

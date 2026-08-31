@@ -11,11 +11,11 @@ import {
 
 import { BackButton } from "../../components/navigation/BackButton/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
-import { GigCard } from "../../components/gigs/GigCard";
 
 import { useGigs } from "../../hooks/useGigs";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gigs.styles";
+import { Button } from "../../components/Button/Button";
 
 export default function GigsScreen() {
   const {
@@ -113,22 +113,12 @@ export default function GigsScreen() {
               </Text>
             </View>
 
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Add gig"
-              onPress={() =>
-                router.push("/gigs/create")
-              }
-              style={({ pressed }) => [
-                styles.addButton,
-                pressed &&
-                styles.addButtonPressed,
-              ]}
-            >
-              <Text style={styles.addButtonText}>
-                + Add Gig
-              </Text>
-            </Pressable>
+            {/* Add button */}
+            <Button
+                title="+ Add Gig"
+                variant="add"
+                onPress={() => router.push("/gigs/create")}
+            />
           </View>
 
           <GigSection

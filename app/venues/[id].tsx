@@ -14,6 +14,7 @@ import { styles } from "../../styles/venue-details.styles";
 import { BackButton } from "../../components/navigation/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
 import { BandAppearanceList } from "../../components/venues/BandAppearanceList";
+import { Button } from "../../components/Button/Button";
 
 import { useVenueGigs } from "../../hooks/useVenueGigs";
 import { useVenueBands } from "../../hooks/useVenueBands";
@@ -80,10 +81,12 @@ export default function VenueDetailsScreen() {
       style={styles.page}
       contentContainerStyle={styles.container}
     >
-      <BackButton
-        label="Back to Venues"
-        fallbackRoute="/venues"
-      />
+      <View style={styles.header}>
+        <BackButton
+          label="Back to Venues"
+          fallbackRoute="/venues"
+        />
+      </View>
 
       <View style={styles.hero}>
         <View style={styles.titleRow}>
@@ -305,22 +308,18 @@ export default function VenueDetailsScreen() {
       </View>
 
       <View style={styles.actions}>
-        <Pressable
+        {/* Edit button */}
+        <Button
+          title="Edit Venue"
           onPress={() =>
             router.push({
               pathname: "/venues/edit",
-              params: { id: venue.venueId },
+              params: {
+                id: venue.venueId,
+              },
             })
           }
-          style={({ pressed }) => [
-            styles.editButton,
-            pressed && styles.editButtonPressed,
-          ]}
-        >
-          <Text style={styles.editButtonText}>
-            Edit Venue
-          </Text>
-        </Pressable>
+        />
       </View>
     </ScrollView>
   );

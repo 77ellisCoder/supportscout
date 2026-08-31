@@ -9,13 +9,15 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
-import { Button } from "../../components/Button";
 import { Chip } from "../../components/Chip";
 import { SearchBar } from "../../components/SearchBar";
 import { VenueCard } from "../../components/venues/VenueCard";
 import { useVenues } from "../../hooks/useVenues";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venues.styles";
+
+import { Button } from "../../components/Button/Button";
+import { BackButton } from "../../components/navigation/BackButton";
 
 export default function VenuesScreen() {
   const [search, setSearch] = useState("");
@@ -104,6 +106,7 @@ export default function VenuesScreen() {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
+        
         <View style={styles.header}>
           <Text style={styles.eyebrow}>
             VENUE FINDER
@@ -174,19 +177,12 @@ export default function VenuesScreen() {
               : "venues"}
           </Text>
 
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Add venue"
+          {/* Add Venue button */}
+          <Button
+            title="+ Add Venue"
+            variant="add"
             onPress={() => router.push("/venues/create")}
-            style={({ pressed }) => [
-              styles.addButton,
-              pressed && styles.addButtonPressed,
-            ]}
-          >
-            <Text style={styles.addButtonText}>
-              + Add Venue
-            </Text>
-          </Pressable>
+          />
         </View>
 
         {isLoading ? (

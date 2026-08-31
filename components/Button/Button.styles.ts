@@ -5,16 +5,43 @@ import {
     radius,
     shadows,
     spacing,
+    typography,
 } from "../../theme";
 
 export const styles = StyleSheet.create({
-    button: {
-        minHeight: 58,
 
-        paddingHorizontal: spacing.xxl,
-        paddingVertical: spacing.lg,
+    add: {
+        minHeight: 0,
+
+        backgroundColor: colors.primaryMuted,
+
+        borderWidth: 1,
+        borderColor: colors.primary,
+        borderRadius: radius.pill,
+
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+    },
+
+    addText: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "700",
+    },
+
+    addPressed: {
+        backgroundColor: colors.primary,
+    },
+
+    button: {
+        alignSelf: "flex-start",
+
+        backgroundColor: colors.primary,
 
         borderRadius: radius.pill,
+
+        paddingHorizontal: spacing.xl,
+        paddingVertical: spacing.md,
 
         alignItems: "center",
         justifyContent: "center",
@@ -66,5 +93,17 @@ export const styles = StyleSheet.create({
 
     secondaryText: {
         color: colors.primaryLight,
+    },
+
+    fullWidth: {
+        alignSelf: "stretch",
+    },
+
+    danger: {
+        backgroundColor: colors.danger,
+    },
+
+    dangerText: {
+        color: colors.white,
     },
 });

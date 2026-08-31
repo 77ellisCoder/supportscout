@@ -2,26 +2,46 @@ import type { ReactNode } from "react";
 import {
     ActivityIndicator,
     Pressable,
+    StyleProp,
     Text,
+    TextStyle,
     View,
+    ViewStyle,
 } from "react-native";
-import { Audio } from "expo-av";
-import { SoundService } from "../../services/SoundService";
 
+import { SoundService } from "../../services/SoundService";
 import { colors } from "../../theme";
 import { styles } from "./Button.styles";
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonVariant =
+    | "primary"
+    | "secondary"
+    | "ghost"
+    | "danger"
+    | "add";
 
 type ButtonProps = {
     title: string;
+
     sound?: boolean;
+
     onPress?: () => void;
+
     variant?: ButtonVariant;
+
     disabled?: boolean;
+
     loading?: boolean;
+
+    fullWidth?: boolean;
+
     iconLeft?: ReactNode;
+
     iconRight?: ReactNode;
+
+    style?: StyleProp<ViewStyle>;
+
+    textStyle?: StyleProp<TextStyle>;
 };
 
 export function Button({
@@ -31,8 +51,11 @@ export function Button({
     variant = "primary",
     disabled = false,
     loading = false,
+    fullWidth = false,
     iconLeft,
     iconRight,
+    style,
+    textStyle,
 }: ButtonProps) {
     const isDisabled = disabled || loading;
 
@@ -43,6 +66,12 @@ export function Button({
 
         onPress?.();
     };
+
+    const indicatorColor =
+        variant === "primary" ||
+            variant === "danger"
+            ? colors.white
+            : colors.primaryLight;
 
     return (
         <Pressable
@@ -61,17 +90,20 @@ export function Button({
                 !isDisabled &&
                 styles.pressed,
 
+                pressed &&
+                !isDisabled &&
+                variant === "add" &&
+                styles.addPressed,
+
                 isDisabled &&
                 styles.disabled,
+
+                style,
             ]}
         >
             {loading ? (
                 <ActivityIndicator
-                    color={
-                        variant === "primary"
-                            ? colors.white
-                            : colors.primaryLight
-                    }
+                    color={indicatorColor}
                 />
             ) : (
                 <View style={styles.content}>
@@ -80,9 +112,21 @@ export function Button({
                     <Text
                         style={[
                             styles.text,
-                            variant === "primary"
-                                ? styles.primaryText
-                                : styles.secondaryText,
+
+                            variant === "primary" &&
+                            styles.primaryText,
+
+                            variant === "secondary" &&
+                            styles.secondaryText,
+
+                            variant === "ghost" &&
+                            styles.secondaryText,
+
+                            variant === "danger" &&
+                            styles.dangerText,
+
+                            variant === "add" &&
+                            styles.addText,
                         ]}
                     >
                         {title}

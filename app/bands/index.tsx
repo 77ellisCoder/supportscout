@@ -16,6 +16,7 @@ import { SearchBar } from "../../components/SearchBar";
 import { useBands } from "../../hooks/useBands";
 import { colors } from "../../theme";
 import { styles } from "../../styles/bands.styles";
+import { Button } from "../../components/Button/Button";
 
 export default function BandsScreen() {
   const [search, setSearch] = useState("");
@@ -105,16 +106,14 @@ export default function BandsScreen() {
         />
 
         <View style={styles.chipRow}>
-          <View style={styles.chipRow}>
-            {GENRES.map((genre) => (
-              <Chip
-                key={genre}
-                label={genre}
-                selected={selectedGenre === genre}
-                onPress={() => setSelectedGenre(genre)}
-              />
-            ))}
-          </View>
+          {GENRES.map((genre) => (
+            <Chip
+              key={genre}
+              label={genre}
+              selected={selectedGenre === genre}
+              onPress={() => setSelectedGenre(genre)}
+            />
+          ))}
         </View>
 
         {/* Sorting */}
@@ -142,19 +141,12 @@ export default function BandsScreen() {
               : "bands"}
           </Text>
 
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Add band"
+          {/* Add band button */}
+          <Button
+            title="+ Add Band"
+            variant="add"
             onPress={() => router.push("/bands/create")}
-            style={({ pressed }) => [
-              styles.addButton,
-              pressed && styles.addButtonPressed,
-            ]}
-          >
-            <Text style={styles.addButtonText}>
-              + Add Band
-            </Text>
-          </Pressable>
+          />
         </View>
 
         {isLoading ? (

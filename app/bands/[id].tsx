@@ -18,6 +18,7 @@ import { useBandRecommendations } from "../../hooks/useBandRecommendations";
 import { detailStyles as styles } from "../../styles/shared/details.styles";
 import { colors } from "../../theme";
 import { BandRecommendationCard } from "../../components/bands/BandRecommendationCard";
+import { Button } from "../../components/Button";
 
 export default function BandDetailsScreen() {
   const { id } =
@@ -219,7 +220,9 @@ export default function BandDetailsScreen() {
       )}
 
       <View style={styles.actions}>
-        <Pressable
+        {/* Edit button */}
+        <Button
+          title="Edit Band"
           onPress={() =>
             router.push({
               pathname: "/bands/edit",
@@ -228,16 +231,7 @@ export default function BandDetailsScreen() {
               },
             })
           }
-          style={({ pressed }) => [
-            styles.editButton,
-            pressed &&
-            styles.editButtonPressed,
-          ]}
-        >
-          <Text style={styles.editButtonText}>
-            Edit Band
-          </Text>
-        </Pressable>
+        />
       </View>
     </ScrollView>
   );
