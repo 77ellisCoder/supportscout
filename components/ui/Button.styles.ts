@@ -10,6 +10,18 @@ import {
 
 export const styles = StyleSheet.create({
 
+    alignLeft: {
+        alignSelf: "flex-start",
+    },
+
+    alignCenter: {
+        alignSelf: "center",
+    },
+
+    alignRight: {
+        alignSelf: "flex-end",
+    },
+
     add: {
         minHeight: 0,
 

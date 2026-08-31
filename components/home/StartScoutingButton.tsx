@@ -1,10 +1,10 @@
 import { router } from "expo-router";
 import {
-    Text,
-    View,
+  Text,
+  View,
 } from "react-native";
 
-import { Button } from "../Button";
+import { Button } from "../../components/ui/Button";
 import { styles } from "../../styles/index.styles"
 
 /**
@@ -18,18 +18,19 @@ import { styles } from "../../styles/index.styles"
  */
 export default function StartScoutingButton() {
 
-    return (
-        <View style={styles.exploreWrapper}>
-        <Button
-          title="Start Scouting"
-          sound={true}
-          onPress={() => router.push("/bands")}
-          iconRight={
-            <Text style={styles.exploreArrow}>
-              →
-            </Text>
-          }
-        />
-      </View>
-    );
+  return (
+    <View style={styles.exploreWrapper}>
+      <Button
+        title="Start Scouting"
+        sound={true}
+        align={"center"}
+        onPress={() => router.push("/bands")}
+        iconRight={
+          <Text style={styles.exploreArrow}>
+            →
+          </Text>
+        }
+      />
+    </View>
+  );
 }

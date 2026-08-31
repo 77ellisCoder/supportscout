@@ -4,18 +4,17 @@ import { useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   Text,
   View,
 } from "react-native";
 
-import { BackButton } from "../../components/navigation/BackButton/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
 
 import { useGigs } from "../../hooks/useGigs";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gigs.styles";
 import { Button } from "../../components/ui/Button";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export default function GigsScreen() {
   const {
@@ -91,35 +90,20 @@ export default function GigsScreen() {
       renderItem={() => null}
       ListHeaderComponent={
         <>
-          <View style={styles.header}>
-
-            <BackButton 
-              label="" 
-              fallbackRoute="/"
-            />
-
-            <View style={styles.headerText}>
-              <Text style={styles.eyebrow}>
-                GIGS
-              </Text>
-
-              <Text style={styles.title}>
-                Plan the next show.
-              </Text>
-
-              <Text style={styles.subtitle}>
-                Track upcoming and past gigs across
-                SupportScout.
-              </Text>
-            </View>
-
-            {/* Add button */}
-            <Button
+          <PageHeader
+            eyebrow="GIGS"
+            title="Plan the next show."
+            subtitle="Track upcoming and past gigs across SupportScout."
+            action={
+              <Button
                 title="+ Add Gig"
                 variant="add"
-                onPress={() => router.push("/gigs/create")}
-            />
-          </View>
+                onPress={() =>
+                  router.push("/gigs/create")
+                }
+              />
+            }
+          />
 
           <GigSection
             title="UPCOMING GIGS"

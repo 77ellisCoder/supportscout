@@ -13,6 +13,11 @@ import { SoundService } from "../../services/SoundService";
 import { colors } from "../../theme";
 import { styles } from "./Button.styles";
 
+type ButtonAlign =
+    | "left"
+    | "center"
+    | "right";
+
 type ButtonVariant =
     | "primary"
     | "secondary"
@@ -21,6 +26,8 @@ type ButtonVariant =
     | "add";
 
 type ButtonProps = {
+    align?: ButtonAlign;
+
     title: string;
 
     sound?: boolean;
@@ -45,6 +52,7 @@ type ButtonProps = {
 };
 
 export function Button({
+    align = "left",
     title,
     sound = false,
     onPress,
@@ -86,19 +94,27 @@ export function Button({
                 styles.button,
                 styles[variant],
 
+                !fullWidth &&
+                align === "left" &&
+                styles.alignLeft,
+
+                !fullWidth &&
+                align === "center" &&
+                styles.alignCenter,
+
+                !fullWidth &&
+                align === "right" &&
+                styles.alignRight,
+
+                fullWidth &&
+                styles.fullWidth,
+
                 pressed &&
                 !isDisabled &&
                 styles.pressed,
 
-                pressed &&
-                !isDisabled &&
-                variant === "add" &&
-                styles.addPressed,
-
                 isDisabled &&
                 styles.disabled,
-
-                style,
             ]}
         >
             {loading ? (

@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   Text,
   View,
 } from "react-native";
@@ -17,6 +16,7 @@ import { useBands } from "../../hooks/useBands";
 import { colors } from "../../theme";
 import { styles } from "../../styles/bands.styles";
 import { Button } from "../../components/ui/Button";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export default function BandsScreen() {
   const [search, setSearch] = useState("");
@@ -91,14 +91,20 @@ export default function BandsScreen() {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.eyebrow}>BAND FINDER</Text>
-          <Text style={styles.title}>Find the right act.</Text>
-
-          <Text style={styles.subtitle}>
-            Search Perth artists already in SupportScout.
-          </Text>
-        </View>
+        <PageHeader
+            eyebrow="BAND FINDER"
+            title="Find the right act."
+            subtitle="Search Perth artists already in SupportScout."
+            action={
+                <Button
+                    title="+ Add Band"
+                    variant="add"
+                    onPress={() =>
+                        router.push("/bands/create")
+                    }
+                />
+            }
+        />
 
         <SearchBar
           value={search}
@@ -140,13 +146,6 @@ export default function BandsScreen() {
               ? "band"
               : "bands"}
           </Text>
-
-          {/* Add band button */}
-          <Button
-            title="+ Add Band"
-            variant="add"
-            onPress={() => router.push("/bands/create")}
-          />
         </View>
 
         {isLoading ? (

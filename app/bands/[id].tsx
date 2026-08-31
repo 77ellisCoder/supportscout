@@ -18,7 +18,7 @@ import { useBandRecommendations } from "../../hooks/useBandRecommendations";
 import { detailStyles as styles } from "../../styles/shared/details.styles";
 import { colors } from "../../theme";
 import { BandRecommendationCard } from "../../components/bands/BandRecommendationCard";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/ui/Button";
 
 export default function BandDetailsScreen() {
   const { id } =

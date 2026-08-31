@@ -17,7 +17,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/venues.styles";
 
 import { Button } from "../../components/ui/Button";
-import { BackButton } from "../../components/navigation/BackButton";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export default function VenuesScreen() {
   const [search, setSearch] = useState("");
@@ -106,21 +106,21 @@ export default function VenuesScreen() {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        
-        <View style={styles.header}>
-          <Text style={styles.eyebrow}>
-            VENUE FINDER
-          </Text>
 
-          <Text style={styles.title}>
-            Find the right room.
-          </Text>
-
-          <Text style={styles.subtitle}>
-            Search Perth venues already in
-            SupportScout.
-          </Text>
-        </View>
+        <PageHeader
+            eyebrow="VENUE FINDER"
+            title="Find the right room."
+            subtitle="Search Perth venues already in SupportScout."
+            action={
+                <Button
+                    title="+ Add Venue"
+                    variant="add"
+                    onPress={() =>
+                        router.push("/venues/create")
+                    }
+                />
+            }
+        />
 
         <SearchBar
           value={search}
@@ -176,13 +176,6 @@ export default function VenuesScreen() {
               ? "venue"
               : "venues"}
           </Text>
-
-          {/* Add Venue button */}
-          <Button
-            title="+ Add Venue"
-            variant="add"
-            onPress={() => router.push("/venues/create")}
-          />
         </View>
 
         {isLoading ? (
