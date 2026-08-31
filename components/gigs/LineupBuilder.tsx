@@ -353,15 +353,20 @@ export function LineupBuilder({
                                         )}
                                     </View>
 
-                                    <Button
-                                        title="Remove"
-                                        variant="ghost"
+                                    <Pressable
                                         onPress={() =>
-                                            removeBand(
-                                                item.bandId
-                                            )
+                                            removeBand(item.bandId)
                                         }
-                                    />
+                                        style={({ pressed }) => [
+                                            styles.removeAction,
+                                            pressed &&
+                                            styles.removeActionPressed,
+                                        ]}
+                                    >
+                                        <Text style={styles.removeActionText}>
+                                            Remove from Lineup
+                                        </Text>
+                                    </Pressable>
                                 </View>
                             );
                         }

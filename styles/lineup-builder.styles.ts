@@ -230,4 +230,19 @@ export const styles =
             borderColor: colors.primary,
             backgroundColor: colors.primaryMuted,
         },
+
+        removeAction: {
+            alignSelf: "flex-start",
+            paddingVertical: spacing.sm,
+        },
+
+        removeActionPressed: {
+            opacity: 0.7,
+        },
+
+        removeActionText: {
+            ...typography.small,
+            color: colors.danger,
+            fontWeight: "600",
+        },
     });
