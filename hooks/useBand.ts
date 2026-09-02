@@ -4,7 +4,7 @@ import { BandRepository } from "../repositories/BandRepository";
 
 export function useBand(id: number) {
     return useQuery({
-        queryKey: ["venues", id],
+        queryKey: ["band", id],
 
         queryFn: () =>
             BandRepository.getById(id),

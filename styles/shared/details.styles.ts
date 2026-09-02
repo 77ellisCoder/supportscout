@@ -101,14 +101,6 @@ export const detailStyles = StyleSheet.create({
     fontSize: 9,
   },
 
-  metaRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    gap: spacing.xs,
-    marginTop: spacing.lg,
-  },
-
   meta: {
     ...typography.small,
     color: colors.textMuted,
@@ -215,4 +207,26 @@ export const detailStyles = StyleSheet.create({
 
     textAlign: "center",
   },
+
+  metaContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    gap: spacing.lg,
+},
+
+metaRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+},
+
+statusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    flexShrink: 0,
+},
 });

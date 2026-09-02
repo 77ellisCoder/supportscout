@@ -14,6 +14,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/band-form.styles";
 import { PageHeader } from "../ui/PageHeader";
 import { FormActions } from "../ui/FormActions";
+import { BandContactLinks } from "./BandContactLinks";
 
 export type BandFormValues = {
     bandName: string;
@@ -28,6 +29,11 @@ export type BandFormValues = {
     status: BandStatus;
     isOurBand: boolean;
     isVerified: boolean;
+    bookingContactName: string;
+    contactEmail: string;
+    facebookUrl: string;
+    instagramUrl: string;
+    websiteUrl: string;
 };
 
 type BandFormProps = {
@@ -55,6 +61,11 @@ const DEFAULT_VALUES: BandFormValues = {
     status: "active",
     isOurBand: false,
     isVerified: false,
+    bookingContactName: "",
+    contactEmail: "",
+    facebookUrl: "",
+    instagramUrl: "",
+    websiteUrl: ""
 };
 
 export function BandForm({
@@ -225,6 +236,14 @@ export function BandForm({
                         </Pressable>
                     ))}
                 </View>
+            </View>
+
+            <View style={styles.section}>
+                {/* Additional fields for booking contact and social media URLs */}
+                <BandContactLinks
+                    values={values}
+                    onChange={updateField}
+                />
             </View>
 
             <View style={styles.toggleRow}>

@@ -19,6 +19,7 @@ import { detailStyles as styles } from "../../styles/shared/details.styles";
 import { colors } from "../../theme";
 import { BandRecommendationCard } from "../../components/bands/BandRecommendationCard";
 import { Button } from "../../components/ui/Button";
+import { BandContactCard } from "../../components/bands/BandContactCard";
 
 export default function BandDetailsScreen() {
   const { id } =
@@ -120,51 +121,52 @@ export default function BandDetailsScreen() {
           )}
         </View>
 
-        <View style={styles.metaRow}>
-          <Text style={styles.meta}>
-            {band.hometown ?? "Perth"}
-          </Text>
+        <View style={styles.metaContainer}>
+          <View style={styles.metaRow}>
+            <Text style={styles.meta}>
+              {band.hometown ?? "Perth"}
+            </Text>
 
-          {band.stateRegion && (
-            <>
-              <Text style={styles.metaDot}>
-                •
-              </Text>
+            {band.stateRegion && (
+              <>
+                <Text style={styles.metaDot}>
+                  •
+                </Text>
 
-              <Text style={styles.meta}>
-                {band.stateRegion}
-              </Text>
-            </>
-          )}
+                <Text style={styles.meta}>
+                  {band.stateRegion}
+                </Text>
+              </>
+            )}
 
-          {band.memberCount != null && (
-            <>
-              <Text style={styles.metaDot}>
-                •
-              </Text>
+            {band.memberCount != null && (
+              <>
+                <Text style={styles.metaDot}>
+                  •
+                </Text>
 
-              <Text style={styles.meta}>
-                {band.memberCount}{" "}
-                {band.memberCount === 1
-                  ? "member"
-                  : "members"}
+                <Text style={styles.meta}>
+                  {band.memberCount}{" "}
+                  {band.memberCount === 1
+                    ? "member"
+                    : "members"}
+                </Text>
+              </>
+            )}
+          </View>
+
+          <View style={styles.statusContainer}>
+            <View style={styles.statusBadge}>
+              <Text style={styles.statusText}>
+                {band.status.toUpperCase()}
               </Text>
-            </>
-          )}
+            </View>
+          </View>
         </View>
+
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>
-          STATUS
-        </Text>
-
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>
-            {band.status.toUpperCase()}
-          </Text>
-        </View>
-      </View>
+      <BandContactCard band={band} />
 
       <GigSection
         title="UPCOMING GIGS"
@@ -182,30 +184,30 @@ export default function BandDetailsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>
-            SUPPORTSCOUT MATCHES
+          SUPPORTSCOUT MATCHES
         </Text>
 
         {recommendationsLoading ? (
-            <ActivityIndicator
-                color={colors.primaryLight}
-            />
+          <ActivityIndicator
+            color={colors.primaryLight}
+          />
         ) : recommendations.length === 0 ? (
-            <Text style={styles.bodyText}>
-                Not enough gig history yet to suggest matches.
-            </Text>
+          <Text style={styles.bodyText}>
+            Not enough gig history yet to suggest matches.
+          </Text>
         ) : (
-            <View style={styles.list}>
-                {recommendations.map(
-                    (recommendation) => (
-                        <BandRecommendationCard
-                            key={recommendation.bandId}
-                            recommendation={recommendation}
-                        />
-                    )
-                )}
-            </View>
+          <View style={styles.list}>
+            {recommendations.map(
+              (recommendation) => (
+                <BandRecommendationCard
+                  key={recommendation.bandId}
+                  recommendation={recommendation}
+                />
+              )
+            )}
+          </View>
         )}
-    </View>
+      </View>
 
       {band.internalNotes && (
         <View style={styles.section}>

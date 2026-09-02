@@ -4,7 +4,7 @@ import { migration001 } from "./001_initial";
 import { migration002 } from "./002_venues";
 import { migration003 } from "./003_gigs";
 import { migration004 } from "./004_drink_riders";
-import { DrinkTokenRepository } from "../../../repositories/DrinkTokenRepository";
+import { migration005 } from "./005_add_band_contact_fields";
 
 type Migration = {
   version: number;
@@ -17,6 +17,7 @@ const migrations: Migration[] = [
   migration002,
   migration003,
   migration004,
+  migration005,
 ];
 
 export async function runMigrations(

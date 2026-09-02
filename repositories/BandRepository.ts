@@ -18,6 +18,11 @@ type BandRow = {
   created_at: string;
   updated_at: string;
   archived_at: string | null;
+  booking_contact_name: string | null;
+  contact_email: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  website_url: string | null;
 };
 
 function mapBand(row: BandRow): Band {
@@ -38,6 +43,11 @@ function mapBand(row: BandRow): Band {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     archivedAt: row.archived_at,
+    bookingContactName: row.booking_contact_name,
+    contactEmail: row.contact_email,
+    facebookUrl: row.facebook_url,
+    instagramUrl: row.instagram_url,
+    websiteUrl: row.website_url
   };
 }
 
@@ -96,8 +106,8 @@ export const BandRepository = {
       `INSERT INTO bands (
         band_name, slug, hometown, state_region, country_code,
         member_count, formation_year, status, short_description,
-        internal_notes, is_our_band, is_verified
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        internal_notes, is_our_band, is_verified, booking_contact_name, contact_email, facebook_url, instagram_url, website_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       bandName,
       input.slug ?? slugify(bandName),
       input.hometown ?? "Perth",
@@ -109,7 +119,12 @@ export const BandRepository = {
       input.shortDescription ?? null,
       input.internalNotes ?? null,
       input.isOurBand ? 1 : 0,
-      input.isVerified ? 1 : 0
+      input.isVerified ? 1 : 0,
+      input.bookingContactName ?? null,
+      input.contactEmail ?? null,
+      input.facebookUrl ?? null,
+      input.instagramUrl ?? null,
+      input.websiteUrl ?? null
     );
 
     const created = await this.getById(result.lastInsertRowId);
@@ -117,24 +132,36 @@ export const BandRepository = {
     return created;
   },
 
-  async update(bandId: number, input: Partial<CreateBandInput>): Promise<void> {
+  async update(
+    bandId: number,
+    input: Partial<CreateBandInput>
+  ): Promise<void> {
     const db = await getDatabase();
+
     await db.runAsync(
       `UPDATE bands SET
-        band_name = COALESCE(?, band_name),
-        slug = COALESCE(?, slug),
-        hometown = COALESCE(?, hometown),
-        state_region = COALESCE(?, state_region),
-        country_code = COALESCE(?, country_code),
-        member_count = COALESCE(?, member_count),
-        formation_year = COALESCE(?, formation_year),
-        status = COALESCE(?, status),
-        short_description = COALESCE(?, short_description),
-        internal_notes = COALESCE(?, internal_notes),
-        is_our_band = COALESCE(?, is_our_band),
-        is_verified = COALESCE(?, is_verified),
-        updated_at = CURRENT_TIMESTAMP
-      WHERE band_id = ?`,
+      band_name = COALESCE(?, band_name),
+      slug = COALESCE(?, slug),
+      hometown = COALESCE(?, hometown),
+      state_region = COALESCE(?, state_region),
+      country_code = COALESCE(?, country_code),
+      member_count = COALESCE(?, member_count),
+      formation_year = COALESCE(?, formation_year),
+      status = COALESCE(?, status),
+      short_description = COALESCE(?, short_description),
+      internal_notes = ?,
+      is_our_band = COALESCE(?, is_our_band),
+      is_verified = COALESCE(?, is_verified),
+
+      booking_contact_name = ?,
+      contact_email = ?,
+      facebook_url = ?,
+      instagram_url = ?,
+      website_url = ?,
+
+      updated_at = CURRENT_TIMESTAMP
+    WHERE band_id = ?`,
+
       input.bandName?.trim() ?? null,
       input.slug?.trim() ?? null,
       input.hometown?.trim() ?? null,
@@ -144,9 +171,24 @@ export const BandRepository = {
       input.formationYear ?? null,
       input.status ?? null,
       input.shortDescription?.trim() ?? null,
-      input.internalNotes?.trim() ?? null,
-      input.isOurBand !== undefined ? (input.isOurBand ? 1 : 0) : null,
-      input.isVerified !== undefined ? (input.isVerified ? 1 : 0) : null,
+      input.internalNotes?.trim() || null,
+      input.isOurBand !== undefined
+        ? input.isOurBand
+          ? 1
+          : 0
+        : null,
+      input.isVerified !== undefined
+        ? input.isVerified
+          ? 1
+          : 0
+        : null,
+
+      input.bookingContactName?.trim() || null,
+      input.contactEmail?.trim() || null,
+      input.facebookUrl?.trim() || null,
+      input.instagramUrl?.trim() || null,
+      input.websiteUrl?.trim() || null,
+
       bandId
     );
   },

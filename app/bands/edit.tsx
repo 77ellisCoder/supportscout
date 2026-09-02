@@ -113,12 +113,37 @@ export default function EditBandScreen() {
 
           isVerified:
             values.isVerified,
+
+          bookingContactName:
+            values.bookingContactName.trim() ||
+            null,
+
+          contactEmail:
+            values.contactEmail.trim() ||
+            null,
+
+          facebookUrl:
+            values.facebookUrl.trim() ||
+            null,
+
+          instagramUrl:
+            values.instagramUrl.trim() ||
+            null,
+
+          websiteUrl:
+            values.websiteUrl.trim() ||
+            null
         }
       );
 
-      await queryClient.invalidateQueries({
-        queryKey: ["bands"],
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["bands"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["band", bandId],
+        }),
+      ]);
 
       // Navigate back to the band details page after saving
       router.back();
@@ -179,6 +204,21 @@ export default function EditBandScreen() {
 
         isVerified:
           band.isVerified,
+
+        bookingContactName:
+          band.bookingContactName ?? "",
+
+        contactEmail:
+          band.contactEmail ?? "",
+
+        facebookUrl:
+          band.facebookUrl ?? "",
+
+        instagramUrl:
+          band.instagramUrl ?? "",
+
+        websiteUrl:
+          band.websiteUrl ?? "",
       }}
 
       saving={saving}

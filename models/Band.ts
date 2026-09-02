@@ -21,6 +21,11 @@ export type Band = {
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
+  bookingContactName: string | null;
+  contactEmail: string | null;
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  websiteUrl: string | null;
 };
 
 export type CreateBandInput = {
@@ -36,4 +41,9 @@ export type CreateBandInput = {
   internalNotes?: string | null;
   isOurBand?: boolean;
   isVerified?: boolean;
+  bookingContactName?: string | null;
+  contactEmail?: string | null;
+  facebookUrl?: string | null;
+  instagramUrl?: string | null;
+  websiteUrl?: string | null;
 };

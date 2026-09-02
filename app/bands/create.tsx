@@ -88,6 +88,21 @@ export default function CreateBandScreen() {
                 isOurBand: values.isOurBand,
 
                 isVerified: values.isVerified,
+                
+                bookingContactName:
+                    values.bookingContactName.trim() || null,
+
+                contactEmail:
+                    values.contactEmail.trim() || null,
+
+                facebookUrl:
+                    values.facebookUrl.trim() || null,
+
+                instagramUrl:
+                    values.instagramUrl.trim() || null,
+
+                websiteUrl:
+                    values.websiteUrl.trim() || null
             });
 
             queryClient.setQueryData(
