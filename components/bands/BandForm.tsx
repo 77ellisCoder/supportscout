@@ -15,6 +15,8 @@ import { styles } from "../../styles/band-form.styles";
 import { PageHeader } from "../ui/PageHeader";
 import { FormActions } from "../ui/FormActions";
 import { BandContactLinks } from "./BandContactLinks";
+import { GenreChipSelector } from "./GenreChipSelector";
+import { useGenres } from "../../hooks/useGenres";
 
 export type BandFormValues = {
     bandName: string;
@@ -34,6 +36,8 @@ export type BandFormValues = {
     facebookUrl: string;
     instagramUrl: string;
     websiteUrl: string;
+
+    genreIds: number[];
 };
 
 type BandFormProps = {
@@ -65,7 +69,8 @@ const DEFAULT_VALUES: BandFormValues = {
     contactEmail: "",
     facebookUrl: "",
     instagramUrl: "",
-    websiteUrl: ""
+    websiteUrl: "",
+    genreIds: [] as number[],
 };
 
 export function BandForm({
@@ -95,6 +100,8 @@ export function BandForm({
         }));
     };
 
+    const { data: genres = [] } = useGenres();
+
     return (
         <ScrollView
             style={styles.page}
@@ -115,70 +122,86 @@ export function BandForm({
                 </View>
             )}
 
-            <Field
-                label="Band Name"
-                value={values.bandName}
-                onChangeText={(value) =>
-                    updateField("bandName", value)
-                }
-            />
+            <View style={styles.formRow}>
+                <View style={styles.formColumn}>
+                    <Field
+                        label="Band name"
+                        value={values.bandName}
+                        onChangeText={(value) =>
+                            updateField("bandName", value)
+                        }
+                    />
+                </View>
+
+                <View style={styles.formColumn}>
+                    <Field
+                        label="Slug"
+                        value={values.slug}
+                        onChangeText={(value) =>
+                            updateField("slug", value)
+                        }
+                    />
+                </View>
+            </View>
+
+            <View style={styles.formRow}>
+                <View style={styles.formColumn}>
+                    <Field
+                        label="Hometown"
+                        value={values.hometown}
+                        onChangeText={(value) =>
+                            updateField("hometown", value)
+                        }
+                    />
+                </View>
+
+                <View style={styles.formColumn}>
+                    <Field
+                        label="State / Region"
+                        value={values.stateRegion}
+                        onChangeText={(value) =>
+                            updateField("stateRegion", value)
+                        }
+                    />
+                </View>
+
+                <View style={styles.formColumnSmall}>
+                    <Field
+                        label="Country"
+                        value={values.countryCode}
+                        onChangeText={(value) =>
+                            updateField("countryCode", value)
+                        }
+                    />
+                </View>
+            </View>
+
+            <View style={styles.formRow}>
+                <View style={styles.formColumn}>
+                    <Field
+                        label="Member count"
+                        value={values.memberCount}
+                        onChangeText={(value) =>
+                            updateField("memberCount", value)
+                        }
+                        keyboardType="number-pad"
+                    />
+                </View>
+
+                <View style={styles.formColumn}>
+                    <Field
+                        label="Formation year"
+                        value={values.formationYear}
+                        onChangeText={(value) =>
+                            updateField("formationYear", value)
+                        }
+                        keyboardType="number-pad"
+                    />
+                </View>
+            </View>
 
             <Field
-                label="Slug"
-                value={values.slug}
-                onChangeText={(value) =>
-                    updateField("slug", value)
-                }
-                placeholder="example-perth-band"
-                autoCapitalize="none"
-            />
-
-            <Field
-                label="Hometown"
-                value={values.hometown}
-                onChangeText={(value) =>
-                    updateField("hometown", value)
-                }
-            />
-
-            <Field
-                label="State / Region"
-                value={values.stateRegion}
-                onChangeText={(value) =>
-                    updateField("stateRegion", value)
-                }
-            />
-
-            <Field
-                label="Country"
-                value={values.countryCode}
-                onChangeText={(value) =>
-                    updateField("countryCode", value)
-                }
-                placeholder="AU"
-                autoCapitalize="characters"
-            />
-
-            <Field
-                label="Member count"
-                value={values.memberCount}
-                onChangeText={(value) =>
-                    updateField("memberCount", value)
-                }
-                keyboardType="number-pad"
-            />
-
-            <Field
-                label="Formation year"
-                value={values.formationYear}
-                onChangeText={(value) =>
-                    updateField("formationYear", value)
-                }
-                keyboardType="number-pad"
-            />
-
-            <Field
-                label="Genre / description"
+                label="Description"
                 value={values.shortDescription}
                 onChangeText={(value) =>
                     updateField(
@@ -186,9 +209,23 @@ export function BandForm({
                         value
                     )
                 }
-                placeholder="Indie Rock, Reggae, Alternative"
+                placeholder="Describe the band..."
                 multiline
+                numberOfLines={5}
             />
+
+            <View style={styles.section}>
+                <Text style={styles.fieldLabel}>
+                    Genre(s)
+                </Text>
+                <GenreChipSelector
+                    genres={genres}
+                    selectedGenreIds={values.genreIds}
+                    onChange={(genreIds) =>
+                        updateField("genreIds", genreIds)
+                    }
+                />
+            </View>
 
             <Field
                 label="Internal notes"
@@ -307,6 +344,7 @@ type FieldProps = {
     autoCapitalize?: React.ComponentProps<
         typeof TextInput
     >["autoCapitalize"];
+    numberOfLines?: number;
 };
 
 function Field({
@@ -317,6 +355,7 @@ function Field({
     multiline = false,
     keyboardType,
     autoCapitalize,
+    numberOfLines,
 }: FieldProps) {
     return (
         <View style={styles.field}>
@@ -338,6 +377,7 @@ function Field({
                     styles.input,
                     multiline && styles.textArea,
                 ]}
+                numberOfLines={numberOfLines}
             />
         </View>
     );

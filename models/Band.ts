@@ -26,6 +26,7 @@ export type Band = {
   facebookUrl: string | null;
   instagramUrl: string | null;
   websiteUrl: string | null;
+  genreIds?: number[];
 };
 
 export type CreateBandInput = {
@@ -46,4 +47,5 @@ export type CreateBandInput = {
   facebookUrl?: string | null;
   instagramUrl?: string | null;
   websiteUrl?: string | null;
+  genreIds?: number[];
 };

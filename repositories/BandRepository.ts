@@ -23,6 +23,7 @@ type BandRow = {
   facebook_url: string | null;
   instagram_url: string | null;
   website_url: string | null;
+  genreIds?: number[];
 };
 
 function mapBand(row: BandRow): Band {
@@ -47,7 +48,8 @@ function mapBand(row: BandRow): Band {
     contactEmail: row.contact_email,
     facebookUrl: row.facebook_url,
     instagramUrl: row.instagram_url,
-    websiteUrl: row.website_url
+    websiteUrl: row.website_url,
+    genreIds: row.genreIds || [],
   };
 }
 
@@ -124,8 +126,20 @@ export const BandRepository = {
       input.contactEmail ?? null,
       input.facebookUrl ?? null,
       input.instagramUrl ?? null,
-      input.websiteUrl ?? null
+      input.websiteUrl ?? null,
     );
+
+    // Insert the genres if provided
+    if (input.genreIds && input.genreIds.length > 0) {
+      const bandId = result.lastInsertRowId;
+      for (const genreId of input.genreIds) {
+        await db.runAsync(
+          `INSERT INTO band_genres (band_id, genre_id) VALUES (?, ?)`,
+          bandId,
+          genreId
+        );
+      }
+    }
 
     const created = await this.getById(result.lastInsertRowId);
     if (!created) throw new Error("Unable to reload created band.");

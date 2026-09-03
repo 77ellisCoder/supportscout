@@ -220,4 +220,18 @@ export const formStyles = StyleSheet.create({
     color: colors.text,
     fontWeight: "700",
   },
+
+  formRow: {
+    flexDirection: "row",
+    gap: spacing.lg,
+    alignItems: "flex-start",
+  },
+
+  formColumn: {
+    flex: 1,
+  },
+
+  formColumnSmall: {
+    flex: 0.5,
+  },
 });

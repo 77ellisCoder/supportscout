@@ -102,7 +102,9 @@ export default function CreateBandScreen() {
                     values.instagramUrl.trim() || null,
 
                 websiteUrl:
-                    values.websiteUrl.trim() || null
+                    values.websiteUrl.trim() || null,
+
+                genreIds: values.genreIds,
             });
 
             queryClient.setQueryData(

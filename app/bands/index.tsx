@@ -63,30 +63,30 @@ export default function BandsScreen() {
     }
   }, [filteredBands, sortBy]);
 
-  const GENRES = useMemo(() => {
-    const values = new Set<string>();
+  const GENRES = [
+        "Rock",
+        "Pop",
+        "Indie",
+        "Metal",
+        "Punk",
+        "Blues",
+        "Jazz",
+        "Folk",
+        "Country",
+        "Funk",
+        "Soul",
+        "Reggae",
+        "Ska",
+        "Goth",
+        "Grunge",
+        "Shoegaze",
+        "Hardcore",
+        "Techno",
+        "Hip-Hop",
+        "Ambient",
+        "Electronic",
+    ].sort((a, b) => a.localeCompare(b));
 
-    bands.forEach((band) => {
-      const description = band.shortDescription;
-
-      if (!description) {
-        return;
-      }
-
-      description
-        .split(/[,/]/)
-        .map((value) => value.trim())
-        .filter(Boolean)
-        .forEach((value) => values.add(value));
-    });
-
-    return [
-      "All",
-      ...Array.from(values).sort((a, b) =>
-        a.localeCompare(b)
-      ),
-    ];
-  }, [bands]);
 
   return (
     <View style={styles.page}>
