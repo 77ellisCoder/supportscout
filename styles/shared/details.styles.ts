@@ -213,20 +213,27 @@ export const detailStyles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "space-between",
     gap: spacing.lg,
-},
+  },
 
-metaRow: {
+  metaRow: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
     gap: spacing.sm,
-},
+  },
 
-statusContainer: {
+  statusContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
     flexShrink: 0,
-},
+  },
+
+  genreChips: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    flexWrap: "wrap",
+  },
 });

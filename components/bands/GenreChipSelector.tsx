@@ -6,12 +6,14 @@ type Props = {
     genres: Genre[];
     selectedGenreIds: number[];
     onChange: (genreIds: number []) => void;
+    readonly?: boolean;
 };
 
 export function GenreChipSelector({
     genres,
     selectedGenreIds,
     onChange,
+    readonly = false
 }: Props) {
 
     function toggleGenre(genre: Genre) {
@@ -41,7 +43,7 @@ export function GenreChipSelector({
                     <Pressable
                         key={genreId}
                         onPress={() =>
-                            toggleGenre(genre)
+                            !readonly && toggleGenre(genre)
                         }
                         style={[
                             styles.chip,

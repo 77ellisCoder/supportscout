@@ -2,7 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import {
   ActivityIndicator,
-  Pressable,
   ScrollView,
   Text,
   View,
@@ -14,12 +13,16 @@ import { GigSection } from "../../components/gigs/GigSection";
 import { useBand } from "../../hooks/useBand";
 import { useBandGigs } from "../../hooks/useBandGigs";
 import { useBandRecommendations } from "../../hooks/useBandRecommendations";
+import { useGenresByIds } from "../../hooks/useGenres";
 
-import { detailStyles as styles } from "../../styles/shared/details.styles";
 import { colors } from "../../theme";
+import { detailStyles as styles } from "../../styles/shared/details.styles";
+
 import { BandRecommendationCard } from "../../components/bands/BandRecommendationCard";
 import { Button } from "../../components/ui/Button";
+
 import { BandContactCard } from "../../components/bands/BandContactCard";
+import { GenreChipSelector } from "../../components/bands/GenreChipSelector";
 
 export default function BandDetailsScreen() {
   const { id } =
@@ -32,6 +35,12 @@ export default function BandDetailsScreen() {
     isLoading,
     error,
   } = useBand(bandId);
+
+  const {
+    data: genres = [],
+  } = useGenresByIds(band?.genreIds || []);
+
+  console.log("BandDetailsScreen: genres", genres);
 
   const {
     data: upcomingGigs = [],
@@ -110,8 +119,17 @@ export default function BandDetailsScreen() {
                 {band.shortDescription}
               </Text>
             )}
-          </View>
 
+            <GenreChipSelector
+              genres={genres}
+              selectedGenreIds={genres.map(
+                (genre) => genre.genreId
+              )}
+              onChange={() => { }}
+              readonly={true}
+            />
+
+          </View>
           {band.isVerified && (
             <View style={styles.verifiedBadge}>
               <Text style={styles.verifiedText}>
@@ -209,17 +227,19 @@ export default function BandDetailsScreen() {
         )}
       </View>
 
-      {band.internalNotes && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>
-            NOTES
-          </Text>
+      {
+        band.internalNotes && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>
+              NOTES
+            </Text>
 
-          <Text style={styles.bodyText}>
-            {band.internalNotes}
-          </Text>
-        </View>
-      )}
+            <Text style={styles.bodyText}>
+              {band.internalNotes}
+            </Text>
+          </View>
+        )
+      }
 
       <View style={styles.actions}>
         {/* Edit button */}
@@ -235,6 +255,6 @@ export default function BandDetailsScreen() {
           }
         />
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 }
