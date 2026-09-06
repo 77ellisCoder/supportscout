@@ -123,6 +123,7 @@ export default function VenuesScreen() {
         />
 
         <SearchBar
+          type={"venues"}
           value={search}
           onChangeText={setSearch}
           placeholder="Search venues..."

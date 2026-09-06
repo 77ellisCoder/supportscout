@@ -203,6 +203,13 @@ export default function RootLayout() {
               title: "Edit Gig",
             }}
           />
+
+          <Stack.Screen
+            name="genres/index"
+            options={{
+              title: "Genres",
+            }}
+          />
         </Stack>
       </QueryClientProvider>
     </SafeAreaProvider>

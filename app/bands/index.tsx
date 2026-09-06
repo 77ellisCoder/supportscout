@@ -107,6 +107,7 @@ export default function BandsScreen() {
         />
 
         <SearchBar
+          type={"bands"}
           value={search}
           onChangeText={setSearch}
         />

@@ -5,7 +5,7 @@ import { buttonStyles } from "../../../styles/shared/button.styles";
 
 type BackButtonProps = {
     label?: string;
-    fallbackRoute?: "/" | "/bands" | "/venues" | "/gigs";
+    fallbackRoute?: "/" | "/bands" | "/venues" | "/gigs" | "/genres";
     onPress?: () => void;
 };
 

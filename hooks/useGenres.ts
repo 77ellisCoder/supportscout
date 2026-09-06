@@ -2,11 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { GenreRepository } from "../repositories/GenreRepository";
 
-export function useGenres() {
-    return useQuery({
-        queryKey: ["genres"],
-        queryFn: () => GenreRepository.getAll(),
-    });
+export function useGenres(search = "") {
+  return useQuery({
+    queryKey: ["genres", search],
+    queryFn: () => GenreRepository.getAll(search),
+    staleTime: 5 * 60 * 1000,
+  });
 }
 
 export function useGenre(id: number) {

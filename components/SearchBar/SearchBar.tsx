@@ -3,15 +3,17 @@ import { Pressable, Text, TextInput, View } from "react-native";
 import { styles } from "./SearchBar.styles";
 
 type SearchBarProps = {
+  type?: string;
   value: string;
   onChangeText: (value: string) => void;
   placeholder?: string;
 };
 
 export function SearchBar({
+  type,
   value,
   onChangeText,
-  placeholder = "Search bands...",
+  placeholder = "Search" + (type ? ` ${type}...` : "..."),
 }: SearchBarProps) {
   return (
     <View style={styles.wrapper}>

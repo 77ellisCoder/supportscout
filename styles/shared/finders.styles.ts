@@ -130,4 +130,12 @@ export const finderStyles = StyleSheet.create({
         paddingHorizontal: spacing.xl,
         paddingBottom: spacing.huge,
     },
+
+    item: {
+        ...typography.body,
+        color: colors.text,
+        paddingVertical: spacing.md,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+    },
 });
