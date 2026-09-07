@@ -18,10 +18,18 @@ export function useGenre(id: number) {
     });
 }
 
-export function useGenresByIds(genreIds: number[]) {
+export function useGenresByIds(ids: number[]) {
     return useQuery({
-        queryKey: ["genres", genreIds],
-        queryFn: () => GenreRepository.getByIds(genreIds),
-        enabled: genreIds.length > 0,
+        queryKey: ["genres", ids],
+        queryFn: () => GenreRepository.getByIds(ids),
+        enabled: ids.length > 0,
+    });
+}
+
+export function useGenresByBandId(bandId: number) {
+    return useQuery({
+        queryKey: ["genres", bandId],
+        queryFn: () => GenreRepository.getByBandId(bandId),
+        enabled: Number.isFinite(bandId),
     });
 }

@@ -102,4 +102,29 @@ export const GenreRepository = {
 
         return result.lastInsertRowId;
     },
+
+    async getByBandId(bandId: number): Promise<Genre[]> {
+        const db = await getDatabase();
+
+        const rows = await db.getAllAsync<{
+            genre_id: number;
+            genre_name: string;
+        }>(
+            `
+            SELECT g.genre_id, g.genre_name
+            FROM genres g
+            INNER JOIN band_genres bg ON g.genre_id = bg.genre_id
+            WHERE bg.band_id = ?
+            ORDER BY g.genre_name COLLATE NOCASE
+            `,
+            bandId
+        );
+
+        console.log("GenreRepository.getByBandId: bandId:", bandId, " - rows:", rows);
+
+        return rows.map((row) => ({
+            id: row.genre_id,
+            name: row.genre_name,
+        }));
+    },
 };

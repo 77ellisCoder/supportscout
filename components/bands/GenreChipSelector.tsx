@@ -1,33 +1,33 @@
-import { Genre } from "../../repositories/GenreRepository";
+import { Genre } from "../../models/Genre";
 import { styles } from "./GenreChipSelector.styles";
 import { Pressable, Text, View } from "react-native";
 
 type Props = {
     genres: Genre[];
     selectedGenreIds: number[];
-    onChange: (genreIds: number []) => void;
-    readonly?: boolean;
+    onChange: (ids: number []) => void;
+    readOnly?: boolean;
 };
 
 export function GenreChipSelector({
     genres,
     selectedGenreIds,
     onChange,
-    readonly = false
+    readOnly = false
 }: Props) {
 
     function toggleGenre(genre: Genre) {
-        const genreId = genre.genreId;
-        if (selectedGenreIds.includes(genreId)) {
+        const id = genre.id;
+        if (selectedGenreIds.includes(id)) {
             onChange(
                 selectedGenreIds.filter(
-                    item => item !== genreId
+                    item => item !== id
                 )
             );
         } else {
             onChange([
                 ...selectedGenreIds,
-                genreId,
+                id,
             ]);
         }
     }
@@ -35,15 +35,15 @@ export function GenreChipSelector({
     return (
         <View style={styles.chips}>
             {genres.map((genre) => {
-                const genreId = genre.genreId;
+                const id = genre.id;
                 const selected =
-                    selectedGenreIds.includes(genreId);
+                    selectedGenreIds.includes(id);
 
                 return (
                     <Pressable
-                        key={genreId}
+                        key={id}
                         onPress={() =>
-                            !readonly && toggleGenre(genre)
+                            !readOnly && toggleGenre(genre)
                         }
                         style={[
                             styles.chip,
@@ -58,7 +58,7 @@ export function GenreChipSelector({
                                 styles.chipTextSelected,
                             ]}
                         >
-                            {genre.genreName}
+                            {genre.name}
                         </Text>
                     </Pressable>
                 );

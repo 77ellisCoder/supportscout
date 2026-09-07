@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Pressable,
@@ -16,7 +16,8 @@ import { PageHeader } from "../ui/PageHeader";
 import { FormActions } from "../ui/FormActions";
 import { BandContactLinks } from "./BandContactLinks";
 import { GenreChipSelector } from "./GenreChipSelector";
-import { useGenres } from "../../hooks/useGenres";
+import { useGenres, useGenresByBandId } from "../../hooks/useGenres";
+import { Genre } from "../../models/Genre";
 
 export type BandFormValues = {
     bandName: string;
@@ -37,7 +38,7 @@ export type BandFormValues = {
     instagramUrl: string;
     websiteUrl: string;
 
-    genreIds: number[];
+    genres: Genre[];
 };
 
 type BandFormProps = {
@@ -70,7 +71,7 @@ const DEFAULT_VALUES: BandFormValues = {
     facebookUrl: "",
     instagramUrl: "",
     websiteUrl: "",
-    genreIds: [] as number[],
+    genres: [] as Genre[],
 };
 
 export function BandForm({
@@ -101,6 +102,19 @@ export function BandForm({
     };
 
     const { data: genres = [] } = useGenres();
+
+    const [selectedGenreIds, setSelectedGenreIds] =
+        useState<number[]>([]);
+
+    useEffect(() => {
+        if (!values.genres || values.genres.length === 0) {
+            return;
+        }
+
+        setSelectedGenreIds(
+            values.genres?.map((genre) => genre.id) ?? []
+        );
+    }, [values.genres]);
 
     return (
         <ScrollView
@@ -220,10 +234,8 @@ export function BandForm({
                 </Text>
                 <GenreChipSelector
                     genres={genres}
-                    selectedGenreIds={values.genreIds}
-                    onChange={(genreIds) =>
-                        updateField("genreIds", genreIds)
-                    }
+                    selectedGenreIds={selectedGenreIds}
+                    onChange={setSelectedGenreIds}
                 />
             </View>
 

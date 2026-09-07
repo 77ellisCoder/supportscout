@@ -213,12 +213,12 @@ export default function RootLayout() {
             }}
           />
 
-          <Stack.Screen
+          {/* <Stack.Screen
             name="export/index"
             options={{
               title: "Export",
             }}
-          />
+          /> */}
         </Stack>
       </QueryClientProvider>
     </SafeAreaProvider>

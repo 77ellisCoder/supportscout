@@ -134,7 +134,7 @@ export default function EditBandScreen() {
             values.websiteUrl.trim() ||
             null,
 
-          genreIds: values.genreIds,
+          genres: values.genres,
         }
       );
 
@@ -222,8 +222,7 @@ export default function EditBandScreen() {
         websiteUrl:
           band.websiteUrl ?? "",
 
-        genreIds:
-          band.genreIds ?? [],
+        genres: band.genres ?? [],
       }}
 
       saving={saving}
