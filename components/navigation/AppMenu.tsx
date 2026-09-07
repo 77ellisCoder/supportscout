@@ -15,6 +15,7 @@ export function AppMenu({ onClose }: AppMenuProps) {
             | "/bands"
             | "/venues"
             | "/gigs"
+            | "/export"
     ) => {
         onClose();
         router.push(path);
@@ -56,6 +57,12 @@ export function AppMenu({ onClose }: AppMenuProps) {
                 title="Gigs"
                 description="Track upcoming and past shows"
                 onPress={() => goTo("/gigs")}
+            />
+
+            <MenuItem
+                title="Export"
+                description="Export data to CSV"
+                onPress={() => goTo("/export")}
             />
         </View>
     );

@@ -212,27 +212,14 @@ export default function RootLayout() {
               title: "Genres",
             }}
           />
+
+          <Stack.Screen
+            name="export/index"
+            options={{
+              title: "Export",
+            }}
+          />
         </Stack>
-
-        <Button
-          title="Export SQLite"
-          onPress={async () => {
-            try {
-              const data =
-                await exportDatabaseData();
-
-              console.log(
-                "SUPPORTSCOUT_DB_EXPORT",
-                JSON.stringify(data)
-              );
-            } catch (error) {
-              console.error(
-                "SQLite export failed:",
-                error
-              );
-            }
-          }}
-        />
       </QueryClientProvider>
     </SafeAreaProvider>
   );
