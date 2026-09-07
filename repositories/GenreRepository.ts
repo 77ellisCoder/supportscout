@@ -1,9 +1,5 @@
 import { getDatabase } from "../database/sqlite/Database";
-
-export type Genre = {
-    genreId: number;
-    genreName: string;
-};
+import type { Genre } from "../models/Genre";
 
 type GenreRow = {
     genre_id: number;
@@ -12,8 +8,8 @@ type GenreRow = {
 
 function mapGenre(row: GenreRow): Genre {
     return {
-        genreId: row.genre_id,
-        genreName: row.genre_name,
+        id: row.genre_id,
+        name: row.genre_name,
     };
 }
 
@@ -58,8 +54,8 @@ export const GenreRepository = {
 
         return row
             ? {
-                  genreId: row.genre_id,
-                  genreName: row.genre_name,
+                  id: row.genre_id,
+                  name: row.genre_name,
               }
             : null;
     },
@@ -84,8 +80,8 @@ export const GenreRepository = {
         );
 
         return rows.map((row) => ({
-            genreId: row.genre_id,
-            genreName: row.genre_name,
+            id: row.genre_id,
+            name: row.genre_name,
         }));
     },
 

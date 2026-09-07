@@ -18,9 +18,19 @@ import { styles } from "../../styles/bands.styles";
 import { Button } from "../../components/ui/Button";
 import { PageHeader } from "../../components/ui/PageHeader";
 
+import { useGenres } from "../../hooks/useGenres";
+
 export default function BandsScreen() {
   const [search, setSearch] = useState("");
-  const [selectedGenre, setSelectedGenre] = useState("All");
+
+  const { data: genres = [] } = useGenres();
+
+  const [selectedGenreId, setSelectedGenreId] = useState<number | null>(null);
+  
+  const selectedGenre =
+    genres.find(
+        (genre) => genre.id === selectedGenreId
+    ) ?? null;
 
   type SortOption = "name-asc" | "name-desc";
 
@@ -33,18 +43,14 @@ export default function BandsScreen() {
   } = useBands(search);
 
   const filteredBands = useMemo(() => {
-    if (!selectedGenre || selectedGenre === "All") {
+    if (selectedGenreId === null) {
       return bands;
     }
 
-    const genre = selectedGenre.toLowerCase();
-
     return bands.filter((band) =>
-      band.shortDescription
-        ?.toLowerCase()
-        .includes(genre)
+      band.genres?.some((genre) => genre.id === selectedGenreId)
     );
-  }, [bands, selectedGenre]);
+  }, [bands, selectedGenreId]);
 
   const sortedBands = useMemo(() => {
     const sorted = [...filteredBands];
@@ -63,47 +69,25 @@ export default function BandsScreen() {
     }
   }, [filteredBands, sortBy]);
 
-  const GENRES = [
-        "Rock",
-        "Pop",
-        "Indie",
-        "Metal",
-        "Punk",
-        "Blues",
-        "Jazz",
-        "Folk",
-        "Country",
-        "Funk",
-        "Soul",
-        "Reggae",
-        "Ska",
-        "Goth",
-        "Grunge",
-        "Shoegaze",
-        "Hardcore",
-        "Techno",
-        "Hip-Hop",
-        "Ambient",
-        "Electronic",
-    ].sort((a, b) => a.localeCompare(b));
+
 
 
   return (
     <View style={styles.page}>
       <View style={styles.container}>
         <PageHeader
-            eyebrow="BAND FINDER"
-            title="Find the right act."
-            subtitle="Search Perth artists already in SupportScout."
-            action={
-                <Button
-                    title="+ Add Band"
-                    variant="add"
-                    onPress={() =>
-                        router.push("/bands/create")
-                    }
-                />
-            }
+          eyebrow="BAND FINDER"
+          title="Find the right act."
+          subtitle="Search Perth artists already in SupportScout."
+          action={
+            <Button
+              title="+ Add Band"
+              variant="add"
+              onPress={() =>
+                router.push("/bands/create")
+              }
+            />
+          }
         />
 
         <SearchBar
@@ -113,16 +97,23 @@ export default function BandsScreen() {
         />
 
         <View style={styles.chipRow}>
-          {GENRES.map((genre) => (
+          <Chip
+            label="All"
+            selected={selectedGenreId === null}
+            onPress={() => setSelectedGenreId(null)}
+          />
+
+          {genres.map((genre) => (
             <Chip
-              key={genre}
-              label={genre}
-              selected={selectedGenre === genre}
-              onPress={() => setSelectedGenre(genre)}
+              key={genre.id}
+              label={genre.name}
+              selected={selectedGenreId === genre.id}
+              onPress={() => setSelectedGenreId(genre.id)}
             />
           ))}
         </View>
 
+        
         {/* Sorting */}
         <View style={styles.sortRow}>
           <Text style={styles.sortLabel}>SORT</Text>
@@ -182,9 +173,9 @@ export default function BandsScreen() {
                 </Text>
 
                 <Text style={styles.emptyText}>
-                  {selectedGenre === "All"
+                  {selectedGenreId === null
                     ? "Try a different search."
-                    : `No bands match ${selectedGenre}.`}
+                    : `No bands match ${selectedGenre?.name}.`}
                 </Text>
               </View>
             }

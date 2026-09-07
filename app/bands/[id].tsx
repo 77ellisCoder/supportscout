@@ -38,7 +38,7 @@ export default function BandDetailsScreen() {
 
   const {
     data: genres = [],
-  } = useGenresByIds(band?.genreIds || []);
+  } = useGenresByIds(band?.genres?.map((genre) => genre.id) || []);
 
   console.log("BandDetailsScreen: genres", genres);
 
@@ -123,7 +123,7 @@ export default function BandDetailsScreen() {
             <GenreChipSelector
               genres={genres}
               selectedGenreIds={genres.map(
-                (genre) => genre.genreId
+                (genre) => genre.id
               )}
               onChange={() => { }}
               readonly={true}
