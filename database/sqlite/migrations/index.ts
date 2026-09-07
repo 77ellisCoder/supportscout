@@ -7,6 +7,8 @@ import { migration004 } from "./004_drink_riders";
 import { migration005 } from "./005_add_band_contact_fields";
 import { migration006 } from "./006_add_genres";
 
+import { exportDatabaseData } from "../exportDatabaseData";
+
 type Migration = {
   version: number;
   name: string;
@@ -103,4 +105,6 @@ export async function runMigrations(
     "Existing gigs:",
     gigs.length
   );
+
+
 }

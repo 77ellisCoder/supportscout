@@ -8,5 +8,5 @@
     "**/*.ts",
     "**/*.tsx",
     "types/**/*.d.ts"
-  ]
+,     "scripts/seed-postgres.cjs"  ]
 }

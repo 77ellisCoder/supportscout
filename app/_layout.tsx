@@ -14,6 +14,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppBootstrapService } from "../services/AppBootstrapService";
 import { SoundService } from "../services/SoundService";
 import { colors } from "../theme";
+import { exportDatabaseData } from "../database/sqlite/exportDatabaseData";
+import { Button } from "../components/ui/Button";
 
 const queryClient = new QueryClient();
 
@@ -211,6 +213,26 @@ export default function RootLayout() {
             }}
           />
         </Stack>
+
+        <Button
+          title="Export SQLite"
+          onPress={async () => {
+            try {
+              const data =
+                await exportDatabaseData();
+
+              console.log(
+                "SUPPORTSCOUT_DB_EXPORT",
+                JSON.stringify(data)
+              );
+            } catch (error) {
+              console.error(
+                "SQLite export failed:",
+                error
+              );
+            }
+          }}
+        />
       </QueryClientProvider>
     </SafeAreaProvider>
   );
