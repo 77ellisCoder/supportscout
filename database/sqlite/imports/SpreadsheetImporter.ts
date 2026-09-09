@@ -57,7 +57,7 @@ export async function importSupportBands(): Promise<ImportResult> {
       bandName,
       memberCount: source.memberCount,
       hometown: "Perth",
-      stateRegion: "Western Australia",
+      stateRegion: "WA",
       countryCode: "AU",
       status: "active",
       shortDescription: source.genreStyle,

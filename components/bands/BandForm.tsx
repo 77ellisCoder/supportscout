@@ -18,6 +18,7 @@ import { BandContactLinks } from "./BandContactLinks";
 import { GenreChipSelector } from "./GenreChipSelector";
 import { useGenres } from "../../hooks/useGenres";
 import { Genre } from "../../models/Genre";
+import { HometownAutocomplete } from "./HometownAutocomplete"
 
 export type BandFormValues = {
     bandName: string;
@@ -57,7 +58,7 @@ const DEFAULT_VALUES: BandFormValues = {
     bandName: "",
     slug: "",
     hometown: "Perth",
-    stateRegion: "Western Australia",
+    stateRegion: "WA",
     countryCode: "AU",
     memberCount: "",
     formationYear: "",
@@ -185,12 +186,11 @@ export function BandForm({
                 editable={false}
             />
 
-            <View style={styles.formRow}>
+            <View style={[styles.formRow, styles.hometownRow]}>
                 <View style={styles.formColumn}>
-                    <Field
-                        label="Hometown"
+                    <HometownAutocomplete
                         value={values.hometown}
-                        onChangeText={(value) =>
+                        onChange={(value) =>
                             updateField("hometown", value)
                         }
                     />
@@ -200,9 +200,8 @@ export function BandForm({
                     <Field
                         label="State / Region"
                         value={values.stateRegion}
-                        onChangeText={(value) =>
-                            updateField("stateRegion", value)
-                        }
+                        onChangeText={() => { }}
+                        editable={false}
                     />
                 </View>
 
@@ -210,9 +209,8 @@ export function BandForm({
                     <Field
                         label="Country"
                         value={values.countryCode}
-                        onChangeText={(value) =>
-                            updateField("countryCode", value)
-                        }
+                        onChangeText={() => { }}
+                        editable={false}
                     />
                 </View>
             </View>

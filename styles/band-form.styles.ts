@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 import { colors, radius, spacing, typography } from "../theme";
 import { formStyles } from "./shared/forms.styles";
+import { HometownAutocomplete } from "../components/bands/HometownAutocomplete";
 
 const bandFormOverrides = StyleSheet.create({
     container: {
@@ -143,6 +144,11 @@ const bandFormOverrides = StyleSheet.create({
         ...typography.small,
         color: colors.textMuted,
     },
+
+    hometownRow: {
+        position: "relative",
+        zIndex: 200,
+    },
 });
 
 export const styles = {
@@ -204,4 +210,5 @@ export const styles = {
     genreToggleText: bandFormOverrides.genreToggleText,
     genreEditor: bandFormOverrides.genreEditor,
     genreEmptyText: bandFormOverrides.genreEmptyText,
+    hometownRow: bandFormOverrides.hometownRow,
 };
