@@ -68,6 +68,14 @@ export const finderStyles = StyleSheet.create({
         marginTop: spacing.lg,
     },
 
+    genreFilterRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing.sm,
+        paddingVertical: spacing.sm,
+        paddingRight: spacing.lg,
+    },
+
     eyebrow: {
         ...typography.label,
         color: colors.primaryLight,

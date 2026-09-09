@@ -37,4 +37,12 @@ export const styles = StyleSheet.create({
         color: colors.primaryLight,
         fontWeight: "700",
     },
+
+    horizontalChips: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing.sm,
+
+        paddingRight: spacing.lg,
+    },
 });
