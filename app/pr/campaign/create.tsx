@@ -66,8 +66,12 @@ export default function CreatePrCampaignScreen() {
             null
         );
 
-    const [saving, setSaving] =
-        useState(false);
+    const [saveStatus, setSaveStatus] =
+        useState<"idle" | "saving" | "uploading">(
+            "idle"
+        );
+
+    const saving = saveStatus !== "idle";
 
     const [error, setError] =
         useState<string | null>(null);
@@ -114,7 +118,7 @@ export default function CreatePrCampaignScreen() {
         }
 
         try {
-            setSaving(true);
+            setSaveStatus("saving");
             setError(null);
 
             const campaign =
@@ -130,7 +134,23 @@ export default function CreatePrCampaignScreen() {
                 campaign
             );
 
+            if (attachment) {
+                setSaveStatus("uploading");
+
+                const uploadedAttachment =
+                    await WebPrCampaignRepository.uploadAttachment(
+                        campaign.id,
+                        attachment
+                    );
+
+                console.log(
+                    "Uploaded campaign attachment:",
+                    uploadedAttachment
+                );
+            }
+
             router.replace("/pr");
+
         } catch (err) {
             setError(
                 err instanceof Error
@@ -138,7 +158,7 @@ export default function CreatePrCampaignScreen() {
                     : "Unable to save campaign."
             );
         } finally {
-            setSaving(false);
+            setSaveStatus("idle");
         }
     }
 
@@ -249,11 +269,10 @@ export default function CreatePrCampaignScreen() {
                                 </View>
 
                                 <Button
-                                    title="Change"
+                                    title="Change MP3"
                                     variant="secondary"
-                                    onPress={
-                                        chooseAttachment
-                                    }
+                                    onPress={chooseAttachment}
+                                    disabled={saving}
                                 />
                             </View>
                         ) : (
@@ -331,9 +350,11 @@ export default function CreatePrCampaignScreen() {
 
                         <Button
                             title={
-                                saving
-                                    ? "Saving..."
-                                    : "Save Draft"
+                                saveStatus === "saving"
+                                    ? "Saving Draft..."
+                                    : saveStatus === "uploading"
+                                        ? "Uploading MP3..."
+                                        : "Save Draft"
                             }
                             onPress={saveDraft}
                             disabled={saving}

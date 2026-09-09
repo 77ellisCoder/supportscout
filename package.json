@@ -27,6 +27,7 @@
     "expo-sqlite": "~57.0.1",
     "expo-status-bar": "~57.0.1",
     "express": "^5.2.1",
+    "multer": "^2.3.0",
     "nativewind": "^4.2.6",
     "pg": "^8.23.0",
     "react": "19.2.3",
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/multer": "^2.2.0",
     "@types/pg": "^8.23.1",
     "@types/react": "~19.2.2",
     "tsx": "^4.23.13",

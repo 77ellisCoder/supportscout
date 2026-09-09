@@ -1,8 +1,68 @@
 import { Router } from "express";
-
 import { pool } from "../database/postgres";
+import fs from "fs";
+import path from "path";
+import multer from "multer";
 
 export const prCampaignsRouter = Router();
+
+const uploadRoot = path.resolve(
+    process.cwd(),
+    "server/uploads/pr-campaigns"
+);
+
+fs.mkdirSync(uploadRoot, {
+    recursive: true,
+});
+
+const storage = multer.diskStorage({
+    destination: (_req, _file, callback) => {
+        callback(null, uploadRoot);
+    },
+
+    filename: (req, file, callback) => {
+        const campaignId = req.params.id;
+
+        const safeOriginalName =
+            file.originalname.replace(
+                /[^a-zA-Z0-9._-]/g,
+                "_"
+            );
+
+        callback(
+            null,
+            `${campaignId}-${Date.now()}-${safeOriginalName}`
+        );
+    },
+});
+
+const upload = multer({
+    storage,
+
+    limits: {
+        fileSize: 25 * 1024 * 1024,
+    },
+
+    fileFilter: (_req, file, callback) => {
+        const isMp3 =
+            file.mimetype === "audio/mpeg" ||
+            file.originalname
+                .toLowerCase()
+                .endsWith(".mp3");
+
+        if (!isMp3) {
+            callback(
+                new Error(
+                    "Only MP3 files are supported"
+                )
+            );
+
+            return;
+        }
+
+        callback(null, true);
+    },
+});
 
 prCampaignsRouter.post("/", async (req, res) => {
     const {
@@ -146,3 +206,91 @@ prCampaignsRouter.post("/", async (req, res) => {
         client.release();
     }
 });
+
+prCampaignsRouter.post(
+    "/:id/attachment",
+    upload.single("attachment"),
+
+    async (req, res) => {
+        const campaignId = Number(req.params.id);
+
+        if (
+            !Number.isInteger(campaignId) ||
+            campaignId <= 0
+        ) {
+            return res.status(400).json({
+                error: "Invalid campaign ID",
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                error: "MP3 attachment is required",
+            });
+        }
+
+        try {
+            const relativePath = path.relative(
+                process.cwd(),
+                req.file.path
+            );
+
+            const result = await pool.query(
+                `
+                UPDATE pr_campaigns
+                SET
+                    attachment_filename = $1,
+                    attachment_path = $2,
+                    updated_at = NOW()
+                WHERE pr_campaign_id = $3
+                RETURNING
+                    pr_campaign_id AS "id",
+                    attachment_filename AS "attachmentFilename",
+                    attachment_path AS "attachmentPath"
+                `,
+                [
+                    req.file.originalname,
+                    relativePath,
+                    campaignId,
+                ]
+            );
+
+            if (result.rowCount === 0) {
+                fs.unlinkSync(req.file.path);
+
+                return res.status(404).json({
+                    error: "Campaign not found",
+                });
+            }
+
+            const campaign =
+                result.rows[0];
+
+            res.json({
+                ...campaign,
+                id: Number(campaign.id),
+            });
+        } catch (error) {
+            /*
+             * Don't leave an orphaned upload behind
+             * if the database update fails.
+             */
+            if (
+                req.file?.path &&
+                fs.existsSync(req.file.path)
+            ) {
+                fs.unlinkSync(req.file.path);
+            }
+
+            console.error(
+                "Campaign attachment upload failed:",
+                error
+            );
+
+            res.status(500).json({
+                error:
+                    "Unable to save campaign attachment",
+            });
+        }
+    }
+);

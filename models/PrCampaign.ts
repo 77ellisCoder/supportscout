@@ -22,6 +22,11 @@
  * @property {string} subject - The subject line of the new PR campaign email.
  * @property {string} emailBody - The body content of the new PR campaign email.
  * @property {number[]} contactIds - An array of contact IDs to whom the PR campaign will be sent.
+ * 
+ * @typedef {Object} CampaignAttachment
+ * @property {number} id - The unique identifier for the campaign attachment.
+ * @property {string} attachmentFilename - The filename of the campaign attachment.
+ * @property {string} attachmentPath - The file path of the campaign attachment.
  */
 export type PrCampaignStatus =
     | "draft"
@@ -38,6 +43,9 @@ export type PrCampaign = {
     status: PrCampaignStatus;
     createdAt: string;
     recipientCount: number;
+
+    attachmentFilename?: string | null;
+    attachmentPath?: string | null;
 };
 
 export type CreatePrCampaignInput = {
@@ -45,4 +53,10 @@ export type CreatePrCampaignInput = {
     subject: string;
     emailBody: string;
     contactIds: number[];
+};
+
+export type CampaignAttachment = {
+    id: number;
+    attachmentFilename: string;
+    attachmentPath: string;
 };
