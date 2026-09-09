@@ -107,15 +107,7 @@ export function BandForm({
         error: genresError,
     } = useGenres();
 
-    console.log(
-        "BAND FORM GENRES",
-        {
-            count: genres.length,
-            genres,
-            genresLoading,
-            genresError,
-        }
-    );
+    const [slugTouched, setSlugTouched] = useState(false);
 
     const [selectedGenreIds, setSelectedGenreIds] =
         useState<number[]>([]);
@@ -150,27 +142,22 @@ export function BandForm({
                 </View>
             )}
 
-            <View style={styles.formRow}>
-                <View style={styles.formColumn}>
-                    <Field
-                        label="Band name"
-                        value={values.bandName}
-                        onChangeText={(value) =>
-                            updateField("bandName", value)
-                        }
-                    />
-                </View>
+            <Field
+                label="Band name"
+                value={values.bandName}
+                onChangeText={(value) => {
+                    updateField("bandName", value);
+                    updateField("slug", slugify(value));
+                }}
+            />
 
-                <View style={styles.formColumn}>
-                    <Field
-                        label="Slug"
-                        value={values.slug}
-                        onChangeText={(value) =>
-                            updateField("slug", value)
-                        }
-                    />
-                </View>
-            </View>
+            <Field
+                label="Slug"
+                value={values.slug}
+                onChangeText={() => {}}
+                autoCapitalize="none"
+                editable={false}
+            />
 
             <View style={styles.formRow}>
                 <View style={styles.formColumn}>
@@ -380,6 +367,7 @@ type FieldProps = {
         typeof TextInput
     >["autoCapitalize"];
     numberOfLines?: number;
+    editable?: boolean;
 };
 
 function Field({
@@ -391,6 +379,7 @@ function Field({
     keyboardType,
     autoCapitalize,
     numberOfLines,
+    editable = true,
 }: FieldProps) {
     return (
         <View style={styles.field}>
@@ -402,12 +391,11 @@ function Field({
                 value={value}
                 onChangeText={onChangeText}
                 placeholder={placeholder}
-                placeholderTextColor={
-                    colors.textMuted
-                }
+                placeholderTextColor={colors.textMuted}
                 keyboardType={keyboardType}
                 autoCapitalize={autoCapitalize}
                 multiline={multiline}
+                editable={editable}
                 style={[
                     styles.input,
                     multiline && styles.textArea,
@@ -416,4 +404,13 @@ function Field({
             />
         </View>
     );
+}
+
+function slugify(value: string): string {
+    return value
+        .toLowerCase()
+        .trim()
+        .replace(/['’]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 }
