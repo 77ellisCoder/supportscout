@@ -91,6 +91,13 @@ export const styles = StyleSheet.create({
 
     headerRow: {
         backgroundColor: colors.backgroundDeep,
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+    },
+
+    headerTitle: {
+        flex: 1,
     },
 
     checkbox: {

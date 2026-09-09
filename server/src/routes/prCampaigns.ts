@@ -66,6 +66,50 @@ const upload = multer({
     },
 });
 
+prCampaignsRouter.get("/", async (_req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                pc.pr_campaign_id AS "id",
+                pc.name,
+                pc.subject,
+                pc.status,
+                pc.attachment_filename AS "attachmentFilename",
+                pc.created_at AS "createdAt",
+                pc.updated_at AS "updatedAt",
+                pc.sent_at AS "sentAt",
+                COUNT(pcr.pr_campaign_recipient_id)::int
+                    AS "recipientCount"
+            FROM pr_campaigns pc
+            LEFT JOIN pr_campaign_recipients pcr
+                ON pcr.pr_campaign_id =
+                    pc.pr_campaign_id
+            GROUP BY
+                pc.pr_campaign_id
+            ORDER BY
+                pc.created_at DESC
+        `);
+
+        res.json(
+            result.rows.map((row) => ({
+                ...row,
+                id: Number(row.id),
+                recipientCount:
+                    Number(row.recipientCount),
+            }))
+        );
+    } catch (error) {
+        console.error(
+            "GET /pr-campaigns failed:",
+            error
+        );
+
+        res.status(500).json({
+            error: "Unable to load PR campaigns",
+        });
+    }
+});
+
 prCampaignsRouter.post("/", async (req, res) => {
     const {
         name,

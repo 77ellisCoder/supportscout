@@ -30,6 +30,16 @@
  * @property {number} id - The unique identifier for the campaign attachment.
  * @property {string} attachmentFilename - The filename of the campaign attachment.
  * @property {string} attachmentPath - The file path of the campaign attachment.
+ * 
+ * @typedef {Object} PrCampaignListItem
+ * @property {number} id - The unique identifier for the PR campaign list item.
+ * @property {string} name - The name of the PR campaign list item.
+ * @property {string} subject - The subject line of the PR campaign list item email.
+ * @property {PrCampaignStatus} status - The current status of the PR campaign list item.
+ * @property {number} recipientCount - The number of recipients for the PR campaign list item.
+ * @property {string} createdAt - The timestamp when the PR campaign list item was created.
+ * @property {string} updatedAt - The timestamp when the PR campaign list item was last updated.
+ * @property {string | null} sentAt - The timestamp when the PR campaign list item was sent, or null if not sent yet.
  */
 export type PrCampaignStatus =
     | "draft"
@@ -89,4 +99,19 @@ export type CampaignAttachment = {
     id: number;
     attachmentFilename: string;
     attachmentPath: string;
+};
+
+export type PrCampaignListItem = {
+    id: number;
+    name: string;
+    subject: string;
+    status: PrCampaignStatus;
+
+    attachmentFilename: string | null;
+
+    recipientCount: number;
+
+    createdAt: string;
+    updatedAt: string;
+    sentAt: string | null;
 };

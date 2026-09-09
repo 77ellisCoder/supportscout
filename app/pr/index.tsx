@@ -9,6 +9,7 @@ import {
     View,
 } from "react-native";
 
+import { Button } from "../../components/ui/Button";
 import { usePrContacts } from "../../hooks/usePrContacts";
 import { styles } from "./index.styles";
 
@@ -185,17 +186,29 @@ export default function PrContactsScreen() {
             <ScrollView>
                 <View style={styles.content}>
                     <View style={styles.header}>
-                        <Text style={styles.title}>
-                            PR Contacts
-                        </Text>
+                        <View style={styles.headerRow}>
+                            <View style={styles.headerTitle}>
+                                <Text style={styles.title}>
+                                    PR Contacts
+                                </Text>
 
-                        <Text style={styles.stats}>
-                            {contacts.length} contacts
-                            {"  •  "}
-                            {emailCount} email
-                            {"  •  "}
-                            {manualCount} manual
-                        </Text>
+                                <Text style={styles.stats}>
+                                    {contacts.length} contacts
+                                    {" • "}
+                                    {emailCount} email
+                                    {" • "}
+                                    {manualCount} manual
+                                </Text>
+                            </View>
+
+                            <Button
+                                title="Campaigns"
+                                variant="secondary"
+                                onPress={() =>
+                                    router.push("/pr/campaigns")
+                                }
+                            />
+                        </View>
                     </View>
 
                     <View style={styles.toolbar}>

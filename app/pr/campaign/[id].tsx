@@ -321,17 +321,17 @@ export default function PrCampaignScreen() {
                         style={styles.actions}
                     >
                         <Button
-                            title="Back to Contacts"
+                            title="Campaigns"
                             variant="secondary"
                             onPress={() =>
-                                router.push("/pr")
+                                router.push("/pr/campaigns")
                             }
                         />
 
                         <Button
                             title="Send Campaign"
                             disabled={true}
-                            onPress={() => {}}
+                            onPress={() => { }}
                         />
                     </View>
                 </View>

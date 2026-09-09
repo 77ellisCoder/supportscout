@@ -2,6 +2,7 @@ import type {
     CampaignAttachment,
     CreatePrCampaignInput,
     PrCampaign,
+    PrCampaignListItem,
 } from "../models/PrCampaign";
 
 const API_URL =
@@ -46,6 +47,29 @@ export const WebPrCampaignRepository = {
             throw new Error(
                 result.error ??
                 "Unable to create campaign"
+            );
+        }
+
+        return result;
+    },
+
+    /**
+     * Gets all PR campaigns from the server.
+     * @returns A promise that resolves to an array of PR campaign list items.
+     */
+    async getAll(): Promise<
+        PrCampaignListItem[]
+    > {
+        const response = await fetch(
+            `${API_URL}/pr-campaigns`
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error ??
+                "Unable to load PR campaigns"
             );
         }
 
