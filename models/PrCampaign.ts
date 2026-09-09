@@ -7,7 +7,10 @@
  *
  * @typedef {Object} PrCampaignStatus
  * @property {"draft" | "sending" | "sent" | "partially_sent" | "failed"} - The status of the PR campaign.
- *
+ * 
+ * @typedef {Object} PrCampaignRecipientStatus
+ * @property {"pending" | "sending" | "sent" | "failed" | "skipped"}
+ * 
  * @typedef {Object} PrCampaign
  * @property {number} id - The unique identifier for the PR campaign.
  * @property {string} name - The name of the PR campaign.
@@ -35,17 +38,44 @@ export type PrCampaignStatus =
     | "partially_sent"
     | "failed";
 
+export type PrCampaignRecipientStatus =
+    | "pending"
+    | "sending"
+    | "sent"
+    | "failed"
+    | "skipped";
+
+export type PrCampaignRecipient = {
+    recipientId: number;
+    contactId: number;
+
+    outlet: string;
+    contactName: string | null;
+    email: string | null;
+
+    status: PrCampaignRecipientStatus;
+    sentAt: string | null;
+    errorMessage: string | null;
+};
+
 export type PrCampaign = {
     id: number;
     name: string;
     subject: string;
     emailBody: string;
-    status: PrCampaignStatus;
-    createdAt: string;
-    recipientCount: number;
 
     attachmentFilename?: string | null;
     attachmentPath?: string | null;
+
+    status: PrCampaignStatus;
+
+    createdAt: string;
+    updatedAt?: string;
+    sentAt?: string | null;
+
+    recipients?: PrCampaignRecipient[];
+
+    recipientCount?: number;
 };
 
 export type CreatePrCampaignInput = {

@@ -297,6 +297,108 @@ prCampaignsRouter.post(
     }
 );
 
+prCampaignsRouter.get(
+    "/:id",
+    async (req, res) => {
+        const campaignId = Number(req.params.id);
+
+        if (
+            !Number.isInteger(campaignId) ||
+            campaignId <= 0
+        ) {
+            return res.status(400).json({
+                error: "Invalid campaign ID",
+            });
+        }
+
+        try {
+            const campaignResult =
+                await pool.query(
+                    `
+                    SELECT
+                        pr_campaign_id AS "id",
+                        name,
+                        subject,
+                        email_body AS "emailBody",
+                        attachment_filename AS "attachmentFilename",
+                        attachment_path AS "attachmentPath",
+                        status,
+                        created_at AS "createdAt",
+                        updated_at AS "updatedAt",
+                        sent_at AS "sentAt"
+                    FROM pr_campaigns
+                    WHERE pr_campaign_id = $1
+                    `,
+                    [campaignId]
+                );
+
+            if (campaignResult.rowCount === 0) {
+                return res.status(404).json({
+                    error: "Campaign not found",
+                });
+            }
+
+            const recipientsResult =
+                await pool.query(
+                    `
+                    SELECT
+                        r.pr_campaign_recipient_id
+                            AS "recipientId",
+                        r.pr_contact_id
+                            AS "contactId",
+                        r.status,
+                        r.sent_at
+                            AS "sentAt",
+                        r.error_message
+                            AS "errorMessage",
+                        c.outlet,
+                        c.contact_name
+                            AS "contactName",
+                        c.email
+                    FROM pr_campaign_recipients r
+                    JOIN pr_contacts c
+                        ON c.pr_contact_id =
+                            r.pr_contact_id
+                    WHERE r.pr_campaign_id = $1
+                    ORDER BY c.outlet
+                    `,
+                    [campaignId]
+                );
+
+            const campaign =
+                campaignResult.rows[0];
+
+            res.json({
+                ...campaign,
+                id: Number(campaign.id),
+
+                recipients:
+                    recipientsResult.rows.map(
+                        (recipient) => ({
+                            ...recipient,
+                            recipientId: Number(
+                                recipient.recipientId
+                            ),
+                            contactId: Number(
+                                recipient.contactId
+                            ),
+                        })
+                    ),
+            });
+        } catch (error) {
+            console.error(
+                `GET /pr-campaigns/${campaignId} failed:`,
+                error
+            );
+
+            res.status(500).json({
+                error:
+                    "Unable to load campaign",
+            });
+        }
+    }
+);
+
 prCampaignsRouter.post(
     "/:id/send-test",
     async (req, res) => {

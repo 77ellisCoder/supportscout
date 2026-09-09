@@ -53,6 +53,30 @@ export const WebPrCampaignRepository = {
     },
 
     /**
+     * Gets a PR campaign by its ID.
+     * @param campaignId Campaign ID of the PR campaign to retrieve.
+     * @returns A promise that resolves to the PR campaign object.
+     */
+    async getById(
+        campaignId: number
+    ): Promise<PrCampaign> {
+        const response = await fetch(
+            `${API_URL}/pr-campaigns/${campaignId}`
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error ??
+                "Unable to load campaign"
+            );
+        }
+
+        return result;
+    },
+
+    /**
      * Uploads an attachment for a specific PR campaign.
      * @param campaignId Campaign ID for which the attachment is being uploaded.
      * @param file The file object containing the URI, name, and optional MIME type of the attachment.

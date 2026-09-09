@@ -149,7 +149,13 @@ export default function CreatePrCampaignScreen() {
                 );
             }
 
-            router.replace("/pr");
+            // Navigate to the campaign details page after saving
+            router.replace({
+                pathname: "/pr/campaign/[id]",
+                params: {
+                    id: String(campaign.id),
+                },
+            });
 
         } catch (err) {
             setError(
