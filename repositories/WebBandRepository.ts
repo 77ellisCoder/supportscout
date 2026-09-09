@@ -69,10 +69,11 @@ function mapBand(row: ApiBand): Band {
         websiteUrl:
             row.websiteUrl ?? null,
 
-        genreIds:
-            row.genres?.map(
-                (genre) => Number(genre.genreId)
-            ) ?? [],
+        genres:
+            row.genres?.map((genre) => ({
+                id: Number(genre.genreId),
+                name: genre.genreName,
+            })) ?? [],
     };
 }
 

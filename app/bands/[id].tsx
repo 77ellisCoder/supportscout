@@ -13,7 +13,7 @@ import { GigSection } from "../../components/gigs/GigSection";
 import { useBand } from "../../hooks/useBand";
 import { useBandGigs } from "../../hooks/useBandGigs";
 import { useBandRecommendations } from "../../hooks/useBandRecommendations";
-import { useGenresByIds } from "../../hooks/useGenres";
+import { useGenresByBandId, useGenresByIds } from "../../hooks/useGenres";
 
 import { colors } from "../../theme";
 import { detailStyles as styles } from "../../styles/shared/details.styles";
@@ -23,10 +23,13 @@ import { Button } from "../../components/ui/Button";
 
 import { BandContactCard } from "../../components/bands/BandContactCard";
 import { GenreChipSelector } from "../../components/bands/GenreChipSelector";
+import { useEffect, useState } from "react";
 
 export default function BandDetailsScreen() {
   const { id } =
     useLocalSearchParams<{ id: string }>();
+
+  const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]);
 
   const bandId = Number(id);
 
@@ -38,9 +41,7 @@ export default function BandDetailsScreen() {
 
   const {
     data: genres = [],
-  } = useGenresByIds(band?.genreIds || []);
-
-  console.log("BandDetailsScreen: genres", genres);
+  } = useGenresByBandId(bandId);
 
   const {
     data: upcomingGigs = [],
@@ -62,6 +63,16 @@ export default function BandDetailsScreen() {
     data: recommendations = [],
     isLoading: recommendationsLoading,
   } = useBandRecommendations(bandId);
+
+  useEffect(() => {
+    if (!band) {
+      return;
+    }
+
+    setSelectedGenreIds(
+      band.genres?.map((genre) => genre.id) ?? []
+    );
+  }, [band]);
 
   if (isLoading) {
     return (
@@ -122,11 +133,9 @@ export default function BandDetailsScreen() {
 
             <GenreChipSelector
               genres={genres}
-              selectedGenreIds={genres.map(
-                (genre) => genre.genreId
-              )}
-              onChange={() => { }}
-              readonly={true}
+              selectedGenreIds={selectedGenreIds}
+              onChange={setSelectedGenreIds}
+              readOnly={true}
             />
 
           </View>

@@ -1,13 +1,13 @@
 /**
- * This type represents a genre, including its ID and name.
+ * This type represents a genre, including it's id and name.
  */
 
 export type Genre = {
-  genreId: number;
-  genreName?: string | null;
+  id: number;
+  name: string;
 };
 
 export type CreateGenreInput = {
-  genreId: number;
-  genreName?: string | null;
+  id: number;
+  name: string;
 };

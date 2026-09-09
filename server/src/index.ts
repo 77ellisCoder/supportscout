@@ -4,6 +4,12 @@ import cors from "cors";
 import express from "express";
 
 import { bandsRouter } from "./routes/bands";
+import { prContactsRouter } from "./routes/prContacts";
+import { prCampaignsRouter } from "./routes/prCampaigns";
+
+import {
+    verifyEmailConnection,
+} from "./services/email/EmailService";
 
 const app = express();
 
@@ -20,7 +26,23 @@ app.get("/health", (_req, res) => {
     });
 });
 
+// Verify email connection on startup
+verifyEmailConnection()
+    .then(() => {
+        console.log(
+            "SMTP connection verified"
+        );
+    })
+    .catch((error) => {
+        console.error(
+            "SMTP connection failed:",
+            error
+        );
+    });
+
 app.use("/bands", bandsRouter);
+app.use("/pr-contacts", prContactsRouter);
+app.use("/pr-campaigns", prCampaignsRouter);
 
 app.listen(PORT, () => {
     console.log(

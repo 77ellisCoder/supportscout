@@ -1,5 +1,6 @@
 import { getDatabase } from "../database/sqlite/Database";
 import type { Band, BandStatus, CreateBandInput } from "../models/Band";
+import { Genre } from "../models/Genre";
 
 type BandRow = {
   band_id: number;
@@ -23,7 +24,7 @@ type BandRow = {
   facebook_url: string | null;
   instagram_url: string | null;
   website_url: string | null;
-  genreIds?: number[];
+  genres?: Genre[];
 };
 
 function mapBand(row: BandRow): Band {
@@ -49,7 +50,7 @@ function mapBand(row: BandRow): Band {
     facebookUrl: row.facebook_url,
     instagramUrl: row.instagram_url,
     websiteUrl: row.website_url,
-    genreIds: row.genreIds || [],
+    genres: row.genres || [],
   };
 }
 
@@ -130,13 +131,13 @@ export const BandRepository = {
     );
 
     // Insert the genres if provided
-    if (input.genreIds && input.genreIds.length > 0) {
+    if (input.genres && input.genres.length > 0) {
       const bandId = result.lastInsertRowId;
-      for (const genreId of input.genreIds) {
+      for (const genre of input.genres) {
         await db.runAsync(
           `INSERT INTO band_genres (band_id, genre_id) VALUES (?, ?)`,
           bandId,
-          genreId
+          genre.id
         );
       }
     }
@@ -154,27 +155,27 @@ export const BandRepository = {
 
     await db.runAsync(
       `UPDATE bands SET
-      band_name = COALESCE(?, band_name),
-      slug = COALESCE(?, slug),
-      hometown = COALESCE(?, hometown),
-      state_region = COALESCE(?, state_region),
-      country_code = COALESCE(?, country_code),
-      member_count = COALESCE(?, member_count),
-      formation_year = COALESCE(?, formation_year),
-      status = COALESCE(?, status),
-      short_description = COALESCE(?, short_description),
-      internal_notes = ?,
-      is_our_band = COALESCE(?, is_our_band),
-      is_verified = COALESCE(?, is_verified),
+        band_name = COALESCE(?, band_name),
+        slug = COALESCE(?, slug),
+        hometown = COALESCE(?, hometown),
+        state_region = COALESCE(?, state_region),
+        country_code = COALESCE(?, country_code),
+        member_count = COALESCE(?, member_count),
+        formation_year = COALESCE(?, formation_year),
+        status = COALESCE(?, status),
+        short_description = COALESCE(?, short_description),
+        internal_notes = ?,
+        is_our_band = COALESCE(?, is_our_band),
+        is_verified = COALESCE(?, is_verified),
 
-      booking_contact_name = ?,
-      contact_email = ?,
-      facebook_url = ?,
-      instagram_url = ?,
-      website_url = ?,
+        booking_contact_name = ?,
+        contact_email = ?,
+        facebook_url = ?,
+        instagram_url = ?,
+        website_url = ?,
 
-      updated_at = CURRENT_TIMESTAMP
-    WHERE band_id = ?`,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE band_id = ?`,
 
       input.bandName?.trim() ?? null,
       input.slug?.trim() ?? null,
@@ -205,12 +206,35 @@ export const BandRepository = {
 
       bandId
     );
+
+    // Delete / Insert the genres if provided
+    if (input.genres && input.genres.length > 0) {
+      // Delete existing genres for the band
+      await db.runAsync(
+        "DELETE FROM band_genres WHERE band_id = ?",
+        bandId
+      );
+
+      // Insert the new genres
+      for (const genre of input.genres) {
+        await db.runAsync(
+          `INSERT INTO band_genres (band_id, genre_id) VALUES (?, ?)`,
+          bandId,
+          genre.id
+        );
+      }
+    }
+    console.log(`Updated band with ID ${bandId} and genres:`, input.genres);
   },
 
   async delete(bandId: number): Promise<void> {
     const db = await getDatabase();
     await db.runAsync(
       "DELETE FROM bands WHERE band_id = ?",
+      bandId
+    );
+    await db.runAsync(
+      "DELETE FROM band_genres WHERE band_id = ?",
       bandId
     );
   },

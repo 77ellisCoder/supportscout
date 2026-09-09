@@ -1,3 +1,5 @@
+import { Genre } from "../models/Genre";
+
 export type Band = {
   bandId: number;
   bandName: string;
@@ -6,4 +8,5 @@ export type Band = {
   status: "active" | "inactive" | "hiatus" | "unknown";
   isOurBand: boolean;
   isVerified: boolean;
+  genres: Genre[];
 };

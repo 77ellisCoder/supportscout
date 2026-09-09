@@ -2,6 +2,8 @@
  * This type represents a band, including its ID, name, slug, location details, member count, formation year, status, descriptions, verification status, and timestamps for creation, last update, and archival.
  */
 
+import { Genre } from "./Genre";
+
 export type BandStatus = "active" | "inactive" | "hiatus" | "unknown";
 
 export type Band = {
@@ -26,7 +28,7 @@ export type Band = {
   facebookUrl: string | null;
   instagramUrl: string | null;
   websiteUrl: string | null;
-  genreIds?: number[];
+  genres: Genre[];
 };
 
 export type CreateBandInput = {
@@ -47,5 +49,5 @@ export type CreateBandInput = {
   facebookUrl?: string | null;
   instagramUrl?: string | null;
   websiteUrl?: string | null;
-  genreIds?: number[];
+  genres?: Genre[];
 };

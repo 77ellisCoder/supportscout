@@ -4,7 +4,7 @@ import {
 } from "expo-router";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   BandForm,
@@ -36,6 +36,8 @@ export default function EditBandScreen() {
   if (isLoading || !band) {
     return null;
   }
+
+  
 
   async function handleSubmit(
     values: BandFormValues
@@ -134,7 +136,7 @@ export default function EditBandScreen() {
             values.websiteUrl.trim() ||
             null,
 
-          genreIds: values.genreIds,
+          genres: values.genres,
         }
       );
 
@@ -222,8 +224,7 @@ export default function EditBandScreen() {
         websiteUrl:
           band.websiteUrl ?? "",
 
-        genreIds:
-          band.genreIds ?? [],
+        genres: band.genres ?? [],
       }}
 
       saving={saving}

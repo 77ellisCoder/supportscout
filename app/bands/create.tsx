@@ -104,7 +104,7 @@ export default function CreateBandScreen() {
                 websiteUrl:
                     values.websiteUrl.trim() || null,
 
-                genreIds: values.genreIds,
+                genres: values.genres,
             });
 
             queryClient.setQueryData(
