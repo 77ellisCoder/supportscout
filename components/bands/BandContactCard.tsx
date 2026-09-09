@@ -1,16 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
+
 import type { ComponentProps } from "react";
 
 import {
     Linking,
     Pressable,
     Text,
+    useWindowDimensions,
     View,
 } from "react-native";
 
 import type { Band } from "../../models/Band";
+
 import { colors } from "../../theme";
-import { styles } from "./BandContactCard.styles";
+
+import { styles } from "../../styles/band-contact-card.styles";
 
 type Props = {
     band: Band;
@@ -22,6 +26,10 @@ type IconName =
 export function BandContactCard({
     band,
 }: Props) {
+    const { width } = useWindowDimensions();
+
+    const isWide = width >= 760;
+
     const hasContactDetails =
         band.bookingContactName ||
         band.contactEmail ||
@@ -39,9 +47,19 @@ export function BandContactCard({
                 CONTACT & LINKS
             </Text>
 
-            <View style={styles.content}>
+            <View
+                style={[
+                    styles.content,
+                    isWide && styles.contentWide,
+                ]}
+            >
                 {band.bookingContactName && (
-                    <View style={styles.row}>
+                    <View
+                        style={[
+                            styles.row,
+                            isWide && styles.rowWide,
+                        ]}
+                    >
                         <View style={styles.icon}>
                             <Ionicons
                                 name="person-outline"
@@ -68,6 +86,7 @@ export function BandContactCard({
                         label="Email"
                         value={band.contactEmail}
                         url={`mailto:${band.contactEmail}`}
+                        wide={isWide}
                     />
                 )}
 
@@ -77,6 +96,7 @@ export function BandContactCard({
                         label="Instagram"
                         value="Instagram"
                         url={band.instagramUrl}
+                        wide={isWide}
                     />
                 )}
 
@@ -86,6 +106,7 @@ export function BandContactCard({
                         label="Facebook"
                         value="Facebook"
                         url={band.facebookUrl}
+                        wide={isWide}
                     />
                 )}
 
@@ -97,6 +118,7 @@ export function BandContactCard({
                             band.websiteUrl
                         )}
                         url={band.websiteUrl}
+                        wide={isWide}
                     />
                 )}
             </View>
@@ -109,11 +131,13 @@ function ContactLink({
     label,
     value,
     url,
+    wide,
 }: {
     icon: IconName;
     label: string;
     value: string;
     url: string;
+    wide: boolean;
 }) {
     async function handlePress() {
         const targetUrl = normalizeUrl(url);
@@ -134,6 +158,7 @@ function ContactLink({
             onPress={handlePress}
             style={({ pressed }) => [
                 styles.row,
+                wide && styles.rowWide,
                 pressed && styles.rowPressed,
             ]}
         >
@@ -178,7 +203,8 @@ function normalizeUrl(url: string): string {
 
     if (
         trimmed.startsWith("http://") ||
-        trimmed.startsWith("https://")
+        trimmed.startsWith("https://") ||
+        trimmed.startsWith("mailto:")
     ) {
         return trimmed;
     }
