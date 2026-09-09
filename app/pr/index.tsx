@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { router } from "expo-router";
 
 import {
@@ -15,6 +15,11 @@ import { styles } from "./index.styles";
 type Filter = "all" | "email" | "manual";
 
 export default function PrContactsScreen() {
+
+    const [page, setPage] = useState(1);
+
+    const [pageSize, setPageSize] = useState<10 | 25>(25);
+
     const {
         data: contacts = [],
         isLoading,
@@ -78,6 +83,24 @@ export default function PrContactsScreen() {
         });
     }, [contacts, filter, search]);
 
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredContacts.length / pageSize)
+    );
+
+    const paginatedContacts = useMemo(() => {
+        const start = (page - 1) * pageSize;
+
+        return filteredContacts.slice(
+            start,
+            start + pageSize
+        );
+    }, [
+        filteredContacts,
+        page,
+        pageSize,
+    ]);
+
     const visibleEmailIds = useMemo(
         () =>
             filteredContacts
@@ -91,6 +114,10 @@ export default function PrContactsScreen() {
         visibleEmailIds.every((id) =>
             selectedIds.includes(id)
         );
+
+    useEffect(() => {
+        setPage(1);
+    }, [search, filter, pageSize]);
 
     function toggleContact(id: number) {
         setSelectedIds((current) =>
@@ -271,7 +298,7 @@ export default function PrContactsScreen() {
                             </Text>
                         </View>
 
-                        {filteredContacts.map(
+                        {paginatedContacts.map(
                             (contact) => {
                                 const selected =
                                     selectedIds.includes(
@@ -380,6 +407,103 @@ export default function PrContactsScreen() {
                                     </Text>
                                 </View>
                             )}
+                    </View>
+
+                    {/* Pagination controls */}
+                    <View style={styles.pagination}>
+                        <View style={styles.pageSizeControls}>
+                            <Text style={styles.footerText}>
+                                Rows:
+                            </Text>
+
+                            <Pressable
+                                onPress={() => setPageSize(10)}
+                                style={[
+                                    styles.pageSizeButton,
+                                    pageSize === 10 &&
+                                    styles.pageSizeButtonSelected,
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.pageSizeText,
+                                        pageSize === 10 &&
+                                        styles.pageSizeTextSelected,
+                                    ]}
+                                >
+                                    10
+                                </Text>
+                            </Pressable>
+
+                            <Pressable
+                                onPress={() => setPageSize(25)}
+                                style={[
+                                    styles.pageSizeButton,
+                                    pageSize === 25 &&
+                                    styles.pageSizeButtonSelected,
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.pageSizeText,
+                                        pageSize === 25 &&
+                                        styles.pageSizeTextSelected,
+                                    ]}
+                                >
+                                    25
+                                </Text>
+                            </Pressable>
+                        </View>
+
+                        <View style={styles.pageControls}>
+                            <Pressable
+                                disabled={page === 1}
+                                onPress={() =>
+                                    setPage((current) =>
+                                        Math.max(1, current - 1)
+                                    )
+                                }
+                                style={[
+                                    styles.pageButton,
+                                    page === 1 &&
+                                    styles.pageButtonDisabled,
+                                ]}
+                            >
+                                <Text style={styles.pageButtonText}>
+                                    Previous
+                                </Text>
+                            </Pressable>
+
+                            <Text style={styles.footerText}>
+                                {filteredContacts.length === 0
+                                    ? "0 contacts"
+                                    : `${(page - 1) * pageSize + 1}–${Math.min(
+                                        page * pageSize,
+                                        filteredContacts.length
+                                    )} of ${filteredContacts.length}`}
+                            </Text>
+
+                            <Pressable
+                                disabled={page >= totalPages}
+                                onPress={() =>
+                                    setPage((current) =>
+                                        Math.min(
+                                            totalPages,
+                                            current + 1
+                                        )
+                                    )
+                                }
+                                style={[
+                                    styles.pageButton,
+                                    page >= totalPages &&
+                                    styles.pageButtonDisabled,
+                                ]}
+                            >
+                                <Text style={styles.pageButtonText}>
+                                    Next
+                                </Text>
+                            </Pressable>
+                        </View>
                     </View>
 
                     <View style={styles.footer}>

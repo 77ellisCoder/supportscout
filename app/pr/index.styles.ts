@@ -209,4 +209,66 @@ export const styles = StyleSheet.create({
         color: colors.primaryLight,
         fontWeight: "600",
     },
+
+    pagination: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: spacing.md,
+        marginTop: spacing.md,
+    },
+
+    pageSizeControls: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing.sm,
+    },
+
+    pageControls: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing.sm,
+    },
+
+    pageSizeButton: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: spacing.xs,
+        borderRadius: radius.md,
+    },
+
+    pageSizeButtonSelected: {
+        borderColor: colors.primary,
+        backgroundColor: colors.primaryMuted,
+    },
+
+    pageSizeText: {
+        color: colors.textSecondary,
+    },
+
+    pageSizeTextSelected: {
+        color: colors.text,
+        fontWeight: "600",
+    },
+
+    pageButton: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.primary,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+        borderRadius: radius.md,
+    },
+
+    pageButtonDisabled: {
+        opacity: 0.35,
+    },
+
+    pageButtonText: {
+        color: colors.primaryLight,
+        fontWeight: "600",
+    },
 });
