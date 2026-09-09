@@ -2,57 +2,61 @@ import type { Genre } from "../models/Genre";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3001";
 
+async function parseResponse<T>(
+    response: Response
+): Promise<T> {
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            result.error ??
+            "Genre API request failed"
+        );
+    }
+
+    return result as T;
+}
+
 export const WebGenreRepository = {
-    async getAll(search?: string): Promise<Genre[]> {
-        const response = await fetch(`${API_URL}/genres`);
+    async getAll(
+        search?: string
+    ): Promise<Genre[]> {
+        const response = await fetch(
+            `${API_URL}/genres`
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load genres (${response.status})`
+        const genres =
+            await parseResponse<Genre[]>(
+                response
             );
-        }
 
-        const genres: Genre[] = await response.json();
+        const term =
+            search?.trim().toLowerCase();
 
-        const query = search?.trim().toLowerCase();
-
-        if (!query) {
+        if (!term) {
             return genres;
         }
 
         return genres.filter((genre) =>
-            genre.name.toLowerCase().includes(query)
+            genre.name
+                .toLowerCase()
+                .includes(term)
         );
     },
 
-    async getById(id: number): Promise<Genre | null> {
+    async getById(
+        genreId: number
+    ): Promise<Genre | null> {
         const response = await fetch(
-            `${API_URL}/genres/${id}`
+            `${API_URL}/genres/${genreId}`
         );
 
         if (response.status === 404) {
             return null;
         }
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load genre (${response.status})`
-            );
-        }
-
-        return response.json();
-    },
-
-    async getByIds(ids: number[]): Promise<Genre[]> {
-        if (ids.length === 0) {
-            return [];
-        }
-
-        const genres = await this.getAll();
-        const idSet = new Set(ids);
-
-        return genres.filter((genre) =>
-            idSet.has(genre.id)
+        return parseResponse<Genre>(
+            response
         );
     },
 };

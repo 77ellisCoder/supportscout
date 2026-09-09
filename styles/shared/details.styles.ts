@@ -9,6 +9,7 @@ import {
 } from "../../theme";
 
 import { layoutStyles } from "./layout.styles";
+import { textStyles } from "./typography";
 
 /** Shared shell and content styles for entity detail screens. */
 export const detailStyles = StyleSheet.create({
@@ -83,9 +84,8 @@ export const detailStyles = StyleSheet.create({
   },
 
   description: {
-    ...typography.body,
-    color: colors.primaryLight,
-    marginTop: spacing.sm,
+     ...textStyles.description,
+     color: colors.textSecondary,
   },
 
   verifiedBadge: {

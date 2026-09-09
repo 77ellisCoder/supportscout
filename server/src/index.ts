@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 
 import { bandsRouter } from "./routes/bands";
+import { genresRouter } from "./routes/genres";
 import { prContactsRouter } from "./routes/prContacts";
 import { prCampaignsRouter } from "./routes/prCampaigns";
 
@@ -41,6 +42,7 @@ verifyEmailConnection()
     });
 
 app.use("/bands", bandsRouter);
+app.use("/genres", genresRouter);
 app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
 

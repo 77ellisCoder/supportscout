@@ -6,6 +6,7 @@ import {
     spacing,
     typography,
 } from "../../theme";
+import { textStyles } from "../../styles/shared/typography";
 
 export const styles = StyleSheet.create({
     list: {
@@ -41,9 +42,8 @@ export const styles = StyleSheet.create({
     },
 
     description: {
-        ...typography.small,
+        ...textStyles.description,
         color: colors.textMuted,
-        marginTop: spacing.xs,
     },
 
     appearance: {

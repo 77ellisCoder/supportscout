@@ -3,6 +3,8 @@ import {
   useLocalSearchParams,
 } from "expo-router";
 
+import { Platform } from "react-native";
+
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -13,6 +15,9 @@ import {
 
 import { useBand } from "../../hooks/useBand";
 import { BandRepository } from "../../repositories/BandRepository";
+import {
+  WebBandRepository,
+} from "../../repositories/WebBandRepository";
 
 export default function EditBandScreen() {
   const { id } =
@@ -37,7 +42,7 @@ export default function EditBandScreen() {
     return null;
   }
 
-  
+
 
   async function handleSubmit(
     values: BandFormValues
@@ -76,69 +81,79 @@ export default function EditBandScreen() {
         return;
       }
 
-      await BandRepository.update(
-        bandId,
-        {
-          bandName:
-            values.bandName.trim(),
+      const updateInput = {
+        bandName:
+          values.bandName.trim(),
 
-          slug:
-            values.slug.trim() || null,
+        slug:
+          values.slug.trim() || null,
 
-          hometown:
-            values.hometown.trim() || null,
+        hometown:
+          values.hometown.trim() || null,
 
-          stateRegion:
-            values.stateRegion.trim() ||
-            "Western Australia",
+        stateRegion:
+          values.stateRegion.trim() ||
+          "Western Australia",
 
-          countryCode:
-            values.countryCode.trim() || "AU",
+        countryCode:
+          values.countryCode.trim() ||
+          "AU",
 
-          memberCount,
+        memberCount,
 
-          formationYear,
+        formationYear,
 
-          shortDescription:
-            values.shortDescription.trim() ||
-            null,
+        shortDescription:
+          values.shortDescription.trim() ||
+          null,
 
-          internalNotes:
-            values.internalNotes.trim() ||
-            null,
+        internalNotes:
+          values.internalNotes.trim() ||
+          null,
 
-          status:
-            values.status,
+        status:
+          values.status,
 
-          isOurBand:
-            values.isOurBand,
+        isOurBand:
+          values.isOurBand,
 
-          isVerified:
-            values.isVerified,
+        isVerified:
+          values.isVerified,
 
-          bookingContactName:
-            values.bookingContactName.trim() ||
-            null,
+        bookingContactName:
+          values.bookingContactName.trim() ||
+          null,
 
-          contactEmail:
-            values.contactEmail.trim() ||
-            null,
+        contactEmail:
+          values.contactEmail.trim() ||
+          null,
 
-          facebookUrl:
-            values.facebookUrl.trim() ||
-            null,
+        facebookUrl:
+          values.facebookUrl.trim() ||
+          null,
 
-          instagramUrl:
-            values.instagramUrl.trim() ||
-            null,
+        instagramUrl:
+          values.instagramUrl.trim() ||
+          null,
 
-          websiteUrl:
-            values.websiteUrl.trim() ||
-            null,
+        websiteUrl:
+          values.websiteUrl.trim() ||
+          null,
 
-          genres: values.genres,
-        }
-      );
+        genres: values.genres,
+      };
+
+      if (Platform.OS === "web") {
+        await WebBandRepository.update(
+          bandId,
+          updateInput
+        );
+      } else {
+        await BandRepository.update(
+          bandId,
+          updateInput
+        );
+      }
 
       await Promise.all([
         queryClient.invalidateQueries({

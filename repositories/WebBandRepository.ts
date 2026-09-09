@@ -1,4 +1,7 @@
-import type { Band } from "../models/Band";
+import type {
+    Band,
+    CreateBandInput,
+} from "../models/Band";
 
 const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
@@ -128,5 +131,35 @@ export const WebBandRepository = {
             await response.json();
 
         return mapBand(row);
+    },
+
+    async update(
+        bandId: number,
+        input: Partial<CreateBandInput>
+    ): Promise<Band> {
+        const response = await fetch(
+            `${API_URL}/bands/${bandId}`,
+            {
+                method: "PATCH",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+
+                body: JSON.stringify(input),
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error ??
+                "Unable to update band"
+            );
+        }
+
+        return mapBand(result);
     },
 };

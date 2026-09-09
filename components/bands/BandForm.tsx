@@ -16,7 +16,7 @@ import { PageHeader } from "../ui/PageHeader";
 import { FormActions } from "../ui/FormActions";
 import { BandContactLinks } from "./BandContactLinks";
 import { GenreChipSelector } from "./GenreChipSelector";
-import { useGenres, useGenresByBandId } from "../../hooks/useGenres";
+import { useGenres } from "../../hooks/useGenres";
 import { Genre } from "../../models/Genre";
 
 export type BandFormValues = {
@@ -101,7 +101,21 @@ export function BandForm({
         }));
     };
 
-    const { data: genres = [] } = useGenres();
+    const {
+        data: genres = [],
+        isLoading: genresLoading,
+        error: genresError,
+    } = useGenres();
+
+    console.log(
+        "BAND FORM GENRES",
+        {
+            count: genres.length,
+            genres,
+            genresLoading,
+            genresError,
+        }
+    );
 
     const [selectedGenreIds, setSelectedGenreIds] =
         useState<number[]>([]);
@@ -235,7 +249,16 @@ export function BandForm({
                 <GenreChipSelector
                     genres={genres}
                     selectedGenreIds={selectedGenreIds}
-                    onChange={setSelectedGenreIds}
+                    onChange={(ids) => {
+                        setSelectedGenreIds(ids);
+
+                        updateField(
+                            "genres",
+                            genres.filter((genre) =>
+                                ids.includes(genre.id)
+                            )
+                        );
+                    }}
                 />
             </View>
 

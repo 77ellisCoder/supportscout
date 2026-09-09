@@ -7,6 +7,8 @@ import {
     typography,
 } from "../../theme";
 
+import { textStyles } from "../../styles/shared/typography";
+
 export const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
@@ -37,9 +39,8 @@ export const styles = StyleSheet.create({
     },
 
     description: {
-        ...typography.small,
+        ...textStyles.description,
         color: colors.textMuted,
-        marginTop: spacing.xs,
     },
 
     genreRow: {

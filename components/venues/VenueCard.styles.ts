@@ -7,6 +7,7 @@ import {
     spacing,
     typography,
 } from "../../theme";
+import { textStyles } from "../../styles/shared/typography";
 
 export const styles = StyleSheet.create({
     name: {
@@ -16,9 +17,8 @@ export const styles = StyleSheet.create({
     },
 
     description: {
-        ...typography.small,
+        ...textStyles.description,
         color: colors.primaryLight,
-        marginTop: spacing.xs,
     },
 
     scoreBadge: {

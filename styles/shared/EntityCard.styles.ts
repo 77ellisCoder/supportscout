@@ -7,6 +7,7 @@ import {
     spacing,
     typography,
 } from "../../theme";
+import { textStyles } from "./typography";
 
 export const entityCardStyles = StyleSheet.create({
     card: {
@@ -50,9 +51,8 @@ export const entityCardStyles = StyleSheet.create({
     },
 
     description: {
-        ...typography.small,
+         ...textStyles.description,
         color: colors.primaryLight,
-        marginTop: spacing.xs,
     },
 
     metaRow: {
