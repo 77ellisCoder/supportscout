@@ -7,6 +7,10 @@ import { bandsRouter } from "./routes/bands";
 import { prContactsRouter } from "./routes/prContacts";
 import { prCampaignsRouter } from "./routes/prCampaigns";
 
+import {
+    verifyEmailConnection,
+} from "./services/email/EmailService";
+
 const app = express();
 
 const PORT = Number(
@@ -21,6 +25,20 @@ app.get("/health", (_req, res) => {
         status: "ok",
     });
 });
+
+// Verify email connection on startup
+verifyEmailConnection()
+    .then(() => {
+        console.log(
+            "SMTP connection verified"
+        );
+    })
+    .catch((error) => {
+        console.error(
+            "SMTP connection failed:",
+            error
+        );
+    });
 
 app.use("/bands", bandsRouter);
 app.use("/pr-contacts", prContactsRouter);

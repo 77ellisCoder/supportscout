@@ -102,4 +102,35 @@ export const WebPrCampaignRepository = {
 
         return result;
     },
+
+    /**
+     * Sends a test email for a specific PR campaign.
+     * @param campaignId Campaign ID for which to send a test email.
+     * @returns A promise that resolves to an object containing the success status, campaign ID, and the email address to which the test email was sent.
+     */
+    async sendTest(
+        campaignId: number
+    ): Promise<{
+        success: boolean;
+        campaignId: number;
+        sentTo: string;
+    }> {
+        const response = await fetch(
+            `${API_URL}/pr-campaigns/${campaignId}/send-test`,
+            {
+                method: "POST",
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error ??
+                "Unable to send test email"
+            );
+        }
+
+        return result;
+    },
 };

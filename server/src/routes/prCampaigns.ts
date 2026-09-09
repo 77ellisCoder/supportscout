@@ -4,6 +4,8 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 
+import { sendEmail } from "../services/email/EmailService";
+
 export const prCampaignsRouter = Router();
 
 const uploadRoot = path.resolve(
@@ -290,6 +292,93 @@ prCampaignsRouter.post(
             res.status(500).json({
                 error:
                     "Unable to save campaign attachment",
+            });
+        }
+    }
+);
+
+prCampaignsRouter.post(
+    "/:id/send-test",
+    async (req, res) => {
+        const campaignId = Number(req.params.id);
+
+        if (
+            !Number.isInteger(campaignId) ||
+            campaignId <= 0
+        ) {
+            return res.status(400).json({
+                error: "Invalid campaign ID",
+            });
+        }
+
+        try {
+            const result = await pool.query(
+                `
+                SELECT
+                    pr_campaign_id AS "id",
+                    name,
+                    subject,
+                    email_body AS "emailBody",
+                    attachment_filename AS "attachmentFilename",
+                    attachment_path AS "attachmentPath",
+                    status
+                FROM pr_campaigns
+                WHERE pr_campaign_id = $1
+                `,
+                [campaignId]
+            );
+
+            if (result.rowCount === 0) {
+                return res.status(404).json({
+                    error: "Campaign not found",
+                });
+            }
+
+            const campaign = result.rows[0];
+
+            /*
+             * Deliberately hard-coded for development.
+             *
+             * This endpoint must NOT use
+             * pr_campaign_recipients.
+             */
+            const testRecipient =
+                "info@redtemples.band";
+
+            await sendEmail({
+                to: testRecipient,
+                subject: campaign.subject,
+                text: campaign.emailBody,
+
+                attachment:
+                    campaign.attachmentFilename &&
+                        campaign.attachmentPath
+                        ? {
+                            filename:
+                                campaign.attachmentFilename,
+                            path:
+                                campaign.attachmentPath,
+                        }
+                        : undefined,
+            });
+
+            console.log(
+                `Test campaign ${campaignId} sent to ${testRecipient}`
+            );
+
+            res.json({
+                success: true,
+                campaignId,
+                sentTo: testRecipient,
+            });
+        } catch (error) {
+            console.error(
+                `POST /pr-campaigns/${campaignId}/send-test failed:`,
+                error
+            );
+
+            res.status(500).json({
+                error: "Unable to send test email",
             });
         }
     }
