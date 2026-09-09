@@ -74,6 +74,32 @@ const DEFAULT_VALUES: BandFormValues = {
     genres: [] as Genre[],
 };
 
+const MEMBER_COUNT_OPTIONS = Array.from(
+    { length: 10 },
+    (_, index) => {
+        const value = String(index + 1);
+
+        return {
+            label: value,
+            value,
+        };
+    }
+);
+
+const CURRENT_YEAR = new Date().getFullYear();
+
+const FORMATION_YEAR_OPTIONS = Array.from(
+    { length: CURRENT_YEAR - 1949 },
+    (_, index) => {
+        const value = String(CURRENT_YEAR - index);
+
+        return {
+            label: value,
+            value,
+        };
+    }
+);
+
 export function BandForm({
     initialValues,
     title,
@@ -154,7 +180,7 @@ export function BandForm({
             <Field
                 label="Slug"
                 value={values.slug}
-                onChangeText={() => {}}
+                onChangeText={() => { }}
                 autoCapitalize="none"
                 editable={false}
             />
@@ -191,26 +217,26 @@ export function BandForm({
                 </View>
             </View>
 
-            <View style={styles.formRow}>
+            <View style={[styles.formRow, styles.selectRow]}>
                 <View style={styles.formColumn}>
-                    <Field
+                    <SelectField
                         label="Member count"
                         value={values.memberCount}
-                        onChangeText={(value) =>
+                        options={MEMBER_COUNT_OPTIONS}
+                        onChange={(value) =>
                             updateField("memberCount", value)
                         }
-                        keyboardType="number-pad"
                     />
                 </View>
 
                 <View style={styles.formColumn}>
-                    <Field
+                    <SelectField
                         label="Formation year"
                         value={values.formationYear}
-                        onChangeText={(value) =>
+                        options={FORMATION_YEAR_OPTIONS}
+                        onChange={(value) =>
                             updateField("formationYear", value)
                         }
-                        keyboardType="number-pad"
                     />
                 </View>
             </View>
@@ -402,6 +428,93 @@ function Field({
                 ]}
                 numberOfLines={numberOfLines}
             />
+        </View>
+    );
+}
+
+type SelectOption = {
+    label: string;
+    value: string;
+};
+
+type SelectFieldProps = {
+    label: string;
+    value: string;
+    options: SelectOption[];
+    onChange: (value: string) => void;
+};
+
+function SelectField({
+    label,
+    value,
+    options,
+    onChange,
+}: SelectFieldProps) {
+    const [open, setOpen] = useState(false);
+
+    const selected = options.find(
+        (option) => option.value === value
+    );
+
+    return (
+        <View style={styles.field}>
+            <Text style={styles.fieldLabel}>
+                {label}
+            </Text>
+
+            <Pressable
+                style={styles.select}
+                onPress={() => setOpen((current) => !current)}
+            >
+                <Text
+                    style={
+                        selected
+                            ? styles.selectText
+                            : styles.selectPlaceholder
+                    }
+                >
+                    {selected?.label ?? "Select..."}
+                </Text>
+
+                <Text style={styles.selectArrow}>
+                    {open ? "▲" : "▼"}
+                </Text>
+            </Pressable>
+
+            {open && (
+                <View style={styles.selectOptions}>
+                    <ScrollView
+                        style={styles.selectOptionsScroll}
+                        nestedScrollEnabled
+                        showsVerticalScrollIndicator
+                    >
+                        {options.map((option) => (
+                            <Pressable
+                                key={option.value}
+                                style={[
+                                    styles.selectOption,
+                                    value === option.value &&
+                                    styles.selectOptionSelected,
+                                ]}
+                                onPress={() => {
+                                    onChange(option.value);
+                                    setOpen(false);
+                                }}
+                            >
+                                <Text
+                                    style={[
+                                        styles.selectOptionText,
+                                        value === option.value &&
+                                        styles.selectOptionTextSelected,
+                                    ]}
+                                >
+                                    {option.label}
+                                </Text>
+                            </Pressable>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
         </View>
     );
 }
