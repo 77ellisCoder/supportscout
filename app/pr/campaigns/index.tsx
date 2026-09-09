@@ -10,7 +10,7 @@ import { router } from "expo-router";
 import { Button } from "../../../components/ui/Button";
 import { usePrCampaigns } from "../../../hooks/usePrCampaigns";
 
-import { styles } from "./index.styles";
+import { styles } from "../../../styles/pr/campaigns.styles";
 
 export default function PrCampaignsScreen() {
     const {

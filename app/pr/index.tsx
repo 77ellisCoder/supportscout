@@ -11,7 +11,7 @@ import {
 
 import { Button } from "../../components/ui/Button";
 import { usePrContacts } from "../../hooks/usePrContacts";
-import { styles } from "./index.styles";
+import { styles } from "../../styles/pr/contacts.styles";
 
 type Filter = "all" | "email" | "manual";
 

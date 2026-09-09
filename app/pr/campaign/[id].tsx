@@ -17,7 +17,7 @@ import {
     WebPrCampaignRepository,
 } from "../../../repositories/WebPrCampaignRepository";
 
-import { styles } from "./campaign.styles";
+import { styles } from "../../../styles/pr/campaign.styles";
 
 export default function PrCampaignScreen() {
     const params =

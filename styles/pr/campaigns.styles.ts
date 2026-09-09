@@ -5,11 +5,11 @@ import {
     radius,
     spacing,
     typography,
-} from "../../../theme";
+} from "../../theme";
 
 import {
     layout,
-} from "../../../styles/shared/layout.styles";
+} from "../shared/layout.styles";
 
 export const styles = StyleSheet.create({
     screen: {

@@ -5,11 +5,11 @@ import {
     radius,
     spacing,
     typography,
-} from "../../../theme";
+} from "../../theme";
 
 import {
     layout,
-} from "../../../styles/shared/layout.styles";
+} from "../shared/layout.styles";
 
 export const styles = StyleSheet.create({
     screen: {
@@ -26,9 +26,7 @@ export const styles = StyleSheet.create({
     },
 
     header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        marginBottom: spacing.sm,
     },
 
     title: {
@@ -36,20 +34,9 @@ export const styles = StyleSheet.create({
         color: colors.text,
     },
 
-    statusBadge: {
-        backgroundColor:
-            colors.primaryMuted,
-        borderWidth: 1,
-        borderColor: colors.primary,
-        borderRadius: radius.md,
-        paddingHorizontal: spacing.md,
-        paddingVertical: spacing.xs,
-    },
-
-    statusText: {
-        color: colors.primaryLight,
-        fontWeight: "700",
-        fontSize: 12,
+    subtitle: {
+        marginTop: spacing.xs,
+        color: colors.textSecondary,
     },
 
     section: {
@@ -64,18 +51,43 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         ...typography.label,
         color: colors.text,
+        marginBottom: spacing.xs,
     },
 
-    value: {
-        color: colors.text,
-        fontSize: 16,
+    label: {
+        color: colors.textSecondary,
+        marginTop: spacing.sm,
     },
 
-    messageText: {
+    input: {
+        backgroundColor: colors.backgroundDeep,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: radius.md,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
         color: colors.text,
-        lineHeight: 22,
-        whiteSpace: "pre-wrap",
-    } as any,
+    },
+
+    messageInput: {
+        minHeight: 220,
+    },
+
+    placeholder: {
+        color: colors.textMuted,
+    },
+
+    attachmentRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: spacing.md,
+    },
+
+    attachmentName: {
+        color: colors.text,
+        fontWeight: "600",
+    },
 
     secondaryText: {
         color: colors.textSecondary,
@@ -88,9 +100,6 @@ export const styles = StyleSheet.create({
     },
 
     recipientRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
         paddingVertical: spacing.sm,
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
@@ -101,24 +110,8 @@ export const styles = StyleSheet.create({
         fontWeight: "600",
     },
 
-    recipientStatus: {
-        color: colors.textSecondary,
-        textTransform: "capitalize",
-    },
-
-    testActions: {
-        alignItems: "flex-start",
-        marginTop: spacing.sm,
-    },
-
-    success: {
-        color: colors.primaryLight,
-        marginTop: spacing.sm,
-    },
-
     error: {
         color: colors.danger,
-        marginTop: spacing.sm,
     },
 
     actions: {

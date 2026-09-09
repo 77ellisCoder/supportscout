@@ -18,7 +18,7 @@ import { Button } from "../../../components/ui/Button";
 import { usePrContacts } from "../../../hooks/usePrContacts";
 import { WebPrCampaignRepository } from "../../../repositories/WebPrCampaignRepository";
 
-import { styles } from "./create.styles";
+import { styles } from "../../../styles/pr/campaign-create.styles";
 
 type SelectedAttachment = {
     name: string;
