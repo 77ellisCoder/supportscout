@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 
 import { bandsRouter } from "./routes/bands";
+import { prContactsRouter } from "./routes/prContacts";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/bands", bandsRouter);
+app.use("/pr-contacts", prContactsRouter);
 
 app.listen(PORT, () => {
     console.log(

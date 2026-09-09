@@ -213,6 +213,13 @@ export default function RootLayout() {
             }}
           />
 
+          <Stack.Screen
+            name="pr/index"
+            options={{
+              title: "PR Contacts",
+            }}
+          />
+
           {/* <Stack.Screen
             name="export/index"
             options={{

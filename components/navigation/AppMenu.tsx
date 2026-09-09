@@ -15,6 +15,7 @@ export function AppMenu({ onClose }: AppMenuProps) {
             | "/bands"
             | "/venues"
             | "/gigs"
+            | "/pr"
             | "/export"
     ) => {
         onClose();
@@ -57,6 +58,12 @@ export function AppMenu({ onClose }: AppMenuProps) {
                 title="Gigs"
                 description="Track upcoming and past shows"
                 onPress={() => goTo("/gigs")}
+            />
+
+            <MenuItem
+                title="PR Contacts"
+                description="Manage media contacts"
+                onPress={() => goTo("/pr")}
             />
 
             <MenuItem
