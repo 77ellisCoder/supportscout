@@ -20,6 +20,8 @@ import { useGenres } from "../../hooks/useGenres";
 import { Genre } from "../../models/Genre";
 import { HometownAutocomplete } from "./HometownAutocomplete"
 
+import { ScreenActionBar } from "../ui/ScreenActionBar";
+
 export type BandFormValues = {
     bandName: string;
     slug: string;
@@ -150,279 +152,284 @@ export function BandForm({
     }, [values.genres]);
 
     return (
-        <ScrollView
-            style={styles.page}
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps="handled"
-        >
-            <PageHeader
-                showBack
-                eyebrow={eyebrow}
-                title={title}
-            />
+        <View style={styles.screen}>
+            <ScrollView
+                style={styles.page}
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+            >
+                <PageHeader
+                    showBack
+                    eyebrow={eyebrow}
+                    title={title}
+                />
 
-            {error && (
-                <View style={styles.errorCard}>
-                    <Text style={styles.errorText}>
-                        {error}
-                    </Text>
-                </View>
-            )}
-
-            <Field
-                label="Band name"
-                value={values.bandName}
-                onChangeText={(value) => {
-                    updateField("bandName", value);
-                    updateField("slug", slugify(value));
-                }}
-            />
-
-            <Field
-                label="Slug"
-                value={values.slug}
-                onChangeText={() => { }}
-                autoCapitalize="none"
-                editable={false}
-            />
-
-            <View style={[styles.formRow, styles.hometownRow]}>
-                <View style={styles.formColumn}>
-                    <HometownAutocomplete
-                        value={values.hometown}
-                        onChange={(value) =>
-                            updateField("hometown", value)
-                        }
-                    />
-                </View>
-
-                <View style={styles.formColumn}>
-                    <Field
-                        label="State / Region"
-                        value={values.stateRegion}
-                        onChangeText={() => { }}
-                        editable={false}
-                    />
-                </View>
-
-                <View style={styles.formColumnSmall}>
-                    <Field
-                        label="Country"
-                        value={values.countryCode}
-                        onChangeText={() => { }}
-                        editable={false}
-                    />
-                </View>
-            </View>
-
-            <View style={[styles.formRow, styles.selectRow]}>
-                <View style={styles.formColumn}>
-                    <SelectField
-                        label="Member count"
-                        value={values.memberCount}
-                        options={MEMBER_COUNT_OPTIONS}
-                        onChange={(value) =>
-                            updateField("memberCount", value)
-                        }
-                    />
-                </View>
-
-                <View style={styles.formColumn}>
-                    <SelectField
-                        label="Formation year"
-                        value={values.formationYear}
-                        options={FORMATION_YEAR_OPTIONS}
-                        onChange={(value) =>
-                            updateField("formationYear", value)
-                        }
-                    />
-                </View>
-            </View>
-
-            <Field
-                label="Description"
-                value={values.shortDescription}
-                onChangeText={(value) =>
-                    updateField(
-                        "shortDescription",
-                        value
-                    )
-                }
-                placeholder="Describe the band..."
-                multiline
-                numberOfLines={5}
-            />
-
-            <View style={styles.section}>
-                <View style={styles.genreHeader}>
-                    <Text style={styles.fieldLabel}>
-                        Genre(s)
-                    </Text>
-
-                    <Pressable
-                        onPress={() =>
-                            setGenresExpanded(
-                                (current) => !current
-                            )
-                        }
-                    >
-                        <Text style={styles.genreToggleText}>
-                            {genresExpanded
-                                ? "Done"
-                                : "Edit genres"}
+                {error && (
+                    <View style={styles.errorCard}>
+                        <Text style={styles.errorText}>
+                            {error}
                         </Text>
-                    </Pressable>
-                </View>
-
-                {selectedGenreIds.length > 0 && (
-                    <GenreChipSelector
-                        genres={genres.filter((genre) =>
-                            selectedGenreIds.includes(
-                                genre.id
-                            )
-                        )}
-                        selectedGenreIds={
-                            selectedGenreIds
-                        }
-                        onChange={() => { }}
-                        readOnly
-                    />
+                    </View>
                 )}
 
-                {selectedGenreIds.length === 0 &&
-                    !genresExpanded && (
-                        <Text style={styles.genreEmptyText}>
-                            No genres selected.
-                        </Text>
-                    )}
+                <Field
+                    label="Band name"
+                    value={values.bandName}
+                    onChangeText={(value) => {
+                        updateField("bandName", value);
+                        updateField("slug", slugify(value));
+                    }}
+                />
 
-                {genresExpanded && (
-                    <View style={styles.genreEditor}>
+                <Field
+                    label="Slug"
+                    value={values.slug}
+                    onChangeText={() => { }}
+                    autoCapitalize="none"
+                    editable={false}
+                />
+
+                <View style={[styles.formRow, styles.hometownRow]}>
+                    <View style={styles.formColumn}>
+                        <HometownAutocomplete
+                            value={values.hometown}
+                            onChange={(value) =>
+                                updateField("hometown", value)
+                            }
+                        />
+                    </View>
+
+                    <View style={styles.formColumn}>
+                        <Field
+                            label="State / Region"
+                            value={values.stateRegion}
+                            onChangeText={() => { }}
+                            editable={false}
+                        />
+                    </View>
+
+                    <View style={styles.formColumnSmall}>
+                        <Field
+                            label="Country"
+                            value={values.countryCode}
+                            onChangeText={() => { }}
+                            editable={false}
+                        />
+                    </View>
+                </View>
+
+                <View style={[styles.formRow, styles.selectRow]}>
+                    <View style={styles.formColumn}>
+                        <SelectField
+                            label="Member count"
+                            value={values.memberCount}
+                            options={MEMBER_COUNT_OPTIONS}
+                            onChange={(value) =>
+                                updateField("memberCount", value)
+                            }
+                        />
+                    </View>
+
+                    <View style={styles.formColumn}>
+                        <SelectField
+                            label="Formation year"
+                            value={values.formationYear}
+                            options={FORMATION_YEAR_OPTIONS}
+                            onChange={(value) =>
+                                updateField("formationYear", value)
+                            }
+                        />
+                    </View>
+                </View>
+
+                <Field
+                    label="Description"
+                    value={values.shortDescription}
+                    onChangeText={(value) =>
+                        updateField(
+                            "shortDescription",
+                            value
+                        )
+                    }
+                    placeholder="Describe the band..."
+                    multiline
+                    numberOfLines={5}
+                />
+
+                <View style={styles.section}>
+                    <View style={styles.genreHeader}>
+                        <Text style={styles.fieldLabel}>
+                            Genre(s)
+                        </Text>
+
+                        <Pressable
+                            onPress={() =>
+                                setGenresExpanded(
+                                    (current) => !current
+                                )
+                            }
+                        >
+                            <Text style={styles.genreToggleText}>
+                                {genresExpanded
+                                    ? "Done"
+                                    : "Edit genres"}
+                            </Text>
+                        </Pressable>
+                    </View>
+
+                    {selectedGenreIds.length > 0 && (
                         <GenreChipSelector
-                            genres={genres}
+                            genres={genres.filter((genre) =>
+                                selectedGenreIds.includes(
+                                    genre.id
+                                )
+                            )}
                             selectedGenreIds={
                                 selectedGenreIds
                             }
-                            onChange={(ids) => {
-                                setSelectedGenreIds(ids);
-
-                                updateField(
-                                    "genres",
-                                    genres.filter(
-                                        (genre) =>
-                                            ids.includes(
-                                                genre.id
-                                            )
-                                    )
-                                );
-                            }}
+                            onChange={() => { }}
+                            readOnly
                         />
-                    </View>
-                )}
-            </View>
+                    )}
 
-            <Field
-                label="Internal notes"
-                value={values.internalNotes}
-                onChangeText={(value) =>
-                    updateField("internalNotes", value)
-                }
-                multiline
-            />
+                    {selectedGenreIds.length === 0 &&
+                        !genresExpanded && (
+                            <Text style={styles.genreEmptyText}>
+                                No genres selected.
+                            </Text>
+                        )}
 
-            <View style={styles.section}>
-                <Text style={styles.fieldLabel}>
-                    Status
-                </Text>
+                    {genresExpanded && (
+                        <View style={styles.genreEditor}>
+                            <GenreChipSelector
+                                genres={genres}
+                                selectedGenreIds={
+                                    selectedGenreIds
+                                }
+                                onChange={(ids) => {
+                                    setSelectedGenreIds(ids);
 
-                <View style={styles.statusRow}>
-                    {(
-                        [
-                            "active",
-                            "inactive",
-                            "hiatus",
-                            "unknown",
-                        ] as BandStatus[]
-                    ).map((status) => (
-                        <Pressable
-                            key={status}
-                            onPress={() =>
-                                updateField("status", status)
-                            }
-                            style={[
-                                styles.statusChip,
-                                values.status === status &&
-                                styles.statusChipSelected,
-                            ]}
-                        >
-                            <Text
+                                    updateField(
+                                        "genres",
+                                        genres.filter(
+                                            (genre) =>
+                                                ids.includes(
+                                                    genre.id
+                                                )
+                                        )
+                                    );
+                                }}
+                            />
+                        </View>
+                    )}
+                </View>
+
+                <Field
+                    label="Internal notes"
+                    value={values.internalNotes}
+                    onChangeText={(value) =>
+                        updateField("internalNotes", value)
+                    }
+                    multiline
+                />
+
+                <View style={styles.section}>
+                    <Text style={styles.fieldLabel}>
+                        Status
+                    </Text>
+
+                    <View style={styles.statusRow}>
+                        {(
+                            [
+                                "active",
+                                "inactive",
+                                "hiatus",
+                                "unknown",
+                            ] as BandStatus[]
+                        ).map((status) => (
+                            <Pressable
+                                key={status}
+                                onPress={() =>
+                                    updateField("status", status)
+                                }
                                 style={[
-                                    styles.statusChipText,
+                                    styles.statusChip,
                                     values.status === status &&
-                                    styles.statusChipTextSelected,
+                                    styles.statusChipSelected,
                                 ]}
                             >
-                                {status}
+                                <Text
+                                    style={[
+                                        styles.statusChipText,
+                                        values.status === status &&
+                                        styles.statusChipTextSelected,
+                                    ]}
+                                >
+                                    {status}
+                                </Text>
+                            </Pressable>
+                        ))}
+                    </View>
+                </View>
+
+                <View style={styles.section}>
+                    {/* Additional fields for booking contact and social media URLs */}
+                    <BandContactLinks
+                        values={values}
+                        onChange={updateField}
+                    />
+                </View>
+
+                <View style={styles.toggleRow}>
+                    <View style={styles.toggleItem}>
+                        <View style={styles.toggleContent}>
+                            <Text style={styles.toggleLabel}>
+                                Our Band
                             </Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
 
-            <View style={styles.section}>
-                {/* Additional fields for booking contact and social media URLs */}
-                <BandContactLinks
-                    values={values}
-                    onChange={updateField}
+                            <Text style={styles.helperText}>
+                                Mark this as your own band.
+                            </Text>
+                        </View>
+
+                        <Switch
+                            value={values.isOurBand}
+                            onValueChange={(value) =>
+                                updateField("isOurBand", value)
+                            }
+                        />
+                    </View>
+
+                    <View style={styles.toggleItem}>
+                        <View style={styles.toggleContent}>
+                            <Text style={styles.toggleLabel}>
+                                Verified
+                            </Text>
+
+                            <Text style={styles.helperText}>
+                                Mark this band research as verified.
+                            </Text>
+                        </View>
+
+                        <Switch
+                            value={values.isVerified}
+                            onValueChange={(value) =>
+                                updateField("isVerified", value)
+                            }
+                        />
+                    </View>
+                </View>
+            </ScrollView>
+            
+            <ScreenActionBar>
+                <FormActions
+                    submitLabel={submitLabel}
+                    saving={saving}
+                    onSubmit={() => onSubmit(values)}
+                    inActionBar
                 />
-            </View>
-
-            <View style={styles.toggleRow}>
-                <View style={styles.toggleItem}>
-                    <View style={styles.toggleContent}>
-                        <Text style={styles.toggleLabel}>
-                            Our Band
-                        </Text>
-
-                        <Text style={styles.helperText}>
-                            Mark this as your own band.
-                        </Text>
-                    </View>
-
-                    <Switch
-                        value={values.isOurBand}
-                        onValueChange={(value) =>
-                            updateField("isOurBand", value)
-                        }
-                    />
-                </View>
-
-                <View style={styles.toggleItem}>
-                    <View style={styles.toggleContent}>
-                        <Text style={styles.toggleLabel}>
-                            Verified
-                        </Text>
-
-                        <Text style={styles.helperText}>
-                            Mark this band research as verified.
-                        </Text>
-                    </View>
-
-                    <Switch
-                        value={values.isVerified}
-                        onValueChange={(value) =>
-                            updateField("isVerified", value)
-                        }
-                    />
-                </View>
-            </View>
-
-            <FormActions
-                submitLabel={submitLabel}
-                saving={saving}
-                onSubmit={() => onSubmit(values)}
-            />
-        </ScrollView>
+            </ScreenActionBar>
+        </View>
     );
 }
 
