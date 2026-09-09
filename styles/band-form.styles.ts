@@ -118,6 +118,31 @@ const bandFormOverrides = StyleSheet.create({
         position: "relative",
         zIndex: 100,
     },
+
+    genreHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: spacing.sm,
+    },
+
+    genreToggleText: {
+        ...typography.small,
+        color: colors.primaryLight,
+        fontWeight: "700",
+    },
+
+    genreEditor: {
+        marginTop: spacing.md,
+        paddingTop: spacing.md,
+        borderTopWidth: 1,
+        borderTopColor: colors.border,
+    },
+
+    genreEmptyText: {
+        ...typography.small,
+        color: colors.textMuted,
+    },
 });
 
 export const styles = {
@@ -175,4 +200,8 @@ export const styles = {
     selectOptionsScroll:
         bandFormOverrides.selectOptionsScroll,
     selectRow: bandFormOverrides.selectRow,
+    genreHeader: bandFormOverrides.genreHeader,
+    genreToggleText: bandFormOverrides.genreToggleText,
+    genreEditor: bandFormOverrides.genreEditor,
+    genreEmptyText: bandFormOverrides.genreEmptyText,
 };

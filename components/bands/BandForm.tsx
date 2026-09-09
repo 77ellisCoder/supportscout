@@ -133,10 +133,10 @@ export function BandForm({
         error: genresError,
     } = useGenres();
 
-    const [slugTouched, setSlugTouched] = useState(false);
-
     const [selectedGenreIds, setSelectedGenreIds] =
         useState<number[]>([]);
+
+    const [genresExpanded, setGenresExpanded] = useState(false);
 
     useEffect(() => {
         if (!values.genres || values.genres.length === 0) {
@@ -256,23 +256,71 @@ export function BandForm({
             />
 
             <View style={styles.section}>
-                <Text style={styles.fieldLabel}>
-                    Genre(s)
-                </Text>
-                <GenreChipSelector
-                    genres={genres}
-                    selectedGenreIds={selectedGenreIds}
-                    onChange={(ids) => {
-                        setSelectedGenreIds(ids);
+                <View style={styles.genreHeader}>
+                    <Text style={styles.fieldLabel}>
+                        Genre(s)
+                    </Text>
 
-                        updateField(
-                            "genres",
-                            genres.filter((genre) =>
-                                ids.includes(genre.id)
+                    <Pressable
+                        onPress={() =>
+                            setGenresExpanded(
+                                (current) => !current
                             )
-                        );
-                    }}
-                />
+                        }
+                    >
+                        <Text style={styles.genreToggleText}>
+                            {genresExpanded
+                                ? "Done"
+                                : "Edit genres"}
+                        </Text>
+                    </Pressable>
+                </View>
+
+                {selectedGenreIds.length > 0 && (
+                    <GenreChipSelector
+                        genres={genres.filter((genre) =>
+                            selectedGenreIds.includes(
+                                genre.id
+                            )
+                        )}
+                        selectedGenreIds={
+                            selectedGenreIds
+                        }
+                        onChange={() => { }}
+                        readOnly
+                    />
+                )}
+
+                {selectedGenreIds.length === 0 &&
+                    !genresExpanded && (
+                        <Text style={styles.genreEmptyText}>
+                            No genres selected.
+                        </Text>
+                    )}
+
+                {genresExpanded && (
+                    <View style={styles.genreEditor}>
+                        <GenreChipSelector
+                            genres={genres}
+                            selectedGenreIds={
+                                selectedGenreIds
+                            }
+                            onChange={(ids) => {
+                                setSelectedGenreIds(ids);
+
+                                updateField(
+                                    "genres",
+                                    genres.filter(
+                                        (genre) =>
+                                            ids.includes(
+                                                genre.id
+                                            )
+                                    )
+                                );
+                            }}
+                        />
+                    </View>
+                )}
             </View>
 
             <Field

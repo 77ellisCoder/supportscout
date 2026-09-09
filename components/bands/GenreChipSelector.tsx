@@ -42,32 +42,49 @@ export function GenreChipSelector({
 
     const chips = genres.map((genre) => {
         const id = genre.id;
-
         const selected =
             selectedGenreIds.includes(id);
+
+        const content = (
+            <Text
+                style={[
+                    styles.chipText,
+                    selected &&
+                    styles.chipTextSelected,
+                ]}
+            >
+                {genre.name}
+            </Text>
+        );
+
+        if (readOnly) {
+            return (
+                <View
+                    key={id}
+                    style={[
+                        styles.chip,
+                        selected &&
+                        styles.chipSelected,
+                    ]}
+                >
+                    {content}
+                </View>
+            );
+        }
 
         return (
             <Pressable
                 key={id}
                 onPress={() =>
-                    !readOnly &&
                     toggleGenre(genre)
                 }
                 style={[
                     styles.chip,
                     selected &&
-                        styles.chipSelected,
+                    styles.chipSelected,
                 ]}
             >
-                <Text
-                    style={[
-                        styles.chipText,
-                        selected &&
-                            styles.chipTextSelected,
-                    ]}
-                >
-                    {genre.name}
-                </Text>
+                {content}
             </Pressable>
         );
     });
