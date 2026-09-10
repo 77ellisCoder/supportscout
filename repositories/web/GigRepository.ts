@@ -78,6 +78,26 @@ export const GigRepository = {
         }));
     },
 
+    async getById(
+        gigId: number
+    ): Promise<Gig | null> {
+        const response = await fetch(
+            `${API_URL}/gigs/${gigId}`
+        );
+
+        if (response.status === 404) {
+            return null;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to fetch gig ${gigId}`
+            );
+        }
+
+        return response.json();
+    },
+
     async getByBandId(
         bandId: number,
         period: "past" | "upcoming"

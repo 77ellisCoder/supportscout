@@ -3,10 +3,6 @@ export {
 } from "./BandRepository";
 
 export {
-    DrinkTokenRepository,
-} from "./DrinkTokenRepository"
-
-export {
     GenreRepository,
 } from "./GenreRepository";
 

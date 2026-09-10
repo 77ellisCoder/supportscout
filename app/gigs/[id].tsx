@@ -6,6 +6,7 @@ import {
 import {
     ActivityIndicator,
     Pressable,
+    Platform,
     ScrollView,
     Text,
     View,
@@ -18,7 +19,7 @@ import { BackButton } from "../../components/navigation/BackButton";
 import { DrinkRider } from "../../components/gigs/DrinkRider";
 import { Button } from "../../components/ui/Button";
 
-import { ScreenActionBar} from "../../components/ui/ScreenActionBar"
+import { ScreenActionBar } from "../../components/ui/ScreenActionBar"
 
 export default function GigDetailsScreen() {
     const { id } =
@@ -172,14 +173,15 @@ export default function GigDetailsScreen() {
                                         </Text>
                                     </Pressable>
 
-                                    {/* Render the DrinkRider component only if the band is our band */}
-                                    {band.isOurBand && (
-                                        <DrinkRider
-                                            gigId={gig.gigId}
-                                            bandId={band.bandId}
-                                            bandName={band.bandName}
-                                        />
-                                    )}
+                                    {/* Drink rider is a device-only feature for our band */}
+                                    {Platform.OS !== "web" &&
+                                        band.isOurBand && (
+                                            <DrinkRider
+                                                gigId={gig.gigId}
+                                                bandId={band.bandId}
+                                                bandName={band.bandName}
+                                            />
+                                        )}
                                 </View>
                             ))}
                         </View>
