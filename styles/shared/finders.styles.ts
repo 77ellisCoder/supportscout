@@ -128,14 +128,12 @@ export const finderStyles = StyleSheet.create({
 
     header: {
         ...layoutStyles.contentWidth,
-        paddingHorizontal: spacing.xl,
         marginBottom: spacing.lg,
         marginTop: spacing.xl,
     },
 
     list: {
         ...layoutStyles.contentWidth,
-        paddingHorizontal: spacing.xl,
         paddingBottom: spacing.huge,
     },
 

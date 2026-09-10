@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
 
     description: {
         ...textStyles.description,
-        color: colors.primaryLight,
+        color: colors.textSecondary,
     },
 
     scoreBadge: {
