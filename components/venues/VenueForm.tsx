@@ -14,6 +14,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/venue-form.styles";
 import { FormActions } from "../ui/FormActions";
 
+import { Chip } from "../../components/Chip";
 import { ScreenActionBar } from "../../components/ui/ScreenActionBar"
 
 export type VenueFormValues = {
@@ -59,6 +60,16 @@ const DEFAULT_VALUES: VenueFormValues = {
     status: "active",
     isVerified: false,
 };
+
+const VENUE_TYPES = [
+    "Live Music Venue",
+    "Bar",
+    "Pub",
+    "Club",
+    "Theatre",
+    "Festival",
+    "Other",
+] as const;
 
 export function VenueForm({
     initialValues,
@@ -140,14 +151,32 @@ export function VenueForm({
                     keyboardType="number-pad"
                 />
 
-                <Field
-                    label="Venue type"
-                    value={values.venueType}
-                    onChangeText={(value) =>
-                        updateField("venueType", value)
-                    }
-                    placeholder="live_music_bar"
-                />
+                <View style={styles.field}>
+                    <Text style={styles.fieldLabel}>
+                        Venue Type
+                    </Text>
+
+                    <View style={styles.chipRow}>
+                        {VENUE_TYPES.map((type) => {
+                            const selected =
+                                values.venueType === type;
+
+                            return (
+                                <Chip
+                                    key={type}
+                                    label={type}
+                                    selected={selected}
+                                    onPress={() =>
+                                        updateField(
+                                            "venueType",
+                                            selected ? "" : type
+                                        )
+                                    }
+                                />
+                            );
+                        })}
+                    </View>
+                </View>
 
                 <Field
                     label="Website"

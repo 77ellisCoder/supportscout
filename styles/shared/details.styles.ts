@@ -67,7 +67,7 @@ export const detailStyles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radius.xl,
     padding: spacing.xl,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
     ...shadows.card,
   },
 

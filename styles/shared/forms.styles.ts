@@ -10,6 +10,15 @@ import { layoutStyles } from "./layout.styles";
 
 /** Shared styles for create/edit entity forms. */
 export const formStyles = StyleSheet.create({
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+
+    gap: spacing.sm,
+
+    marginTop: spacing.lg,
+  },
+
   page: {
     flex: 1,
     backgroundColor: colors.background,

@@ -15,6 +15,7 @@ export const layoutStyles = StyleSheet.create({
         alignSelf: "center",
         paddingHorizontal: spacing.xl,
         paddingBottom: spacing.huge,
+        paddingTop: spacing.lg,
     },
 
     formContainer: {
