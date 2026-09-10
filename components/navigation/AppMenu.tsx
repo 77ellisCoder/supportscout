@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import { MenuItem } from "./MenuItem";
 import { styles } from "./AppMenu.styles";
@@ -60,11 +60,13 @@ export function AppMenu({ onClose }: AppMenuProps) {
                 onPress={() => goTo("/gigs")}
             />
 
-            <MenuItem
-                title="PR Contacts"
-                description="Manage media contacts"
-                onPress={() => goTo("/pr")}
-            />
+            {Platform.OS === "web" && (
+                <MenuItem
+                    title="PR Contacts"
+                    description="Manage PR contacts"
+                    onPress={() => goTo("/pr")}
+                />
+            )}
 
             <MenuItem
                 title="Export"
