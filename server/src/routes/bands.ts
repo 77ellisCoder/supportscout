@@ -4,6 +4,11 @@ import { pool } from "../database/postgres";
 
 export const bandsRouter = Router();
 
+type GenreInput = {
+    id: number;
+    name: string;
+};
+
 bandsRouter.get("/", async (_req, res) => {
     try {
         const result = await pool.query(`
@@ -380,6 +385,179 @@ bandsRouter.patch("/:id", async (req, res) => {
                 error instanceof Error
                     ? error.message
                     : "Unable to update band",
+        });
+    } finally {
+        client.release();
+    }
+});
+
+bandsRouter.post("/", async (req, res) => {
+    const {
+        bandName,
+        slug,
+        hometown,
+        stateRegion,
+        countryCode,
+        memberCount,
+        formationYear,
+        status,
+        shortDescription,
+        internalNotes,
+        isOurBand,
+        isVerified,
+        bookingContactName,
+        contactEmail,
+        facebookUrl,
+        instagramUrl,
+        websiteUrl,
+        genres,
+    } = req.body;
+
+    const genreInputs: GenreInput[] =
+        Array.isArray(genres)
+            ? genres
+            : [];
+
+    if (
+        typeof bandName !== "string" ||
+        !bandName.trim()
+    ) {
+        return res.status(400).json({
+            error: "Band name is required",
+        });
+    }
+
+    const client = await pool.connect();
+
+    try {
+        await client.query("BEGIN");
+
+        const result = await client.query(
+            `
+            INSERT INTO bands (
+                band_name,
+                slug,
+                hometown,
+                state_region,
+                country_code,
+                member_count,
+                formation_year,
+                status,
+                short_description,
+                internal_notes,
+                is_our_band,
+                is_verified,
+                booking_contact_name,
+                contact_email,
+                facebook_url,
+                instagram_url,
+                website_url
+            )
+            VALUES (
+                $1, $2, $3, $4, $5, $6,
+                $7, $8, $9, $10, $11, $12,
+                $13, $14, $15, $16, $17
+            )
+            RETURNING
+                band_id::int AS "bandId",
+                band_name AS "bandName",
+                slug,
+                hometown,
+                state_region AS "stateRegion",
+                country_code AS "countryCode",
+                member_count AS "memberCount",
+                formation_year AS "formationYear",
+                status,
+                short_description AS "shortDescription",
+                internal_notes AS "internalNotes",
+                is_our_band AS "isOurBand",
+                is_verified AS "isVerified",
+                booking_contact_name AS "bookingContactName",
+                contact_email AS "contactEmail",
+                facebook_url AS "facebookUrl",
+                instagram_url AS "instagramUrl",
+                website_url AS "websiteUrl",
+                created_at AS "createdAt",
+                updated_at AS "updatedAt",
+                archived_at AS "archivedAt"
+            `,
+            [
+                bandName.trim(),
+                slug || null,
+                hometown || null,
+                stateRegion || null,
+                countryCode || null,
+                memberCount ?? null,
+                formationYear ?? null,
+                status ?? "active",
+                shortDescription || null,
+                internalNotes || null,
+                Boolean(isOurBand),
+                Boolean(isVerified),
+                bookingContactName || null,
+                contactEmail || null,
+                facebookUrl || null,
+                instagramUrl || null,
+                websiteUrl || null,
+            ]
+        );
+
+        const band = result.rows[0];
+
+        const genreIds = [
+            ...new Set(
+                genreInputs
+                    .map((genre) =>
+                        Number(genre.id)
+                    )
+                    .filter((id) =>
+                        Number.isInteger(id)
+                    )
+            ),
+        ];
+
+        for (const genreId of genreIds) {
+            await client.query(
+                `
+                INSERT INTO band_genres (
+                    band_id,
+                    genre_id
+                )
+                VALUES ($1, $2)
+                `,
+                [band.bandId, genreId]
+            );
+        }
+
+        await client.query("COMMIT");
+
+        res.status(201).json({
+            ...band,
+            genres: genreIds.map((id) => {
+                const genre = genreInputs.find(
+                    (item) =>
+                        Number(item.id) === id
+                );
+
+                return {
+                    id,
+                    name: genre?.name ?? "",
+                };
+            }),
+        });
+    } catch (error) {
+        await client.query("ROLLBACK");
+
+        console.error(
+            "POST /bands failed:",
+            error
+        );
+
+        res.status(500).json({
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Unable to create band",
         });
     } finally {
         client.release();

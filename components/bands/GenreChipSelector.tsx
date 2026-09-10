@@ -40,16 +40,6 @@ export function GenreChipSelector({
         }
     }
 
-    console.log(
-        "GenreChipSelector genres:",
-        JSON.stringify(genres, null, 2)
-    );
-
-    console.log(
-        "GenreChipSelector selectedGenreIds:",
-        JSON.stringify(selectedGenreIds)
-    );
-
     const chips = genres.map((genre) => {
         const id = genre.id;
         const selected =
