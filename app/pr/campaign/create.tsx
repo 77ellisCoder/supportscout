@@ -129,11 +129,6 @@ export default function CreatePrCampaignScreen() {
                     contactIds,
                 });
 
-            console.log(
-                "Created PR campaign:",
-                campaign
-            );
-
             if (attachment) {
                 setSaveStatus("uploading");
 
@@ -142,11 +137,6 @@ export default function CreatePrCampaignScreen() {
                         campaign.id,
                         attachment
                     );
-
-                console.log(
-                    "Uploaded campaign attachment:",
-                    uploadedAttachment
-                );
             }
 
             // Navigate to the campaign details page after saving

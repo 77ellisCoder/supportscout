@@ -34,8 +34,6 @@ export default function GenreDetailsScreen() {
     data: genres = [],
   } = useGenres();
 
-  console.log("GenreDetailsScreen: genres", genres);
-
   if (isLoading) {
     return (
       <View style={styles.center}>

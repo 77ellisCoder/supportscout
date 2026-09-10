@@ -43,13 +43,6 @@ export default function BandsScreen() {
     error,
   } = useBands(search);
 
-  console.log(
-    bands.map((band) => ({
-      band: band.bandName,
-      genres: band.genres,
-    }))
-  );
-
   const filteredBands = useMemo(() => {
     if (selectedGenreId === null) {
       return bands;

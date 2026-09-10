@@ -320,7 +320,6 @@ export const BandRepository = {
         );
       }
     }
-    console.log(`Updated band with ID ${bandId} and genres:`, input.genres);
   },
 
   async delete(bandId: number): Promise<void> {

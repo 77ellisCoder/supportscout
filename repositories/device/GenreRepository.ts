@@ -120,8 +120,6 @@ export const GenreRepository = {
             bandId
         );
 
-        console.log("GenreRepository.getByBandId: bandId:", bandId, " - rows:", rows);
-
         return rows.map((row) => ({
             id: row.genre_id,
             name: row.genre_name,
