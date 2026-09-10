@@ -3,6 +3,7 @@ import { Platform } from "react-native";
 import { getDatabase } from "../database/sqlite/Database";
 import { importSupportBands } from "../database/sqlite/imports/SpreadsheetImporter";
 import { importVenues } from "../database/sqlite/imports/VenueImporter";
+import { logger } from "../utils/logger";
 
 class AppBootstrapServiceClass {
     private started = false;
@@ -11,7 +12,7 @@ class AppBootstrapServiceClass {
         // Web uses the API/PostgreSQL.
         // SQLite bootstrap is only required for native platforms.
         if (Platform.OS === "web") {
-            console.log(
+            logger.debug(
                 "Skipping SQLite bootstrap on Web."
             );
             return;
@@ -24,7 +25,7 @@ class AppBootstrapServiceClass {
         this.started = true;
 
         try {
-            console.log(
+            logger.debug(
                 "Initialising SupportScout database..."
             );
 
@@ -40,20 +41,20 @@ class AppBootstrapServiceClass {
             const bandCount =
                 result?.count ?? 0;
 
-            console.log(
+            logger.debug(
                 "Existing bands:",
                 bandCount
             );
 
             if (bandCount === 0) {
-                console.log(
+                logger.info(
                     "Fresh database detected. Importing bundled band data..."
                 );
 
                 const importResult =
                     await importSupportBands();
 
-                console.log(
+                logger.debug(
                     "Initial band import complete:",
                     importResult
                 );
@@ -69,26 +70,26 @@ class AppBootstrapServiceClass {
             const venueCount =
                 venueResult?.count ?? 0;
 
-            console.log(
+            logger.debug(
                 "Existing venues:",
                 venueCount
             );
 
             if (venueCount === 0) {
-                console.log(
+                logger.info(
                     "No venues found. Importing bundled venue data..."
                 );
 
                 await importVenues();
             }
 
-            console.log(
+            logger.debug(
                 "SupportScout database ready."
             );
         } catch (error) {
             this.started = false;
 
-            console.error(
+            logger.error(
                 "SupportScout bootstrap failed:",
                 error
             );

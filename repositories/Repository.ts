@@ -16,6 +16,11 @@ export const {
     GenreRepository,
     GigRepository,
     VenueRepository,
+} = repositories;
+
+
+// TODO: server/web only for now
+export {
     PrCampaignRepository,
     PrContactRepository,
-} = repositories;
+} from "./web";

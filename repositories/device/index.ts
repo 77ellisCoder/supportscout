@@ -17,11 +17,3 @@ export {
 export {
     VenueRepository,
 } from "./VenueRepository";
-
-export {
-    PrCampaignRepository,
-} from "./PrCampaignRepository";
-
-export {
-    PrContactRepository,
-} from "./PrContactRepository";

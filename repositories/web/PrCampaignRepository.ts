@@ -18,10 +18,6 @@ export const PrCampaignRepository = {
     async create(
         input: CreatePrCampaignInput
     ): Promise<PrCampaign> {
-        console.log(
-            "WebPrCampaignRepository.create:",
-            input
-        );
 
         const response = await fetch(
             `${API_URL}/pr-campaigns`,
@@ -36,12 +32,6 @@ export const PrCampaignRepository = {
         );
 
         const result = await response.json();
-
-        console.log(
-            "Create campaign response:",
-            response.status,
-            result
-        );
 
         if (!response.ok) {
             throw new Error(

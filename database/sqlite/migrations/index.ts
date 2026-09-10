@@ -1,5 +1,7 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 
+import { logger } from "../../../utils/logger"
+
 import { migration001 } from "./001_initial";
 import { migration002 } from "./002_venues";
 import { migration003 } from "./003_gigs";
@@ -7,7 +9,8 @@ import { migration004 } from "./004_drink_riders";
 import { migration005 } from "./005_add_band_contact_fields";
 import { migration006 } from "./006_add_genres";
 
-import { exportDatabaseData } from "../exportDatabaseData";
+// TODO: Reimplement
+// import { exportDatabaseData } from "../exportDatabaseData";
 
 type Migration = {
   version: number;
@@ -27,7 +30,7 @@ const migrations: Migration[] = [
 export async function runMigrations(
   database: SQLiteDatabase
 ): Promise<void> {
-  console.log("Ensuring schema_migrations exists...");
+  logger.debug("Ensuring schema_migrations exists...");
 
   await database.execAsync(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -37,7 +40,7 @@ export async function runMigrations(
     );
   `);
 
-  console.log("Reading applied migrations...");
+  logger.debug("Reading applied migrations...");
 
   const applied = await database.getAllAsync<{
     version: number;
@@ -50,19 +53,19 @@ export async function runMigrations(
   );
 
   for (const migration of migrations) {
-    console.log(
+    logger.debug(
       `Checking migration ${migration.version}: ${migration.name}`
     );
 
     if (appliedVersions.has(migration.version)) {
-      console.log(
+      logger.debug(
         `Migration ${migration.version} already applied`
       );
 
       continue;
     }
 
-    console.log(
+    logger.debug(
       `Applying migration ${migration.version}: ${migration.name}`
     );
 
@@ -83,7 +86,7 @@ export async function runMigrations(
         );
       });
 
-      console.log(
+      logger.debug(
         `Migration ${migration.version} completed`
       );
     } catch (error) {
@@ -101,7 +104,7 @@ export async function runMigrations(
       "SELECT * FROM gigs"
     );
 
-  console.log(
+  logger.debug(
     "Existing gigs:",
     gigs.length
   );
