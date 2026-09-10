@@ -4,9 +4,12 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
+
 import { useBands } from "../../hooks/useBands";
+import { useGigs } from "../../hooks/useGigs";
 import { useVenues } from "../../hooks/useVenues";
-import { styles } from "../../styles/index.styles"
+
+import { styles } from "../../styles/index.styles";
 import { StatCard } from "../StatCard";
 
 /**
@@ -21,36 +24,60 @@ import { StatCard } from "../StatCard";
 export default function StatsSection() {
     const {
         data: bands = [],
-        isLoading,
-        error,
+        isLoading: bandsLoading,
+        error: bandsError,
     } = useBands();
-
-    const bandCount = bands.length;
 
     const {
         data: venues = [],
+        isLoading: venuesLoading,
+        error: venuesError,
     } = useVenues();
 
-    const venueCount = venues.length;
+    const {
+        data: gigs = [],
+        isLoading: gigsLoading,
+        error: gigsError,
+    } = useGigs();
+
+    const error =
+        bandsError ??
+        venuesError ??
+        gigsError;
 
     return (
         <View style={styles.statsGrid}>
             <StatCard
                 label="BANDS"
-                value={bandCount}
+                value={bands.length}
                 caption="in your database"
-                loading={isLoading}
+                loading={bandsLoading}
                 highlighted
-                onPress={() => router.push("/bands")}
+                onPress={() =>
+                    router.push("/bands")
+                }
             />
 
             <StatCard
                 label="VENUES"
-                value={venueCount}
+                value={venues.length}
                 caption="in your database"
-                loading={isLoading}
+                loading={venuesLoading}
                 highlighted
-                onPress={() => router.push("/venues")}
+                onPress={() =>
+                    router.push("/venues")
+                }
+            />
+
+            <StatCard
+                label="GIGS"
+                value={gigs.length}
+                caption="in your database"
+                loading={gigsLoading}
+                highlighted
+                onPress={() =>
+                    router.push("/gigs")
+                }
             />
 
             <StatCard

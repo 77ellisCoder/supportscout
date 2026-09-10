@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     card: {
         minWidth: 180,
         flexGrow: 1,
-
+        flexBasis: 0,
         backgroundColor: colors.surface,
 
         borderWidth: 1,
