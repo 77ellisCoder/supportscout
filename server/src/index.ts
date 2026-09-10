@@ -8,6 +8,7 @@ import { genresRouter } from "./routes/genres";
 import { gigsRouter } from "./routes/gigs";
 import { prContactsRouter } from "./routes/prContacts";
 import { prCampaignsRouter } from "./routes/prCampaigns";
+import { venuesRouter } from "./routes/venues"
 
 import {
     verifyEmailConnection,
@@ -47,6 +48,7 @@ app.use("/genres", genresRouter);
 app.use("/gigs", gigsRouter);
 app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
+app.use("/venues", venuesRouter);
 
 app.listen(PORT, () => {
     console.log(
