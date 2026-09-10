@@ -234,4 +234,13 @@ export const formStyles = StyleSheet.create({
   formColumnSmall: {
     flex: 0.5,
   },
+
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  scroll: {
+    flex: 1
+  }
 });

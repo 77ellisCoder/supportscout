@@ -109,7 +109,7 @@ export default function GenresScreen() {
                 </Text>
                 <Button
                     align="right"
-                    title="Edit"
+                    title="Edit Genres"
                     variant="add"
                     onPress={() => router.push(`/genres/${item.id}`)}
                   />

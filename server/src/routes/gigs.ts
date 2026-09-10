@@ -163,6 +163,118 @@ gigsRouter.get("/:id", async (req, res) => {
     }
 });
 
+gigsRouter.get(
+    "/band/:bandId",
+    async (req, res) => {
+        try {
+            const bandId =
+                Number(req.params.bandId);
+
+            if (!Number.isInteger(bandId)) {
+                return res.status(400).json({
+                    error: "Invalid band ID",
+                });
+            }
+
+            const period =
+                req.query.period;
+
+            if (
+                period !== "past" &&
+                period !== "upcoming"
+            ) {
+                return res.status(400).json({
+                    error:
+                        "Period must be past or upcoming",
+                });
+            }
+
+            const dateCondition =
+                period === "past"
+                    ? "g.gig_date < CURRENT_DATE"
+                    : "g.gig_date >= CURRENT_DATE";
+
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        g.gig_id::int
+                            AS "gigId",
+                        g.gig_name
+                            AS "gigName",
+
+                        TO_CHAR(
+                            g.gig_date,
+                            'YYYY-MM-DD'
+                        ) AS "gigDate",
+
+                        g.start_time
+                            AS "startTime",
+                        g.end_time
+                            AS "endTime",
+
+                        g.venue_id::int
+                            AS "venueId",
+
+                        v.venue_name
+                            AS "venueName",
+
+                        g.status,
+
+                        COUNT(
+                            DISTINCT lineup.band_id
+                        )::int
+                            AS "bandCount"
+
+                    FROM gigs g
+
+                    INNER JOIN gig_bands target_band
+                        ON target_band.gig_id =
+                            g.gig_id
+                        AND target_band.band_id =
+                            $1
+
+                    LEFT JOIN venues v
+                        ON v.venue_id =
+                            g.venue_id
+
+                    LEFT JOIN gig_bands lineup
+                        ON lineup.gig_id =
+                            g.gig_id
+
+                    WHERE
+                        g.archived_at IS NULL
+                        AND ${dateCondition}
+
+                    GROUP BY
+                        g.gig_id,
+                        v.venue_name
+
+                    ORDER BY
+                        g.gig_date ${period === "past"
+                        ? "DESC"
+                        : "ASC"
+                    },
+                        g.start_time ASC
+                    `,
+                    [bandId]
+                );
+
+            res.json(result.rows);
+        } catch (error) {
+            console.error(
+                "Failed to fetch gigs by band:",
+                error
+            );
+
+            res.status(500).json({
+                error:
+                    "Failed to fetch gigs by band",
+            });
+        }
+    }
+);
+
 gigsRouter.post("/", async (req, res) => {
     const {
         venueId,

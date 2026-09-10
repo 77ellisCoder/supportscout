@@ -272,7 +272,7 @@ export function BandForm({
                             <Text style={styles.genreToggleText}>
                                 {genresExpanded
                                     ? "Done"
-                                    : "Edit genres"}
+                                    : "Edit Genres"}
                             </Text>
                         </Pressable>
                     </View>
