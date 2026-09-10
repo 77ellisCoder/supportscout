@@ -138,6 +138,34 @@ export const GigRepository = {
         };
     },
 
+    async getByVenueId(
+        venueId: number,
+        period?: "past" | "upcoming"
+    ): Promise<GigListItem[]> {
+        const params =
+            new URLSearchParams();
+
+        if (period) {
+            params.set("period", period);
+        }
+
+        const query =
+            params.toString();
+
+        const response = await fetch(
+            `${API_URL}/gigs/venue/${venueId}${query ? `?${query}` : ""
+            }`
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to fetch gigs for venue ${venueId}`
+            );
+        }
+
+        return response.json();
+    },
+
     async create(
         input: GigInput
     ): Promise<Gig> {

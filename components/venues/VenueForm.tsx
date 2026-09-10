@@ -18,6 +18,8 @@ export type VenueFormValues = {
     venueName: string;
     suburb: string;
     address: string;
+    stateRegion: string;
+    countryCode: string;
     capacity: string;
     venueType: string;
     websiteUrl: string;
@@ -43,6 +45,8 @@ const DEFAULT_VALUES: VenueFormValues = {
     venueName: "",
     suburb: "",
     address: "",
+    stateRegion: "WA",
+    countryCode: "AU",
     capacity: "",
     venueType: "",
     websiteUrl: "",

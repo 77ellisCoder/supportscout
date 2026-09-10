@@ -52,6 +52,12 @@ export default function CreateVenueScreen() {
                     suburb:
                         values.suburb.trim() || null,
 
+                    stateRegion:
+                        values.stateRegion.trim() || "WA",
+
+                    countryCode:
+                        values.countryCode.trim() || "AU",
+
                     address:
                         values.address.trim() || null,
 
