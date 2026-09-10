@@ -154,17 +154,21 @@ step "Checking Git tag"
 
 EXPECTED_TAG="v${VERSION}"
 
-CURRENT_TAG="$(
-    git tag --points-at HEAD |
-    grep -Fx "$EXPECTED_TAG" ||
-    true
-)"
+if [[ "$PROFILE" == "production" ]]; then
+    CURRENT_TAG="$(
+        git tag --points-at HEAD |
+        grep -Fx "$EXPECTED_TAG" ||
+        true
+    )"
 
-if [[ "$CURRENT_TAG" != "$EXPECTED_TAG" ]]; then
-    fail "Current commit is not tagged ${EXPECTED_TAG}."
+    if [[ "$CURRENT_TAG" != "$EXPECTED_TAG" ]]; then
+        fail "Production build requires current commit to be tagged ${EXPECTED_TAG}."
+    fi
+
+    success "Current commit tagged ${EXPECTED_TAG}"
+else
+    echo "Preview build — exact release tag not required."
 fi
-
-success "Current commit tagged ${EXPECTED_TAG}"
 
 # ------------------------------------------------------------
 # 8. TypeScript
