@@ -1,6 +1,6 @@
-import { getDatabase } from "../database/sqlite/Database";
-import type { Band, BandStatus, CreateBandInput } from "../models/Band";
-import { Genre } from "../models/Genre";
+import { getDatabase } from "../../database/sqlite/Database";
+import type { Band, BandStatus, CreateBandInput } from "../../models/Band";
+import { Genre } from "../../models/Genre";
 
 type BandRow = {
   band_id: number;

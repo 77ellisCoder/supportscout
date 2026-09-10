@@ -1,5 +1,5 @@
-import { getDatabase } from "../database/sqlite/Database";
-import type { Genre } from "../models/Genre";
+import { getDatabase } from "../../database/sqlite/Database";
+import type { Genre } from "../../models/Genre";
 
 type GenreRow = {
     genre_id: number;

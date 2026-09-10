@@ -1,6 +1,7 @@
 import supportBandImport from "../../../assets/imports/support-bands.json";
 
-import { BandRepository } from "../../../repositories/BandRepository";
+// Specific to device
+import { BandRepository } from "../../../repositories/device/BandRepository";
 
 type ImportedBand = {
   bandName: string;

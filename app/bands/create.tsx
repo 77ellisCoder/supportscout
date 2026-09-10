@@ -7,7 +7,7 @@ import {
     type BandFormValues,
 } from "../../components/bands/BandForm";
 
-import { BandRepository } from "../../repositories/BandRepository";
+import { BandRepository } from "../../repositories/Repository";
 
 export default function CreateBandScreen() {
     const queryClient = useQueryClient();

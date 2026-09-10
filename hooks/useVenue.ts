@@ -1,14 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { VenueRepository } from "../repositories/VenueRepository";
+import { VenueRepository } from "../repositories/Repository";
 
-export function useVenue(id: number) {
+export function useVenue(
+    venueId: number
+) {
     return useQuery({
-        queryKey: ["venues", id],
+        queryKey: ["venues", venueId],
 
         queryFn: () =>
-            VenueRepository.getById(id),
+            VenueRepository.getById(
+                venueId
+            ),
 
-        enabled: Number.isFinite(id),
+        enabled:
+            Number.isFinite(venueId) &&
+            venueId > 0,
     });
 }

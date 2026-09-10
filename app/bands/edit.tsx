@@ -3,10 +3,8 @@ import {
   useLocalSearchParams,
 } from "expo-router";
 
-import { Platform } from "react-native";
-
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   BandForm,
@@ -14,10 +12,7 @@ import {
 } from "../../components/bands/BandForm";
 
 import { useBand } from "../../hooks/useBand";
-import { BandRepository } from "../../repositories/BandRepository";
-import {
-  WebBandRepository,
-} from "../../repositories/WebBandRepository";
+import { BandRepository } from "../../repositories/Repository";
 
 export default function EditBandScreen() {
   const { id } =
@@ -143,17 +138,10 @@ export default function EditBandScreen() {
         genres: values.genres,
       };
 
-      if (Platform.OS === "web") {
-        await WebBandRepository.update(
-          bandId,
-          updateInput
-        );
-      } else {
-        await BandRepository.update(
-          bandId,
-          updateInput
-        );
-      }
+      await BandRepository.update(
+        bandId,
+        updateInput
+      );
 
       await Promise.all([
         queryClient.invalidateQueries({

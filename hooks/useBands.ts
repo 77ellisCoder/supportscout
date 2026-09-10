@@ -1,18 +1,12 @@
-import { Platform } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
-import { BandRepository } from "../repositories/BandRepository";
-import { WebBandRepository } from "../repositories/WebBandRepository";
+import { BandRepository } from "../repositories/Repository";
 
 export function useBands(search = "") {
   return useQuery({
     queryKey: ["bands", search],
 
     queryFn: () => {
-      if (Platform.OS === "web") {
-        return WebBandRepository.getAll(search);
-      }
-
       return BandRepository.getAll(search);
     },
 

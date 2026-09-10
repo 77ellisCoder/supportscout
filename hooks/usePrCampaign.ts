@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
-    WebPrCampaignRepository,
-} from "../repositories/WebPrCampaignRepository";
+    PrCampaignRepository,
+} from "../repositories/Repository";
 
 export function usePrCampaign(
     campaignId: number
@@ -14,7 +14,7 @@ export function usePrCampaign(
         ],
 
         queryFn: () =>
-            WebPrCampaignRepository.getById(
+            PrCampaignRepository.getById(
                 campaignId
             ),
 

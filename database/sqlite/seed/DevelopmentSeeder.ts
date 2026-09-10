@@ -1,4 +1,5 @@
-import { BandRepository } from "../../../repositories/BandRepository";
+// Specific to device
+import { BandRepository } from "../../../repositories/device/BandRepository";
 
 export async function seedDevelopmentData() {
     const existingBands = await BandRepository.getAll();

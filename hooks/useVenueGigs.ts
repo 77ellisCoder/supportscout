@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { GigRepository } from "../repositories/GigRepository";
+import { GigRepository } from "../repositories/device/GigRepository";
 
 export function useVenueGigs(
     venueId: number,

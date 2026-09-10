@@ -14,8 +14,8 @@ import {
 import { Button } from "../../../components/ui/Button";
 import { usePrCampaign } from "../../../hooks/usePrCampaign";
 import {
-    WebPrCampaignRepository,
-} from "../../../repositories/WebPrCampaignRepository";
+    PrCampaignRepository,
+} from "../../../repositories/Repository";
 
 import { styles } from "../../../styles/pr/campaign.styles";
 
@@ -50,7 +50,7 @@ export default function PrCampaignScreen() {
             setTestError(null);
 
             const result =
-                await WebPrCampaignRepository.sendTest(
+                await PrCampaignRepository.sendTest(
                     campaignId
                 );
 

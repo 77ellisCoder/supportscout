@@ -24,8 +24,8 @@ bandsRouter.get("/", async (_req, res) => {
                 COALESCE(
                     json_agg(
                         json_build_object(
-                            'genreId', g.genre_id,
-                            'genreName', g.genre_name
+                            'id', g.genre_id,
+                            'name', g.genre_name
                         )
                         ORDER BY g.genre_name
                     ) FILTER (
@@ -97,8 +97,8 @@ bandsRouter.get("/:id", async (req, res) => {
                 COALESCE(
                     json_agg(
                         json_build_object(
-                            'genreId', g.genre_id,
-                            'genreName', g.genre_name
+                            'id', g.genre_id,
+                            'name', g.genre_name
                         )
                         ORDER BY g.genre_name
                     ) FILTER (
@@ -341,8 +341,8 @@ bandsRouter.patch("/:id", async (req, res) => {
                     COALESCE(
                         json_agg(
                             json_build_object(
-                                'genreId', g.genre_id,
-                                'genreName', g.genre_name
+                                'id', g.genre_id,
+                                'name', g.genre_name
                             )
                             ORDER BY g.genre_name
                         ) FILTER (

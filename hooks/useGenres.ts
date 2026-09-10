@@ -1,8 +1,7 @@
 import { Platform } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
-import { GenreRepository } from "../repositories/GenreRepository";
-import { WebGenreRepository } from "../repositories/WebGenreRepository";
+import { GenreRepository } from "../repositories/Repository";
 
 export function useGenres(search = "") {
     return useQuery({
@@ -13,12 +12,6 @@ export function useGenres(search = "") {
         ],
 
         queryFn: () => {
-            if (Platform.OS === "web") {
-                return WebGenreRepository.getAll(
-                    search
-                );
-            }
-
             return GenreRepository.getAll(
                 search
             );
@@ -36,11 +29,6 @@ export function useGenre(id: number) {
         ],
 
         queryFn: () => {
-            if (Platform.OS === "web") {
-                return WebGenreRepository.getById(
-                    id
-                );
-            }
 
             return GenreRepository.getById(
                 id

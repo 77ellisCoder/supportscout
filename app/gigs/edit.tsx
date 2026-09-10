@@ -24,8 +24,7 @@ import { useBands } from "../../hooks/useBands";
 import { useGigDetail } from "../../hooks/useGigDetail";
 import { useVenues } from "../../hooks/useVenues";
 
-import { GigRepository } from "../../repositories/GigRepository";
-import { WebGigRepository } from "../../repositories/WebGigRepository";
+import { GigRepository } from "../../repositories/Repository";
 
 import { colors } from "../../theme";
 
@@ -125,12 +124,7 @@ export default function EditGigScreen() {
       setSaving(true);
       setError(null);
 
-      const repository =
-        Platform.OS === "web"
-          ? WebGigRepository
-          : GigRepository;
-
-      await repository.update(
+      await GigRepository.update(
         gigId,
         {
           venueId: values.venueId,

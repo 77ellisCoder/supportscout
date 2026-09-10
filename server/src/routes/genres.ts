@@ -8,8 +8,8 @@ genresRouter.get("/", async (_req, res) => {
     try {
         const result = await pool.query(`
             SELECT
-                genre_id AS "genreId",
-                genre_name AS "genreName"
+                genre_id AS "id",
+                genre_name AS "name"
             FROM genres
             ORDER BY genre_name;
         `);
@@ -17,7 +17,7 @@ genresRouter.get("/", async (_req, res) => {
         res.json(
             result.rows.map((row) => ({
                 id: Number(row.genreId),
-                name: row.genreName,
+                name: row.name,
             }))
         );
     } catch (error) {
@@ -48,8 +48,8 @@ genresRouter.get("/:id", async (req, res) => {
         const result = await pool.query(
             `
             SELECT
-                genre_id AS "genreId",
-                genre_name AS "genreName"
+                genre_id AS "id",
+                genre_name AS "name"
             FROM genres
             WHERE genre_id = $1
             `,
@@ -66,7 +66,7 @@ genresRouter.get("/:id", async (req, res) => {
 
         res.json({
             id: Number(row.genreId),
-            name: row.genreName,
+            name: row.name,
         });
     } catch (error) {
         console.error(

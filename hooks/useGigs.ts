@@ -1,16 +1,11 @@
-import { Platform } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
-import { GigRepository } from "../repositories/GigRepository";
-import { WebGigRepository } from "../repositories/WebGigRepository";
+import { GigRepository } from "../repositories/Repository";
 
 export function useGigs() {
     return useQuery({
         queryKey: ["gigs"],
-
         queryFn: () =>
-            Platform.OS === "web"
-                ? WebGigRepository.getAll()
-                : GigRepository.getAll(),
+            GigRepository.getAll(),
     });
 }

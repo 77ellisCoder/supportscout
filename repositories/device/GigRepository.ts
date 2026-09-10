@@ -1,18 +1,18 @@
-import { getDatabase } from "../database/sqlite/Database";
-import { BandRecommendation } from "../models/BandRecommendation";
+import { getDatabase } from "../../database/sqlite/Database";
+import { BandRecommendation } from "../../models/BandRecommendation";
 
 import type {
     Gig,
     GigDetail,
     GigListItem,
     GigStatus,
-} from "../models/Gig";
-import { VenueBand } from "../models/VenueBand";
+} from "../../models/Gig";
+import { VenueBand } from "../../models/VenueBand";
 
 import {
     calculateGenreScore,
     getSharedGenreTerms,
-} from "../services/scoring/BandMatchScorer";
+} from "../../services/scoring/BandMatchScorer";
 
 type GigRow = {
     gig_id: number;

@@ -3,7 +3,7 @@ import type {
     GigDetail,
     GigListItem,
     GigStatus,
-} from "../models/Gig";
+} from "../../models/Gig";
 
 const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
@@ -42,7 +42,7 @@ async function readError(
     return fallback;
 }
 
-export const WebGigRepository = {
+export const GigRepository = {
     async getAll(): Promise<
         GigListItem[]
     > {
