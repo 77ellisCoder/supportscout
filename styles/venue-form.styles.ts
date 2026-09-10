@@ -15,4 +15,21 @@ export const styles = {
     formStyles.saveButton,
     { marginTop: 0 },
   ],
+
+  inlineFieldWide: {
+    flex: 2,
+    minWidth: 0,
+  },
+
+  inlineField: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  inlineRow: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: spacing.lg,
+    width: "100%" as const,
+},
 };

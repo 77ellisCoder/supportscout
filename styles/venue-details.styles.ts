@@ -68,6 +68,20 @@ const venueDetailStyles = StyleSheet.create({
 
     marginBottom: spacing.xxl,
   },
+
+  inlineRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.lg,
+  },
+
+  inlineFieldWide: {
+    flex: 2,
+  },
+
+  inlineField: {
+    flex: 1,
+  },
 });
 
 export const styles = {

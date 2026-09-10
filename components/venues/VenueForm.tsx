@@ -142,41 +142,66 @@ export function VenueForm({
                     }
                 />
 
-                <Field
+                <View style={styles.inlineRow}>
+                    {/* Venue Type */}
+                    <View style={styles.inlineFieldWide}>
+                        <Text style={styles.fieldLabel}>
+                            Venue Type
+                        </Text>
+
+                        <View style={styles.chipRow}>
+                            {VENUE_TYPES.map((type) => {
+                                const selected =
+                                    values.venueType === type;
+
+                                return (
+                                    <Chip
+                                        key={type}
+                                        label={type}
+                                        selected={selected}
+                                        onPress={() =>
+                                            updateField(
+                                                "venueType",
+                                                selected ? "" : type
+                                            )
+                                        }
+                                    />
+                                );
+                            })}
+                        </View>
+                    </View>
+
+                    {/* Capacity */}
+                    <View style={styles.inlineField}>
+                        <Text style={styles.fieldLabel}>
+                            Capacity
+                        </Text>
+
+                        <TextInput
+                            value={values.capacity}
+                            onChangeText={(value) =>
+                                updateField(
+                                    "capacity",
+                                    value.replace(/[^0-9]/g, "")
+                                )
+                            }
+                            keyboardType="number-pad"
+                            placeholder="250"
+                            placeholderTextColor={colors.textMuted}
+                            style={styles.input}
+                            maxLength={4}
+                        />
+                    </View>
+                </View>
+
+                {/* <Field
                     label="Capacity"
                     value={values.capacity}
                     onChangeText={(value) =>
                         updateField("capacity", value)
                     }
                     keyboardType="number-pad"
-                />
-
-                <View style={styles.field}>
-                    <Text style={styles.fieldLabel}>
-                        Venue Type
-                    </Text>
-
-                    <View style={styles.chipRow}>
-                        {VENUE_TYPES.map((type) => {
-                            const selected =
-                                values.venueType === type;
-
-                            return (
-                                <Chip
-                                    key={type}
-                                    label={type}
-                                    selected={selected}
-                                    onPress={() =>
-                                        updateField(
-                                            "venueType",
-                                            selected ? "" : type
-                                        )
-                                    }
-                                />
-                            );
-                        })}
-                    </View>
-                </View>
+                /> */}
 
                 <Field
                     label="Website"
