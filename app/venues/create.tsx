@@ -7,7 +7,7 @@ import {
     type VenueFormValues,
 } from "../../components/venues/VenueForm";
 
-import { VenueRepository } from "../../repositories/VenueRepository";
+import { VenueRepository } from "../../repositories/Repository";
 
 export default function CreateVenueScreen() {
     const queryClient = useQueryClient();
