@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
+
 import {
   ActivityIndicator,
   Text,
@@ -14,8 +16,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppBootstrapService } from "../services/AppBootstrapService";
 import { SoundService } from "../services/SoundService";
 import { colors } from "../theme";
-import { exportDatabaseData } from "../database/sqlite/exportDatabaseData";
-import { Button } from "../components/ui/Button";
 
 const queryClient = new QueryClient();
 

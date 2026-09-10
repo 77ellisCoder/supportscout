@@ -18,6 +18,8 @@ import { styles } from "../../styles/gig-form.styles";
 import { FormActions } from "../ui/FormActions";
 import { GigDatePicker } from "./GigDatePicker";
 
+import { ScreenActionBar } from "../ui/ScreenActionBar"
+
 import {
     LineupBuilder,
     type LineupItem,
@@ -101,165 +103,168 @@ export function GigForm({
     );
 
     return (
-        <ScrollView
-            style={styles.page}
-            contentContainerStyle={
-                styles.formContainer
-            }
-            keyboardShouldPersistTaps="handled"
-        >
-            <Text style={styles.eyebrow}>
-                {eyebrow}
-            </Text>
+        <View style={styles.screen}>
+            <ScrollView
+                style={styles.scroll}
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Text style={styles.eyebrow}>
+                    {eyebrow}
+                </Text>
 
-            <Text style={styles.title}>
-                {title}
-            </Text>
+                <Text style={styles.title}>
+                    {title}
+                </Text>
 
-            {error && (
-                <View style={styles.errorCard}>
-                    <Text style={styles.errorText}>
-                        {error}
-                    </Text>
+                {error && (
+                    <View style={styles.errorCard}>
+                        <Text style={styles.errorText}>
+                            {error}
+                        </Text>
+                    </View>
+                )}
+
+                <Field
+                    label="Event name"
+                    value={values.eventName}
+                    onChangeText={(value) =>
+                        updateField(
+                            "eventName",
+                            value
+                        )
+                    }
+                    placeholder="Friday Night at Mojos"
+                />
+
+                <GigDatePicker
+                    value={values.gigDate}
+                    onChange={(value) =>
+                        updateField(
+                            "gigDate",
+                            value
+                        )
+                    }
+                />
+
+                <Text style={styles.sectionLabel}>
+                    Venue
+                </Text>
+
+                <View style={styles.optionGrid}>
+                    {sortedVenues.map((venue) => {
+                        const selected =
+                            values.venueId ===
+                            venue.venueId;
+
+                        return (
+                            <Pressable
+                                key={venue.venueId}
+                                onPress={() =>
+                                    updateField(
+                                        "venueId",
+                                        venue.venueId
+                                    )
+                                }
+                                style={[
+                                    styles.optionChip,
+                                    selected &&
+                                    styles.optionChipSelected,
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.optionChipText,
+                                        selected &&
+                                        styles.optionChipTextSelected,
+                                    ]}
+                                >
+                                    {venue.venueName}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
                 </View>
-            )}
 
-            <Field
-                label="Event name"
-                value={values.eventName}
-                onChangeText={(value) =>
-                    updateField(
-                        "eventName",
-                        value
-                    )
-                }
-                placeholder="Friday Night at Mojos"
-            />
+                <Text style={styles.sectionLabel}>
+                    Status
+                </Text>
 
-            <GigDatePicker
-                value={values.gigDate}
-                onChange={(value) =>
-                    updateField(
-                        "gigDate",
-                        value
-                    )
-                }
-            />
+                <View style={styles.optionGrid}>
+                    {(
+                        [
+                            "tentative",
+                            "confirmed",
+                            "completed",
+                            "cancelled",
+                        ] as GigStatus[]
+                    ).map((status) => {
+                        const selected =
+                            values.status === status;
 
-            <Text style={styles.sectionLabel}>
-                Venue
-            </Text>
-
-            <View style={styles.optionGrid}>
-                {sortedVenues.map((venue) => {
-                    const selected =
-                        values.venueId ===
-                        venue.venueId;
-
-                    return (
-                        <Pressable
-                            key={venue.venueId}
-                            onPress={() =>
-                                updateField(
-                                    "venueId",
-                                    venue.venueId
-                                )
-                            }
-                            style={[
-                                styles.optionChip,
-                                selected &&
-                                styles.optionChipSelected,
-                            ]}
-                        >
-                            <Text
+                        return (
+                            <Pressable
+                                key={status}
+                                onPress={() =>
+                                    updateField(
+                                        "status",
+                                        status
+                                    )
+                                }
                                 style={[
-                                    styles.optionChipText,
+                                    styles.optionChip,
                                     selected &&
-                                    styles.optionChipTextSelected,
+                                    styles.optionChipSelected,
                                 ]}
                             >
-                                {venue.venueName}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
+                                <Text
+                                    style={[
+                                        styles.optionChipText,
+                                        selected &&
+                                        styles.optionChipTextSelected,
+                                    ]}
+                                >
+                                    {formatStatus(status)}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
+                </View>
 
-            <Text style={styles.sectionLabel}>
-                Status
-            </Text>
+                <LineupBuilder
+                    bands={bands}
+                    value={values.lineup}
+                    drinkRiderGigId={drinkRiderGigId}
+                    onChange={(lineup) =>
+                        updateField(
+                            "lineup",
+                            lineup
+                        )
+                    }
+                />
 
-            <View style={styles.optionGrid}>
-                {(
-                    [
-                        "tentative",
-                        "confirmed",
-                        "completed",
-                        "cancelled",
-                    ] as GigStatus[]
-                ).map((status) => {
-                    const selected =
-                        values.status === status;
+                <Field
+                    label="Notes"
+                    value={values.notes}
+                    onChangeText={(value) =>
+                        updateField(
+                            "notes",
+                            value
+                        )
+                    }
+                    multiline
+                />
+            </ScrollView>
 
-                    return (
-                        <Pressable
-                            key={status}
-                            onPress={() =>
-                                updateField(
-                                    "status",
-                                    status
-                                )
-                            }
-                            style={[
-                                styles.optionChip,
-                                selected &&
-                                styles.optionChipSelected,
-                            ]}
-                        >
-                            <Text
-                                style={[
-                                    styles.optionChipText,
-                                    selected &&
-                                    styles.optionChipTextSelected,
-                                ]}
-                            >
-                                {formatStatus(status)}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
-
-            <LineupBuilder
-                bands={bands}
-                value={values.lineup}
-                drinkRiderGigId={drinkRiderGigId}
-                onChange={(lineup) =>
-                    updateField(
-                        "lineup",
-                        lineup
-                    )
-                }
-            />
-
-            <Field
-                label="Notes"
-                value={values.notes}
-                onChangeText={(value) =>
-                    updateField(
-                        "notes",
-                        value
-                    )
-                }
-                multiline
-            />
-
-            <FormActions
-                submitLabel={submitLabel}
-                saving={saving}
-                onSubmit={() => onSubmit(values)}
-            />
-        </ScrollView>
+            <ScreenActionBar>
+                <FormActions
+                    submitLabel={submitLabel}
+                    saving={saving}
+                    onSubmit={() => onSubmit(values)}
+                    inActionBar
+                />
+            </ScreenActionBar>
+        </View>
     );
 }
 

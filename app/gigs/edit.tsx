@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import {
   ActivityIndicator,
+  Platform,
   Text,
   View,
 } from "react-native";
@@ -24,6 +25,8 @@ import { useGigDetail } from "../../hooks/useGigDetail";
 import { useVenues } from "../../hooks/useVenues";
 
 import { GigRepository } from "../../repositories/GigRepository";
+import { WebGigRepository } from "../../repositories/WebGigRepository";
+
 import { colors } from "../../theme";
 
 export default function EditGigScreen() {
@@ -122,25 +125,25 @@ export default function EditGigScreen() {
       setSaving(true);
       setError(null);
 
-      await GigRepository.update(
+      const repository =
+        Platform.OS === "web"
+          ? WebGigRepository
+          : GigRepository;
+
+      await repository.update(
         gigId,
         {
           venueId: values.venueId,
-
           gigDate:
             values.gigDate.trim(),
-
           eventName:
-            values.eventName.trim() || null,
-
+            values.eventName.trim() ||
+            null,
           notes:
-            values.notes.trim() || null,
-
-          status:
-            values.status,
-
-          lineup:
-            values.lineup,
+            values.notes.trim() ||
+            null,
+          status: values.status,
+          lineup: values.lineup,
         }
       );
 

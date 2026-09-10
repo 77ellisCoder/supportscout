@@ -38,8 +38,8 @@ export const styles = StyleSheet.create({
     },
 
     dateBadge: {
-        width: 56,
-        height: 56,
+        width: 60,
+        height: 66,
 
         flexShrink: 0,
 
@@ -62,6 +62,15 @@ export const styles = StyleSheet.create({
     },
 
     dateMonth: {
+        ...typography.small,
+
+        color: colors.textMuted,
+
+        fontSize: 9,
+        fontWeight: "700",
+    },
+
+    dateYear: {
         ...typography.small,
 
         color: colors.textMuted,

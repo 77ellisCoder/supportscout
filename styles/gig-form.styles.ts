@@ -80,6 +80,15 @@ const gigFormStyles = StyleSheet.create({
     color: colors.primaryLight,
     fontWeight: "700",
   },
+
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  scroll: {
+    flex: 1,
+  },
 });
 
 export const styles = {

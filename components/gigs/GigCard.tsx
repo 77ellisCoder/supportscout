@@ -33,6 +33,10 @@ export function GigCard({
                 <Text style={styles.dateMonth}>
                     {formatGigMonth(gig.gigDate)}
                 </Text>
+
+                <Text style={styles.dateYear}>
+                    {formatGigYear(gig.gigDate)}
+                </Text>
             </View>
 
             <View style={styles.content}>
@@ -106,4 +110,13 @@ function formatGigMonth(
             month: "short",
         })
         .toUpperCase();
+}
+
+function formatGigYear(
+    value: string
+): string {
+    return parseGigDate(value)
+        .toLocaleDateString("en-AU", {
+            year: "numeric",
+        });
 }
