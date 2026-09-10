@@ -6,7 +6,7 @@ import {
     useQueryClient,
 } from "@tanstack/react-query";
 
-import { DrinkTokenRepository } from "../repositories/DrinkTokenRepository";
+import { DrinkTokenRepository } from "../repositories/device/DrinkTokenRepository";
 
 export function useDrinkTokens(
     gigId: number,

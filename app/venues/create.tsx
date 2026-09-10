@@ -7,7 +7,9 @@ import {
     type VenueFormValues,
 } from "../../components/venues/VenueForm";
 
-import { VenueRepository } from "../../repositories/VenueRepository";
+import { VenueRepository } from "../../repositories/Repository";
+
+import { ScreenActionBar} from "../../components/ui/ScreenActionBar"
 
 export default function CreateVenueScreen() {
     const queryClient = useQueryClient();
@@ -51,6 +53,12 @@ export default function CreateVenueScreen() {
 
                     suburb:
                         values.suburb.trim() || null,
+
+                    stateRegion:
+                        values.stateRegion.trim() || "WA",
+
+                    countryCode:
+                        values.countryCode.trim() || "AU",
 
                     address:
                         values.address.trim() || null,

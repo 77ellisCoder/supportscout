@@ -1,8 +1,8 @@
-import type { PrContact } from "../models/PrContact";
+import type { PrContact } from "../../models/PrContact";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3001";
 
-export const WebPrContactRepository = {
+export const PrContactRepository = {
     async getAll(): Promise<PrContact[]> {
         const response = await fetch(
             `${API_URL}/pr-contacts`

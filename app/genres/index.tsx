@@ -59,10 +59,10 @@ export default function GenresScreen() {
         <View style={styles.chipRow}>
           {genres.map((genre) => (
             <Chip
-              key={genre.genreId}
-              label={genre.genreName}
-              selected={selectedGenre === genre.genreName}
-              onPress={() => setSelectedGenre(genre.genreName)}
+              key={genre.id}
+              label={genre.name}
+              selected={selectedGenre === genre.name}
+              onPress={() => setSelectedGenre(genre.name)}
             />
           ))}
         </View>
@@ -98,20 +98,20 @@ export default function GenresScreen() {
         ) : (
           <FlatList
             data={genres}
-            keyExtractor={(item) => String(item.genreId)}
+            keyExtractor={(item) => String(item.id)}
             contentContainerStyle={styles.list}
             renderItem={({ item }) => (
               <>
                 <Text style={styles.item}>
-                  {item.genreName}
+                  {item.name}
                    
                   
                 </Text>
                 <Button
                     align="right"
-                    title="Edit"
+                    title="Edit Genres"
                     variant="add"
-                    onPress={() => router.push(`/genres/${item.genreId}`)}
+                    onPress={() => router.push(`/genres/${item.id}`)}
                   />
 
               </>

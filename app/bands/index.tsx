@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  ScrollView,
   Text,
   View,
 } from "react-native";
@@ -26,10 +27,10 @@ export default function BandsScreen() {
   const { data: genres = [] } = useGenres();
 
   const [selectedGenreId, setSelectedGenreId] = useState<number | null>(null);
-  
+
   const selectedGenre =
     genres.find(
-        (genre) => genre.id === selectedGenreId
+      (genre) => genre.id === selectedGenreId
     ) ?? null;
 
   type SortOption = "name-asc" | "name-desc";
@@ -97,23 +98,38 @@ export default function BandsScreen() {
         />
 
         <View style={styles.chipRow}>
-          <Chip
-            label="All"
-            selected={selectedGenreId === null}
-            onPress={() => setSelectedGenreId(null)}
-          />
-
-          {genres.map((genre) => (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={
+              styles.genreFilterRow
+            }
+            keyboardShouldPersistTaps="handled"
+          >
             <Chip
-              key={genre.id}
-              label={genre.name}
-              selected={selectedGenreId === genre.id}
-              onPress={() => setSelectedGenreId(genre.id)}
+              label="All"
+              selected={selectedGenreId === null}
+              onPress={() =>
+                setSelectedGenreId(null)
+              }
             />
-          ))}
+
+            {genres.map((genre) => (
+              <Chip
+                key={genre.id}
+                label={genre.name}
+                selected={
+                  selectedGenreId === genre.id
+                }
+                onPress={() =>
+                  setSelectedGenreId(genre.id)
+                }
+              />
+            ))}
+          </ScrollView>
         </View>
 
-        
+
         {/* Sorting */}
         <View style={styles.sortRow}>
           <Text style={styles.sortLabel}>SORT</Text>

@@ -8,6 +8,8 @@ import {
     typography,
 } from "../theme";
 
+import { layoutStyles } from "./shared/layout.styles";
+
 export const styles =
     StyleSheet.create({
         page: {
@@ -16,11 +18,7 @@ export const styles =
         },
 
         container: {
-            width: "100%",
-            maxWidth: 900,
-            alignSelf: "center",
-
-            padding: spacing.xl,
+            ...layoutStyles.contentContainer,
             paddingBottom: spacing.huge,
         },
 

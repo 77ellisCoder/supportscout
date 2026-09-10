@@ -48,8 +48,9 @@ export function BandCard({
 
         {description && (
           <Text
-            style={shared.description}
+            style={styles.description}
             numberOfLines={2}
+            ellipsizeMode="tail"
           >
             {description}
           </Text>

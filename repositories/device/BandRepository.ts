@@ -1,6 +1,6 @@
-import { getDatabase } from "../database/sqlite/Database";
-import type { Band, BandStatus, CreateBandInput } from "../models/Band";
-import { Genre } from "../models/Genre";
+import { getDatabase } from "../../database/sqlite/Database";
+import type { Band, BandStatus, CreateBandInput } from "../../models/Band";
+import { Genre } from "../../models/Genre";
 
 type BandRow = {
   band_id: number;
@@ -25,6 +25,12 @@ type BandRow = {
   instagram_url: string | null;
   website_url: string | null;
   genres?: Genre[];
+};
+
+type BandGenreRow = {
+  band_id: number;
+  genre_id: number;
+  genre_name: string;
 };
 
 function mapBand(row: BandRow): Band {
@@ -63,41 +69,124 @@ function slugify(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+async function loadGenresForBands(
+  bandIds: number[]
+): Promise<Map<number, Genre[]>> {
+  const genreMap = new Map<number, Genre[]>();
+
+  if (bandIds.length === 0) {
+    return genreMap;
+  }
+
+  const db = await getDatabase();
+
+  const placeholders = bandIds
+    .map(() => "?")
+    .join(", ");
+
+  const rows =
+    await db.getAllAsync<BandGenreRow>(
+      `
+      SELECT
+        bg.band_id,
+        g.genre_id,
+        g.genre_name
+      FROM band_genres bg
+      JOIN genres g
+        ON g.genre_id = bg.genre_id
+      WHERE bg.band_id IN (${placeholders})
+      ORDER BY g.genre_name COLLATE NOCASE
+      `,
+      ...bandIds
+    );
+
+  for (const row of rows) {
+    const existing =
+      genreMap.get(row.band_id) ?? [];
+
+    existing.push({
+      id: row.genre_id,
+      name: row.genre_name,
+    });
+
+    genreMap.set(
+      row.band_id,
+      existing
+    );
+  }
+
+  return genreMap;
+}
+
 export const BandRepository = {
-  async getAll(search?: string): Promise<Band[]> {
+  async getAll(
+    search?: string
+  ): Promise<Band[]> {
     const db = await getDatabase();
 
     const rows = search?.trim()
       ? await db.getAllAsync<BandRow>(
         `
-          SELECT *
-          FROM bands
-          WHERE archived_at IS NULL
-            AND band_name LIKE ?
-          ORDER BY band_name COLLATE NOCASE
+        SELECT *
+        FROM bands
+        WHERE archived_at IS NULL
+          AND band_name LIKE ?
+        ORDER BY band_name COLLATE NOCASE
         `,
         `%${search.trim()}%`
       )
       : await db.getAllAsync<BandRow>(
         `
-          SELECT *
-          FROM bands
-          WHERE archived_at IS NULL
-          ORDER BY band_name COLLATE NOCASE
+        SELECT *
+        FROM bands
+        WHERE archived_at IS NULL
+        ORDER BY band_name COLLATE NOCASE
         `
       );
 
-    return rows.map(mapBand);
+    if (rows.length === 0) {
+      return [];
+    }
+
+    const genreMap =
+      await loadGenresForBands(
+        rows.map((row) => row.band_id)
+      );
+
+    return rows.map((row) => ({
+      ...mapBand(row),
+      genres:
+        genreMap.get(row.band_id) ?? [],
+    }));
   },
 
-  async getById(bandId: number): Promise<Band | null> {
+  async getById(
+    bandId: number
+  ): Promise<Band | null> {
     const db = await getDatabase();
-    const row = await db.getFirstAsync<BandRow>(
-      "SELECT * FROM bands WHERE band_id = ?",
-      bandId
-    );
 
-    return row ? mapBand(row) : null;
+    const row =
+      await db.getFirstAsync<BandRow>(
+        `
+      SELECT *
+      FROM bands
+      WHERE band_id = ?
+      `,
+        bandId
+      );
+
+    if (!row) {
+      return null;
+    }
+
+    const genreMap =
+      await loadGenresForBands([bandId]);
+
+    return {
+      ...mapBand(row),
+      genres:
+        genreMap.get(bandId) ?? [],
+    };
   },
 
   async create(input: CreateBandInput): Promise<Band> {
@@ -208,23 +297,29 @@ export const BandRepository = {
     );
 
     // Delete / Insert the genres if provided
-    if (input.genres && input.genres.length > 0) {
-      // Delete existing genres for the band
+    if (input.genres !== undefined) {
       await db.runAsync(
-        "DELETE FROM band_genres WHERE band_id = ?",
+        `
+        DELETE FROM band_genres
+        WHERE band_id = ?
+        `,
         bandId
       );
 
-      // Insert the new genres
       for (const genre of input.genres) {
         await db.runAsync(
-          `INSERT INTO band_genres (band_id, genre_id) VALUES (?, ?)`,
+          `
+          INSERT INTO band_genres (
+            band_id,
+            genre_id
+          )
+          VALUES (?, ?)
+          `,
           bandId,
           genre.id
         );
       }
     }
-    console.log(`Updated band with ID ${bandId} and genres:`, input.genres);
   },
 
   async delete(bandId: number): Promise<void> {

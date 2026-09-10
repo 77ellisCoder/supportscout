@@ -1,33 +1,34 @@
 import * as SQLite from "expo-sqlite";
 
 import { runMigrations } from "./migrations";
+import { logger } from "../../utils/logger"
 
 let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
 async function initialiseDatabase(): Promise<SQLite.SQLiteDatabase> {
-  console.log("Opening SupportScout database...");
+  logger.debug("Opening SupportScout database...");
 
   const db = await SQLite.openDatabaseAsync(
     "supportscout.sqlite"
   );
 
-  console.log("Database opened.");
+  logger.debug("Database opened.");
 
-  console.log("Configuring SQLite...");
+  logger.debug("Configuring SQLite...");
 
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
     PRAGMA foreign_keys = ON;
   `);
 
-  console.log("SQLite configured.");
+  logger.debug("SQLite configured.");
 
   try {
-    console.log("Running migrations...");
+    logger.debug("Running migrations...");
 
     await runMigrations(db);
 
-    console.log("Migrations complete.");
+    logger.debug("Migrations complete.");
   } catch (error) {
     console.error(
       "Database migration failed:",

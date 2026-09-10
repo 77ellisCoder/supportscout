@@ -12,7 +12,9 @@ import {
 } from "../../components/venues/VenueForm";
 
 import { useVenue } from "../../hooks/useVenue";
-import { VenueRepository } from "../../repositories/VenueRepository";
+import { VenueRepository } from "../../repositories/Repository";
+
+
 
 export default function EditVenueScreen() {
   const { id } =

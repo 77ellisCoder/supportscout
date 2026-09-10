@@ -1,12 +1,15 @@
-import type { Band } from "../models/Band";
+import type {
+    Band,
+    CreateBandInput,
+} from "../../models/Band";
 
 const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
     "http://localhost:3001";
 
 type ApiGenre = {
-    genreId: number | string;
-    genreName: string;
+    id: number | string;
+    name: string;
 };
 
 type ApiBand = {
@@ -71,13 +74,13 @@ function mapBand(row: ApiBand): Band {
 
         genres:
             row.genres?.map((genre) => ({
-                id: Number(genre.genreId),
-                name: genre.genreName,
+                id: Number(genre.id),
+                name: genre.name,
             })) ?? [],
     };
 }
 
-export const WebBandRepository = {
+export const BandRepository = {
     async getAll(search?: string): Promise<Band[]> {
         const response = await fetch(
             `${API_URL}/bands`
@@ -128,5 +131,69 @@ export const WebBandRepository = {
             await response.json();
 
         return mapBand(row);
+    },
+
+    async create(
+        input: CreateBandInput
+    ): Promise<Band> {
+        const response = await fetch(
+            `${API_URL}/bands`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+                body: JSON.stringify(input),
+            }
+        );
+
+        if (!response.ok) {
+            const body =
+                await response.json();
+
+            throw new Error(
+                body.error ??
+                "Unable to create band."
+            );
+        }
+
+        const band =
+            (await response.json()) as Band;
+
+        return {
+            ...band,
+            bandId: Number(band.bandId),
+        };
+    },
+
+    async update(
+        bandId: number,
+        input: Partial<CreateBandInput>
+    ): Promise<Band> {
+        const response = await fetch(
+            `${API_URL}/bands/${bandId}`,
+            {
+                method: "PATCH",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+
+                body: JSON.stringify(input),
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error ??
+                "Unable to update band"
+            );
+        }
+
+        return mapBand(result);
     },
 };

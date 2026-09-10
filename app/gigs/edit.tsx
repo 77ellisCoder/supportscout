@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import {
   ActivityIndicator,
+  Platform,
   Text,
   View,
 } from "react-native";
@@ -23,7 +24,8 @@ import { useBands } from "../../hooks/useBands";
 import { useGigDetail } from "../../hooks/useGigDetail";
 import { useVenues } from "../../hooks/useVenues";
 
-import { GigRepository } from "../../repositories/GigRepository";
+import { GigRepository } from "../../repositories/Repository";
+
 import { colors } from "../../theme";
 
 export default function EditGigScreen() {
@@ -126,21 +128,16 @@ export default function EditGigScreen() {
         gigId,
         {
           venueId: values.venueId,
-
           gigDate:
             values.gigDate.trim(),
-
           eventName:
-            values.eventName.trim() || null,
-
+            values.eventName.trim() ||
+            null,
           notes:
-            values.notes.trim() || null,
-
-          status:
-            values.status,
-
-          lineup:
-            values.lineup,
+            values.notes.trim() ||
+            null,
+          status: values.status,
+          lineup: values.lineup,
         }
       );
 

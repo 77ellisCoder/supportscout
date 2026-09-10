@@ -34,8 +34,6 @@ export default function GenreDetailsScreen() {
     data: genres = [],
   } = useGenres();
 
-  console.log("GenreDetailsScreen: genres", genres);
-
   if (isLoading) {
     return (
       <View style={styles.center}>
@@ -84,7 +82,7 @@ export default function GenreDetailsScreen() {
             </Text>
 
             <Text style={styles.title}>
-              {genre.genreName}
+              {genre.name}
             </Text>
 
           </View>
@@ -99,7 +97,7 @@ export default function GenreDetailsScreen() {
             router.push({
               pathname: "/genres/edit",
               params: {
-                id: genre.genreId,
+                id: genre.id,
               },
             })
           }

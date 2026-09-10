@@ -6,7 +6,9 @@ import {
     shadows,
     spacing,
     typography,
-} from "../../theme";
+} from "../../../theme";
+
+import { textStyles } from "../../../styles/shared/typography";
 
 export const styles = StyleSheet.create({
     card: {
@@ -62,10 +64,8 @@ export const styles = StyleSheet.create({
     },
 
     description: {
-        ...typography.small,
-
+        ...textStyles.description,
         color: colors.textSecondary,
-        marginTop: spacing.xs,
     },
 
     chevron: {

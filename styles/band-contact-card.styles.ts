@@ -5,7 +5,7 @@ import {
     radius,
     spacing,
     typography,
-} from "../../theme";
+} from "../theme";
 
 export const styles = StyleSheet.create({
     card: {
@@ -33,6 +33,14 @@ export const styles = StyleSheet.create({
         gap: spacing.xs,
     },
 
+    contentWide: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+
+        columnGap: spacing.lg,
+        rowGap: spacing.xs,
+    },
+
     row: {
         minHeight: 52,
 
@@ -45,6 +53,10 @@ export const styles = StyleSheet.create({
         paddingHorizontal: spacing.sm,
 
         borderRadius: radius.md,
+    },
+
+    rowWide: {
+        width: "48%",
     },
 
     rowPressed: {

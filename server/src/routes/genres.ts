@@ -8,20 +8,18 @@ genresRouter.get("/", async (_req, res) => {
     try {
         const result = await pool.query(`
             SELECT
-                genre_id AS "genreId",
-                genre_name AS "genreName",
+                genre_id::int AS "id",
+                genre_name AS "name"
             FROM genres
             ORDER BY genre_name;
         `);
 
-        res.json(
-            result.rows.map((row) => ({
-                id: Number(row.genreId),
-                name: row.genreName,
-            }))
-        );
+        res.json(result.rows);
     } catch (error) {
-        console.error("GET /genres failed:", error);
+        console.error(
+            "GET /genres failed:",
+            error
+        );
 
         res.status(500).json({
             error: "Unable to load genres",
@@ -33,7 +31,10 @@ genresRouter.get("/:id", async (req, res) => {
     try {
         const genreId = Number(req.params.id);
 
-        if (!Number.isInteger(genreId)) {
+        if (
+            !Number.isInteger(genreId) ||
+            genreId <= 0
+        ) {
             return res.status(400).json({
                 error: "Invalid genre ID",
             });
@@ -42,10 +43,9 @@ genresRouter.get("/:id", async (req, res) => {
         const result = await pool.query(
             `
             SELECT
-                genre_id AS "genreId",
-                genre_name AS "genreName",
+                genre_id::int AS "id",
+                genre_name AS "name"
             FROM genres
-
             WHERE genre_id = $1
             `,
             [genreId]
@@ -57,10 +57,7 @@ genresRouter.get("/:id", async (req, res) => {
             });
         }
 
-        res.json(result.rows[0] ? {
-            id: Number(result.rows[0].genreId),
-            name: result.rows[0].genreName,
-        } : null);
+        res.json(result.rows[0]);
     } catch (error) {
         console.error(
             "GET /genres/:id failed:",

@@ -1,6 +1,7 @@
 import supportBandImport from "../../../assets/imports/support-bands.json";
 
-import { BandRepository } from "../../../repositories/BandRepository";
+// Specific to device
+import { BandRepository } from "../../../repositories/device/BandRepository";
 
 type ImportedBand = {
   bandName: string;
@@ -57,7 +58,7 @@ export async function importSupportBands(): Promise<ImportResult> {
       bandName,
       memberCount: source.memberCount,
       hometown: "Perth",
-      stateRegion: "Western Australia",
+      stateRegion: "WA",
       countryCode: "AU",
       status: "active",
       shortDescription: source.genreStyle,

@@ -7,6 +7,11 @@ import {
 } from "../../theme";
 
 export const styles = StyleSheet.create({
+  description: {
+    color: colors.textSecondary,
+    marginTop: spacing.sm,
+  },
+  
   scoreBadge: {
     minWidth: 38,
     height: 28,

@@ -1,5 +1,5 @@
-import { getDatabase } from "../database/sqlite/Database";
-import type { Venue } from "../models/Venue";
+import { getDatabase } from "../../database/sqlite/Database";
+import type { Venue } from "../../models/Venue";
 
 type VenueRow = {
   venue_id: number;

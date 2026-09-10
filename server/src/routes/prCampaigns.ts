@@ -488,8 +488,14 @@ prCampaignsRouter.post(
              * This endpoint must NOT use
              * pr_campaign_recipients.
              */
-            const testRecipient =
-                "info@redtemples.band";
+            const testRecipient = process.env.PR_TEST_RECIPIENT;
+
+            if (!testRecipient) {
+                return res.status(500).json({
+                    error:
+                        "PR_TEST_RECIPIENT is not configured",
+                });
+            }
 
             await sendEmail({
                 to: testRecipient,

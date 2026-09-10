@@ -4,8 +4,11 @@ import cors from "cors";
 import express from "express";
 
 import { bandsRouter } from "./routes/bands";
+import { genresRouter } from "./routes/genres";
+import { gigsRouter } from "./routes/gigs";
 import { prContactsRouter } from "./routes/prContacts";
 import { prCampaignsRouter } from "./routes/prCampaigns";
+import { venuesRouter } from "./routes/venues"
 
 import {
     verifyEmailConnection,
@@ -41,8 +44,11 @@ verifyEmailConnection()
     });
 
 app.use("/bands", bandsRouter);
+app.use("/genres", genresRouter);
+app.use("/gigs", gigsRouter);
 app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
+app.use("/venues", venuesRouter);
 
 app.listen(PORT, () => {
     console.log(

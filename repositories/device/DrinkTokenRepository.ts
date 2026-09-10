@@ -1,5 +1,5 @@
-import { getDatabase } from "../database/sqlite/Database";
-import type { DrinkToken } from "../models/DrinkToken";
+import { getDatabase } from "../../database/sqlite/Database";
+import type { DrinkToken } from "../../models/DrinkToken";
 
 type DrinkTokenRow = {
     token_id: number;

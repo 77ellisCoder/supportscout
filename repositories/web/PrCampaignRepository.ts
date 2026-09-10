@@ -3,13 +3,13 @@ import type {
     CreatePrCampaignInput,
     PrCampaign,
     PrCampaignListItem,
-} from "../models/PrCampaign";
+} from "../../models/PrCampaign";
 
 const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
     "http://localhost:3001";
 
-export const WebPrCampaignRepository = {
+export const PrCampaignRepository = {
     /**
      * Creates a new PR campaign with the provided input data.
      * @param input Input data for creating a new PR campaign, including name, subject, email body, and contact IDs.
@@ -18,10 +18,6 @@ export const WebPrCampaignRepository = {
     async create(
         input: CreatePrCampaignInput
     ): Promise<PrCampaign> {
-        console.log(
-            "WebPrCampaignRepository.create:",
-            input
-        );
 
         const response = await fetch(
             `${API_URL}/pr-campaigns`,
@@ -36,12 +32,6 @@ export const WebPrCampaignRepository = {
         );
 
         const result = await response.json();
-
-        console.log(
-            "Create campaign response:",
-            response.status,
-            result
-        );
 
         if (!response.ok) {
             throw new Error(

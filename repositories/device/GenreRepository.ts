@@ -1,5 +1,5 @@
-import { getDatabase } from "../database/sqlite/Database";
-import type { Genre } from "../models/Genre";
+import { getDatabase } from "../../database/sqlite/Database";
+import type { Genre } from "../../models/Genre";
 
 type GenreRow = {
     genre_id: number;
@@ -119,8 +119,6 @@ export const GenreRepository = {
             `,
             bandId
         );
-
-        console.log("GenreRepository.getByBandId: bandId:", bandId, " - rows:", rows);
 
         return rows.map((row) => ({
             id: row.genre_id,

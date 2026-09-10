@@ -13,4 +13,8 @@ export const styles = StyleSheet.create({
 
         marginTop: spacing.lg,
     },
+
+    containerActionBar: {
+        marginTop: 0,
+    },
 });

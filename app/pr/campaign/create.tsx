@@ -16,7 +16,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import { Button } from "../../../components/ui/Button";
 import { usePrContacts } from "../../../hooks/usePrContacts";
-import { WebPrCampaignRepository } from "../../../repositories/WebPrCampaignRepository";
+import { PrCampaignRepository } from "../../../repositories/Repository";
 
 import { styles } from "../../../styles/pr/campaign-create.styles";
 
@@ -122,31 +122,21 @@ export default function CreatePrCampaignScreen() {
             setError(null);
 
             const campaign =
-                await WebPrCampaignRepository.create({
+                await PrCampaignRepository.create({
                     name,
                     subject,
                     emailBody,
                     contactIds,
                 });
 
-            console.log(
-                "Created PR campaign:",
-                campaign
-            );
-
             if (attachment) {
                 setSaveStatus("uploading");
 
                 const uploadedAttachment =
-                    await WebPrCampaignRepository.uploadAttachment(
+                    await PrCampaignRepository.uploadAttachment(
                         campaign.id,
                         attachment
                     );
-
-                console.log(
-                    "Uploaded campaign attachment:",
-                    uploadedAttachment
-                );
             }
 
             // Navigate to the campaign details page after saving

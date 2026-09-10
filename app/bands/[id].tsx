@@ -13,7 +13,6 @@ import { GigSection } from "../../components/gigs/GigSection";
 import { useBand } from "../../hooks/useBand";
 import { useBandGigs } from "../../hooks/useBandGigs";
 import { useBandRecommendations } from "../../hooks/useBandRecommendations";
-import { useGenresByBandId, useGenresByIds } from "../../hooks/useGenres";
 
 import { colors } from "../../theme";
 import { detailStyles as styles } from "../../styles/shared/details.styles";
@@ -23,13 +22,11 @@ import { Button } from "../../components/ui/Button";
 
 import { BandContactCard } from "../../components/bands/BandContactCard";
 import { GenreChipSelector } from "../../components/bands/GenreChipSelector";
-import { useEffect, useState } from "react";
+
+import { ScreenActionBar } from "../../components/ui/ScreenActionBar"
 
 export default function BandDetailsScreen() {
-  const { id } =
-    useLocalSearchParams<{ id: string }>();
-
-  const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]);
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   const bandId = Number(id);
 
@@ -38,10 +35,6 @@ export default function BandDetailsScreen() {
     isLoading,
     error,
   } = useBand(bandId);
-
-  const {
-    data: genres = [],
-  } = useGenresByBandId(bandId);
 
   const {
     data: upcomingGigs = [],
@@ -63,16 +56,6 @@ export default function BandDetailsScreen() {
     data: recommendations = [],
     isLoading: recommendationsLoading,
   } = useBandRecommendations(bandId);
-
-  useEffect(() => {
-    if (!band) {
-      return;
-    }
-
-    setSelectedGenreIds(
-      band.genres?.map((genre) => genre.id) ?? []
-    );
-  }, [band]);
 
   if (isLoading) {
     return (
@@ -105,153 +88,161 @@ export default function BandDetailsScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.page}
-      contentContainerStyle={styles.container}
-    >
-      <BackButton
-        label="Back to Bands"
-        fallbackRoute="/bands"
-      />
+    <View style={styles.screen}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.container}
+      >
+        <BackButton
+          label="Back to Bands"
+          fallbackRoute="/bands"
+        />
 
-      <View style={styles.hero}>
-        <View style={styles.titleRow}>
-          <View style={styles.titleContent}>
-            <Text style={styles.eyebrow}>
-              BAND PROFILE
-            </Text>
-
-            <Text style={styles.title}>
-              {band.bandName}
-            </Text>
-
-            {band.shortDescription && (
-              <Text style={styles.description}>
-                {band.shortDescription}
+        <View style={styles.hero}>
+          <View style={styles.titleRow}>
+            <View style={styles.titleContent}>
+              <Text style={styles.eyebrow}>
+                BAND PROFILE
               </Text>
+
+              <Text style={styles.title}>
+                {band.bandName}
+              </Text>
+
+              {band.shortDescription && (
+                <Text
+                  style={styles.description}
+                  numberOfLines={3}
+                  ellipsizeMode="tail"
+                >
+                  {band.shortDescription}
+                </Text>
+              )}
+
+              <GenreChipSelector
+                genres={band.genres ?? []}
+                selectedGenreIds={
+                  band.genres?.map((genre) => genre.id) ?? []
+                }
+                onChange={() => { }}
+                readOnly
+              />
+
+            </View>
+            {band.isVerified && (
+              <View style={styles.verifiedBadge}>
+                <Text style={styles.verifiedText}>
+                  VERIFIED
+                </Text>
+              </View>
             )}
-
-            <GenreChipSelector
-              genres={genres}
-              selectedGenreIds={selectedGenreIds}
-              onChange={setSelectedGenreIds}
-              readOnly={true}
-            />
-
           </View>
-          {band.isVerified && (
-            <View style={styles.verifiedBadge}>
-              <Text style={styles.verifiedText}>
-                VERIFIED
+
+          <View style={styles.metaContainer}>
+            <View style={styles.metaRow}>
+              <Text style={styles.meta}>
+                {band.hometown ?? "Perth"}
               </Text>
+
+              {band.stateRegion && (
+                <>
+                  <Text style={styles.metaDot}>
+                    •
+                  </Text>
+
+                  <Text style={styles.meta}>
+                    {band.stateRegion}
+                  </Text>
+                </>
+              )}
+
+              {band.memberCount != null && (
+                <>
+                  <Text style={styles.metaDot}>
+                    •
+                  </Text>
+
+                  <Text style={styles.meta}>
+                    {band.memberCount}{" "}
+                    {band.memberCount === 1
+                      ? "member"
+                      : "members"}
+                  </Text>
+                </>
+              )}
+            </View>
+
+            <View style={styles.statusContainer}>
+              <View style={styles.statusBadge}>
+                <Text style={styles.statusText}>
+                  {band.status.toUpperCase()}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+        </View>
+
+        <BandContactCard band={band} />
+
+        <GigSection
+          title="UPCOMING GIGS"
+          gigs={upcomingGigs}
+          loading={upcomingGigsLoading}
+          emptyMessage="No upcoming gigs recorded."
+        />
+
+        <GigSection
+          title="RECENT GIGS"
+          gigs={recentGigs}
+          loading={recentGigsLoading}
+          emptyMessage="No past gigs recorded."
+        />
+
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>
+            SUPPORTSCOUT MATCHES
+          </Text>
+
+          {recommendationsLoading ? (
+            <ActivityIndicator
+              color={colors.primaryLight}
+            />
+          ) : recommendations.length === 0 ? (
+            <Text style={styles.bodyText}>
+              Not enough gig history yet to suggest matches.
+            </Text>
+          ) : (
+            <View style={styles.list}>
+              {recommendations.map(
+                (recommendation) => (
+                  <BandRecommendationCard
+                    key={recommendation.bandId}
+                    recommendation={recommendation}
+                  />
+                )
+              )}
             </View>
           )}
         </View>
 
-        <View style={styles.metaContainer}>
-          <View style={styles.metaRow}>
-            <Text style={styles.meta}>
-              {band.hometown ?? "Perth"}
-            </Text>
+        {
+          band.internalNotes && (
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>
+                NOTES
+              </Text>
 
-            {band.stateRegion && (
-              <>
-                <Text style={styles.metaDot}>
-                  •
-                </Text>
-
-                <Text style={styles.meta}>
-                  {band.stateRegion}
-                </Text>
-              </>
-            )}
-
-            {band.memberCount != null && (
-              <>
-                <Text style={styles.metaDot}>
-                  •
-                </Text>
-
-                <Text style={styles.meta}>
-                  {band.memberCount}{" "}
-                  {band.memberCount === 1
-                    ? "member"
-                    : "members"}
-                </Text>
-              </>
-            )}
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>
-                {band.status.toUpperCase()}
+              <Text style={styles.bodyText}>
+                {band.internalNotes}
               </Text>
             </View>
-          </View>
-        </View>
+          )
+        }
 
-      </View>
+      </ScrollView>
 
-      <BandContactCard band={band} />
-
-      <GigSection
-        title="UPCOMING GIGS"
-        gigs={upcomingGigs}
-        loading={upcomingGigsLoading}
-        emptyMessage="No upcoming gigs recorded."
-      />
-
-      <GigSection
-        title="RECENT GIGS"
-        gigs={recentGigs}
-        loading={recentGigsLoading}
-        emptyMessage="No past gigs recorded."
-      />
-
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>
-          SUPPORTSCOUT MATCHES
-        </Text>
-
-        {recommendationsLoading ? (
-          <ActivityIndicator
-            color={colors.primaryLight}
-          />
-        ) : recommendations.length === 0 ? (
-          <Text style={styles.bodyText}>
-            Not enough gig history yet to suggest matches.
-          </Text>
-        ) : (
-          <View style={styles.list}>
-            {recommendations.map(
-              (recommendation) => (
-                <BandRecommendationCard
-                  key={recommendation.bandId}
-                  recommendation={recommendation}
-                />
-              )
-            )}
-          </View>
-        )}
-      </View>
-
-      {
-        band.internalNotes && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>
-              NOTES
-            </Text>
-
-            <Text style={styles.bodyText}>
-              {band.internalNotes}
-            </Text>
-          </View>
-        )
-      }
-
-      <View style={styles.actions}>
-        {/* Edit button */}
+      <ScreenActionBar>
         <Button
           title="Edit Band"
           onPress={() =>
@@ -263,7 +254,7 @@ export default function BandDetailsScreen() {
             })
           }
         />
-      </View>
-    </ScrollView >
+      </ScreenActionBar>
+    </View>
   );
 }
