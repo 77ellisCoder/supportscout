@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 
-import { BackButton } from "../../components/navigation/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
 
 import { useGenre } from "../../hooks/useGenre";
@@ -69,11 +68,6 @@ export default function GenreDetailsScreen() {
       style={styles.page}
       contentContainerStyle={styles.container}
     >
-      <BackButton
-        label="Back to Genres"
-        fallbackRoute="/genres"
-      />
-
       <View style={styles.hero}>
         <View style={styles.titleRow}>
           <View style={styles.titleContent}>

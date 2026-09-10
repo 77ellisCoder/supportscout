@@ -15,7 +15,6 @@ import {
 import { useGigDetail } from "../../hooks/useGigDetail";
 import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
-import { BackButton } from "../../components/navigation/BackButton";
 import { DrinkRider } from "../../components/gigs/DrinkRider";
 import { Button } from "../../components/ui/Button";
 
@@ -67,11 +66,6 @@ export default function GigDetailsScreen() {
                 style={styles.page}
                 contentContainerStyle={styles.container}
             >
-                <BackButton
-                    label="Back to Gigs"
-                    fallbackRoute="/gigs"
-                />
-
                 <View style={styles.hero}>
                     <Text style={styles.eyebrow}>
                         GIG PROFILE

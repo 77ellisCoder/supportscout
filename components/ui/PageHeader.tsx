@@ -4,7 +4,6 @@ import {
     View,
 } from "react-native";
 
-import { BackButton } from "../navigation/BackButton";
 import { styles } from "./PageHeader.styles";
 
 type PageHeaderProps = {
@@ -24,12 +23,6 @@ export function PageHeader({
 }: PageHeaderProps) {
     return (
         <View style={styles.wrapper}>
-            {showBack && (
-                <View style={styles.backRow}>
-                    <BackButton />
-                </View>
-            )}
-
             <View style={styles.container}>
                 <View style={styles.content}>
                     {eyebrow && (

@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 
-import { BackButton } from "../../components/navigation/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
 
 import { useBand } from "../../hooks/useBand";
@@ -93,11 +92,6 @@ export default function BandDetailsScreen() {
         style={styles.scroll}
         contentContainerStyle={styles.container}
       >
-        <BackButton
-          label="Back to Bands"
-          fallbackRoute="/bands"
-        />
-
         <View style={styles.hero}>
           <View style={styles.titleRow}>
             <View style={styles.titleContent}>

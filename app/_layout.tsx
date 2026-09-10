@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { Platform } from "react-native";
 
 import {
   ActivityIndicator,
+  Image,
+  Pressable,
   Text,
   View,
 } from "react-native";
-import { Stack } from "expo-router";
+
+import {
+  Stack,
+  router,
+} from "expo-router";
+
 import {
   QueryClient,
   QueryClientProvider,
@@ -16,6 +22,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppBootstrapService } from "../services/AppBootstrapService";
 import { SoundService } from "../services/SoundService";
 import { colors } from "../theme";
+
+import { HeaderHomeButton } from "../components/ui/HeaderHomeButton";
+import { HeaderTitle } from "../components/ui/HeaderTitle";
 
 const queryClient = new QueryClient();
 
@@ -114,13 +123,29 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <Stack>
+        <Stack
+          screenOptions={{
+            headerLeft: () => (
+              <HeaderHomeButton />
+            ),
+
+            headerStyle: {
+              backgroundColor: colors.background,
+            },
+
+            headerTintColor: colors.text,
+
+            headerShadowVisible: true,
+          }}
+        >
           <Stack.Screen
             name="index"
             options={{
               headerShown: false,
             }}
           />
+
+          {/* Bands */}
 
           <Stack.Screen
             name="bands/index"
@@ -132,23 +157,28 @@ export default function RootLayout() {
           <Stack.Screen
             name="bands/[id]"
             options={{
-              title: "Band Details",
+              headerTitle:
+                backTitle("Band Details"),
             }}
           />
 
           <Stack.Screen
             name="bands/create"
             options={{
-              title: "Add Band",
+              headerTitle:
+                backTitle("Add Band"),
             }}
           />
 
           <Stack.Screen
             name="bands/edit"
             options={{
-              title: "Edit Band",
+              headerTitle:
+                backTitle("Edit Band"),
             }}
           />
+
+          {/* Venues */}
 
           <Stack.Screen
             name="venues/index"
@@ -160,23 +190,28 @@ export default function RootLayout() {
           <Stack.Screen
             name="venues/[id]"
             options={{
-              title: "Venue Details",
+              headerTitle:
+                backTitle("Venue Details"),
             }}
           />
 
           <Stack.Screen
             name="venues/create"
             options={{
-              title: "Add Venue",
+              headerTitle:
+                backTitle("Add Venue"),
             }}
           />
 
           <Stack.Screen
             name="venues/edit"
             options={{
-              title: "Edit Venue",
+              headerTitle:
+                backTitle("Edit Venue"),
             }}
           />
+
+          {/* Gigs */}
 
           <Stack.Screen
             name="gigs/index"
@@ -188,23 +223,28 @@ export default function RootLayout() {
           <Stack.Screen
             name="gigs/[id]"
             options={{
-              title: "Gig Details",
+              headerTitle:
+                backTitle("Gig Details"),
             }}
           />
 
           <Stack.Screen
             name="gigs/create"
             options={{
-              title: "Add Gig",
+              headerTitle:
+                backTitle("Add Gig"),
             }}
           />
 
           <Stack.Screen
             name="gigs/edit"
             options={{
-              title: "Edit Gig",
+              headerTitle:
+                backTitle("Edit Gig"),
             }}
           />
+
+          {/* Other */}
 
           <Stack.Screen
             name="genres/index"
@@ -219,15 +259,17 @@ export default function RootLayout() {
               title: "PR Contacts",
             }}
           />
-
-          {/* <Stack.Screen
-            name="export/index"
-            options={{
-              title: "Export",
-            }}
-          /> */}
         </Stack>
       </QueryClientProvider>
     </SafeAreaProvider>
+  );
+}
+
+function backTitle(title: string) {
+  return () => (
+    <HeaderTitle
+      title={title}
+      showBack
+    />
   );
 }

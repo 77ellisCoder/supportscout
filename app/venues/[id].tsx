@@ -11,7 +11,6 @@ import {
 import { useVenue } from "../../hooks/useVenue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-details.styles";
-import { BackButton } from "../../components/navigation/BackButton";
 import { GigSection } from "../../components/gigs/GigSection";
 import { BandAppearanceList } from "../../components/venues/BandAppearanceList";
 import { Button } from "../../components/ui/Button";
@@ -84,13 +83,6 @@ export default function VenueDetailsScreen() {
         style={styles.page}
         contentContainerStyle={styles.container}
       >
-        <View style={styles.header}>
-          <BackButton
-            label="Back to Venues"
-            fallbackRoute="/venues"
-          />
-        </View>
-
         <View style={styles.hero}>
           <View style={styles.titleRow}>
             <View style={styles.titleContent}>
