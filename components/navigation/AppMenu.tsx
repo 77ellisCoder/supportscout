@@ -68,11 +68,14 @@ export function AppMenu({ onClose }: AppMenuProps) {
                 />
             )}
 
+            {/*
+            //TODO: potentially reimplement later
             <MenuItem
                 title="Export"
                 description="Export data to CSV"
                 onPress={() => goTo("/export")}
             />
+            */}
         </View>
     );
 }
