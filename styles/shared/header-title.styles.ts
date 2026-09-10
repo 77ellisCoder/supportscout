@@ -9,23 +9,22 @@ export const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",
-        gap: spacing.sm,
     },
 
     backButton: {
+        width: spacing.xxl,
+        height: spacing.xxxl,
         alignItems: "center",
         justifyContent: "center",
+    },
+    backText: {
+        color: colors.primaryLight,
+        fontSize: spacing.xl,
+        fontWeight: "500",
     },
 
     backButtonPressed: {
         opacity: 0.7,
-    },
-
-    backText: {
-        color: colors.primaryLight,
-        fontSize: 30,
-        lineHeight: 30,
-        fontWeight: "500",
     },
 
     title: {
