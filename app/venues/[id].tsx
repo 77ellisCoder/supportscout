@@ -109,12 +109,18 @@ export default function VenueDetailsScreen() {
             </View>
 
             {venue.isVerified && (
-              <View style={styles.verifiedBadge}>
-                <Text style={styles.verifiedText}>
+              <View style={styles.statusBadge}>
+                <Text style={styles.statusText}>
                   VERIFIED
                 </Text>
               </View>
             )}
+
+            <View style={styles.statusBadge}>
+              <Text style={styles.statusText}>
+                {venue.status.toUpperCase()}
+              </Text>
+            </View>
           </View>
 
           <View style={styles.metaRow}>
@@ -164,63 +170,6 @@ export default function VenueDetailsScreen() {
             </Text>
           </View>
         )}
-
-        {/* Status */}
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>
-            STATUS
-          </Text>
-
-          <View style={styles.statusRow}>
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>
-                {venue.status.toUpperCase()}
-              </Text>
-            </View>
-
-            {venue.isVerified && (
-              <Text style={styles.verifiedInline}>
-                Verified
-              </Text>
-            )}
-          </View>
-        </View>
-
-        {/* Venue details */}
-        {(venue.venueType ||
-          venue.capacity != null) && (
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>
-                VENUE DETAILS
-              </Text>
-
-              <View style={styles.inlineRow}>
-                {venue.venueType && (
-                  <View
-                    style={styles.inlineFieldWide}
-                  >
-                    <DetailRow
-                      label="Venue Type"
-                      value={formatVenueType(
-                        venue.venueType
-                      )}
-                    />
-                  </View>
-                )}
-
-                {venue.capacity != null && (
-                  <View style={styles.inlineField}>
-                    <DetailRow
-                      label="Capacity"
-                      value={String(
-                        venue.capacity
-                      )}
-                    />
-                  </View>
-                )}
-              </View>
-            </View>
-          )}
 
         {/* Contact */}
         {(venue.websiteUrl ||
