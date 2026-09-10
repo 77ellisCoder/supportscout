@@ -8,18 +8,13 @@ genresRouter.get("/", async (_req, res) => {
     try {
         const result = await pool.query(`
             SELECT
-                genre_id AS "id",
+                genre_id::int AS "id",
                 genre_name AS "name"
             FROM genres
             ORDER BY genre_name;
         `);
 
-        res.json(
-            result.rows.map((row) => ({
-                id: Number(row.genreId),
-                name: row.name,
-            }))
-        );
+        res.json(result.rows);
     } catch (error) {
         console.error(
             "GET /genres failed:",
@@ -48,7 +43,7 @@ genresRouter.get("/:id", async (req, res) => {
         const result = await pool.query(
             `
             SELECT
-                genre_id AS "id",
+                genre_id::int AS "id",
                 genre_name AS "name"
             FROM genres
             WHERE genre_id = $1
@@ -62,12 +57,7 @@ genresRouter.get("/:id", async (req, res) => {
             });
         }
 
-        const row = result.rows[0];
-
-        res.json({
-            id: Number(row.genreId),
-            name: row.name,
-        });
+        res.json(result.rows[0]);
     } catch (error) {
         console.error(
             "GET /genres/:id failed:",
