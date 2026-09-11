@@ -18,20 +18,12 @@ export const styles = StyleSheet.create({
         borderRadius: radius.lg,
 
         padding: spacing.md,
-        paddingHorizontal: spacing.md,
-        paddingVertical: spacing.md,
-    },
 
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-
-        gap: spacing.lg,
+        width: "100%",
     },
 
     content: {
-        flex: 1,
+        width: "100%",
         minWidth: 0,
     },
 
@@ -42,6 +34,8 @@ export const styles = StyleSheet.create({
 
         fontWeight: "700",
         letterSpacing: 1,
+
+        flexShrink: 1,
     },
 
     summary: {
@@ -50,6 +44,40 @@ export const styles = StyleSheet.create({
         color: colors.textMuted,
 
         marginTop: spacing.xs,
+
+        flexShrink: 1,
+    },
+
+    helper: {
+        ...typography.small,
+
+        color: colors.textMuted,
+
+        marginTop: spacing.xs,
+
+        fontSize: 12,
+
+        flexShrink: 1,
+    },
+
+    controlsRow: {
+        marginTop: spacing.md,
+
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+
+        gap: spacing.sm,
+
+        width: "100%",
+    },
+
+    controlLabel: {
+        ...typography.small,
+
+        color: colors.textSecondary,
+
+        fontWeight: "600",
     },
 
     controls: {
@@ -57,54 +85,12 @@ export const styles = StyleSheet.create({
         alignItems: "center",
 
         gap: spacing.sm,
-    },
 
-    button: {
-        width: 38,
-        height: 38,
-
-        alignItems: "center",
-        justifyContent: "center",
-
-        backgroundColor: colors.primaryMuted,
-
-        borderWidth: 1,
-        borderColor: colors.primary,
-
-        borderRadius: radius.pill,
-    },
-
-    buttonPressed: {
-        backgroundColor: colors.surfaceHover,
-
-        transform: [
-            {
-                scale: 0.96,
-            },
-        ],
-    },
-
-    buttonDisabled: {
-        backgroundColor: colors.surface,
-        borderColor: colors.border,
-
-        opacity: 0.4,
-    },
-
-    buttonText: {
-        color: colors.primaryLight,
-
-        fontSize: 22,
-        fontWeight: "700",
-        lineHeight: 24,
-    },
-
-    buttonTextDisabled: {
-        color: colors.textMuted,
+        flexShrink: 0,
     },
 
     countContainer: {
-        minWidth: 48,
+        minWidth: 44,
 
         alignItems: "center",
         justifyContent: "center",
@@ -124,15 +110,5 @@ export const styles = StyleSheet.create({
 
         fontSize: 8,
         fontWeight: "700",
-    },
-
-    helper: {
-        ...typography.small,
-
-        color: colors.textMuted,
-
-        marginTop: spacing.sm,
-
-        fontSize: 12,
     },
 });

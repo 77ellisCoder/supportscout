@@ -11,13 +11,36 @@ type Props = {
     gigId: number;
     bandId: number;
     bandName: string;
+    gigDate: string;
 };
+
+function getLocalDateString(): string {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(
+        now.getMonth() + 1
+    ).padStart(2, "0");
+    const day = String(
+        now.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
 
 export function DrinkRider({
     gigId,
     bandId,
     bandName,
+    gigDate
 }: Props) {
+
+    const today = getLocalDateString();
+
+    const isGigDay = gigDate === today;
+    const isBeforeGig = today < gigDate;
+    const isAfterGig = today > gigDate;
+
     const {
         data: tokens = [],
         useToken,
@@ -41,14 +64,21 @@ export function DrinkRider({
             </Text>
 
             <Text style={styles.remaining}>
-                {remaining} of {tokens.length} remaining
+                {isGigDay &&
+                    `${remaining} of ${tokens.length} remaining`}
+
+                {isBeforeGig &&
+                    `${tokens.length} allocated • Available on gig day`}
+
+                {isAfterGig &&
+                    `${tokens.length - remaining} used • Gig complete`}
             </Text>
 
             <View style={styles.tokens}>
                 {tokens.map((token, index) => (
                     <Pressable
                         key={token.tokenId}
-                        disabled={token.used}
+                        disabled={token.used || !isGigDay}
                         onPress={() =>
                             useToken(token.tokenId)
                         }
@@ -58,8 +88,13 @@ export function DrinkRider({
                             token.used &&
                             styles.tokenUsed,
 
+                            !isGigDay &&
+                            !token.used &&
+                            styles.tokenUnavailable,
+
                             pressed &&
                             !token.used &&
+                            isGigDay &&
                             styles.tokenPressed,
                         ]}
                     >

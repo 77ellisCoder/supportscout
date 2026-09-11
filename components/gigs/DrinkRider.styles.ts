@@ -18,6 +18,8 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.border,
         borderRadius: radius.lg,
+
+        width: "100%",
     },
 
     title: {
@@ -27,6 +29,8 @@ export const styles = StyleSheet.create({
 
         fontWeight: "700",
         letterSpacing: 1,
+
+        flexShrink: 1,
     },
 
     remaining: {
@@ -35,7 +39,7 @@ export const styles = StyleSheet.create({
         color: colors.textMuted,
 
         marginTop: spacing.xs,
-        marginBottom: spacing.md,
+        marginBottom: spacing.sm,
     },
 
     tokens: {
@@ -43,26 +47,30 @@ export const styles = StyleSheet.create({
         flexWrap: "wrap",
 
         gap: spacing.sm,
+
+        width: "100%",
     },
 
     token: {
-        minWidth: 110,
-        minHeight: 84,
+        flexBasis: "48%",
+        flexGrow: 0,
+        flexShrink: 1,
 
-        flexGrow: 1,
-        flexBasis: "45%",
+        minWidth: 0,
+        minHeight: 64,
 
         alignItems: "center",
         justifyContent: "center",
 
-        padding: spacing.md,
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.sm,
 
         backgroundColor: colors.primaryMuted,
 
         borderWidth: 1,
         borderColor: colors.primary,
 
-        borderRadius: radius.lg,
+        borderRadius: radius.md,
     },
 
     tokenPressed: {
@@ -84,7 +92,7 @@ export const styles = StyleSheet.create({
     },
 
     tokenIcon: {
-        fontSize: 28,
+        fontSize: 22,
 
         marginBottom: spacing.xs,
     },
@@ -95,7 +103,9 @@ export const styles = StyleSheet.create({
         color: colors.primaryLight,
 
         fontWeight: "700",
-        letterSpacing: 0.5,
+        letterSpacing: 0.3,
+
+        textAlign: "center",
     },
 
     tokenTextUsed: {
@@ -106,18 +116,24 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: spacing.md,
+
+        gap: spacing.sm,
+
+        width: "100%",
     },
 
     allocationControls: {
         flexDirection: "row",
         alignItems: "center",
-        gap: spacing.sm,
+
+        gap: spacing.xs,
+
+        flexShrink: 0,
     },
 
     allocationButton: {
-        width: 34,
-        height: 34,
+        width: 30,
+        height: 30,
 
         alignItems: "center",
         justifyContent: "center",
@@ -135,13 +151,22 @@ export const styles = StyleSheet.create({
 
     allocationButtonText: {
         color: colors.primaryLight,
-        fontSize: 20,
+
+        fontSize: 18,
         fontWeight: "700",
     },
 
     allocationCount: {
         color: colors.text,
-        fontSize: 16,
+
+        fontSize: 15,
         fontWeight: "700",
+
+        minWidth: 20,
+        textAlign: "center",
+    },
+
+    tokenUnavailable: {
+        opacity: 0.55,
     },
 });

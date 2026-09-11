@@ -21,7 +21,7 @@ export function DrinkRiderEditor({
     bandName,
     memberCount,
 }: Props) {
-    
+
     const {
         data: tokens = [],
         isLoading,
@@ -59,29 +59,30 @@ export function DrinkRiderEditor({
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.content}>
-                    <Text style={styles.title}>
-                        {bandName.toUpperCase()} DRINK RIDER
-                    </Text>
+            <View style={styles.content}>
+                <Text style={styles.title}>
+                    {bandName.toUpperCase()} DRINK RIDER
+                </Text>
 
-                    <Text style={styles.summary}>
-                        {total} allocated ·{" "}
-                        {used} used ·{" "}
-                        {remaining} remaining
-                    </Text>
+                <Text style={styles.summary}>
+                    {total} allocated · {used} used · {remaining} remaining
+                </Text>
 
-                    {memberCount > 0 ? (
-                        <Text style={styles.helper}>
-                            Maximum {maxTokens} drinks ·{" "}
-                            {memberCount} members × 2
-                        </Text>
-                    ) : (
-                        <Text style={styles.helper}>
-                            Set the band member count to allocate drinks.
-                        </Text>
-                    )}
-                </View>
+                {memberCount > 0 ? (
+                    <Text style={styles.helper}>
+                        Maximum {maxTokens} drinks · {memberCount} members × 2
+                    </Text>
+                ) : (
+                    <Text style={styles.helper}>
+                        Set the band member count to allocate drinks.
+                    </Text>
+                )}
+            </View>
+
+            <View style={styles.controlsRow}>
+                <Text style={styles.controlLabel}>
+                    Allocation
+                </Text>
 
                 <View style={styles.controls}>
                     <Button
@@ -91,20 +92,12 @@ export function DrinkRiderEditor({
                         onPress={removeToken}
                     />
 
-                    <View
-                        style={
-                            styles.countContainer
-                        }
-                    >
+                    <View style={styles.countContainer}>
                         <Text style={styles.count}>
                             {total}
                         </Text>
 
-                        <Text
-                            style={
-                                styles.countLabel
-                            }
-                        >
+                        <Text style={styles.countLabel}>
                             DRINKS
                         </Text>
                     </View>
