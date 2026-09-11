@@ -23,6 +23,7 @@ import { BandContactCard } from "../../components/bands/BandContactCard";
 import { GenreChipSelector } from "../../components/bands/GenreChipSelector";
 
 import { ScreenActionBar } from "../../components/ui/ScreenActionBar"
+import { BandAvailabilityCard } from "../../components/bands/BandAvailabilityCard";
 
 export default function BandDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -178,6 +179,8 @@ export default function BandDetailsScreen() {
         </View>
 
         <BandContactCard band={band} />
+
+        <BandAvailabilityCard bandId={bandId} />
 
         <GigSection
           title="UPCOMING GIGS"

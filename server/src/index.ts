@@ -9,6 +9,8 @@ import { gigsRouter } from "./routes/gigs";
 import { prContactsRouter } from "./routes/prContacts";
 import { prCampaignsRouter } from "./routes/prCampaigns";
 import { venuesRouter } from "./routes/venues"
+import { initCalendarRouter } from "./routes/calendar";
+import { pool } from "./database/postgres";
 
 import {
     verifyEmailConnection,
@@ -49,6 +51,7 @@ app.use("/gigs", gigsRouter);
 app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
 app.use("/venues", venuesRouter);
+app.use("/calendar", initCalendarRouter(pool));
 
 app.listen(PORT, () => {
     console.log(

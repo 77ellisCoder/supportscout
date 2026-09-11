@@ -250,3 +250,66 @@ Christopher Ellis
 GitHub
 
 https://github.com/77ellisCoder
+## Google Calendar Availability
+
+SupportScout now includes a Google Calendar integration for band availability.
+
+### Flow
+
+```text
+Band profile
+   ↓
+Connect Google Calendar
+   ↓
+Google OAuth
+   ↓
+SupportScout API
+   ↓
+Google FreeBusy API
+   ↓
+Availability engine
+   ↓
+Available working-hour slots
+```
+
+The initial integration associates one Google Calendar with a band. It deliberately requests Google's FreeBusy permission rather than reading event titles/descriptions.
+
+### Backend setup
+
+1. Apply `database/postgres/migrations/002_calendar_connections.sql`.
+2. Copy `server/.env.example` to `server/.env`.
+3. Configure Google OAuth credentials.
+4. Generate a 32-byte encryption key:
+
+```bash
+openssl rand -base64 32
+```
+
+5. Set `GOOGLE_TOKEN_ENCRYPTION_KEY`.
+6. Set `GOOGLE_REDIRECT_URI` to your deployed API callback, for example:
+
+```text
+https://api.example.com/calendar/google/callback
+```
+
+7. In Google Cloud, add that exact URI to the OAuth client.
+8. Ensure `EXPO_PUBLIC_API_URL` points at the SupportScout API.
+
+The Band Details screen now contains a **Calendar Availability** section.
+
+### Availability rules
+
+The current default is:
+
+- Monday-Friday
+- 08:00-18:00 Perth time
+- 30-minute minimum free slot
+- 30-minute buffer around calendar events
+
+These are intentionally kept in `server/src/services/calendar/AvailabilityService.ts` so they can be changed independently of Google integration.
+
+### Important
+
+The current project does not appear to have application-level user authentication. The calendar OAuth state therefore uses the band ID. Before exposing calendar connection endpoints publicly, add your existing authentication/authorisation layer and verify that the signed-in user is allowed to connect/read the selected band's calendar.
+
+For a future multi-member model, change the connection table from one connection per band to one connection per band member. The availability engine already supports multiple busy-period sets, so group availability can then be calculated by intersecting the free windows of all members.
