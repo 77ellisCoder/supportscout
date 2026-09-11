@@ -44,6 +44,10 @@ function getSuccessUrl() {
         "supportscout://calendar-connected"
     );
 }
+type CalendarRange = {
+    start: Date;
+    end: Date;
+};
 
 calendarRouter.get(
     "/google/connect",
@@ -88,13 +92,13 @@ calendarRouter.get(
         try {
             const code =
                 typeof req.query.code ===
-                "string"
+                    "string"
                     ? req.query.code
                     : null;
 
             const rawState =
                 typeof req.query.state ===
-                "string"
+                    "string"
                     ? req.query.state
                     : null;
 
@@ -335,16 +339,17 @@ calendarRouter.get(
             timezone:
                 connection.timezone,
             busy: busy.map(
-                (item) => ({
+                (item: CalendarRange) => ({
                     start:
                         item.start.toISOString(),
                     end:
                         item.end.toISOString(),
                 })
             ),
+
             available:
                 available.map(
-                    (item) => ({
+                    (item: CalendarRange) => ({
                         start:
                             item.start.toISOString(),
                         end:

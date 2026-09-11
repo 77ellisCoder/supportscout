@@ -174,6 +174,7 @@ export default function GigDetailsScreen() {
                                                 gigId={gig.gigId}
                                                 bandId={band.bandId}
                                                 bandName={band.bandName}
+                                                gigDate={gig.gigDate}
                                             />
                                         )}
                                 </View>
