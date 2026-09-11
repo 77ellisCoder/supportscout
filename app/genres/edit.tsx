@@ -147,8 +147,8 @@ export default function EditBandScreen() {
         }),
       ]);
 
-      // Navigate back to the band details page after saving
-      router.back();
+      // Navigate back to the genres page after saving
+      router.replace("/genres");
     } catch (err) {
       setError(
         err instanceof Error

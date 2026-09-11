@@ -69,17 +69,4 @@ export const DrinkTokenRepository = {
 
         await ensureOk(response);
     },
-
-    async useToken(
-        tokenId: number
-    ): Promise<void> {
-        const response = await fetch(
-            `${API_URL}/drink-tokens/${tokenId}/use`,
-            {
-                method: "PATCH",
-            }
-        );
-
-        await ensureOk(response);
-    },
 };

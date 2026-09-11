@@ -51,6 +51,13 @@ export function useDrinkTokenAllocation(
             ),
 
         onSuccess: refresh,
+
+        onError: (error) => {
+            console.error(
+                "Failed to add drink token:",
+                error
+            );
+        },
     });
 
     const removeTokenMutation = useMutation({

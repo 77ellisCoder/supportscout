@@ -8,7 +8,6 @@ import { useState } from "react";
 
 import {
   ActivityIndicator,
-  Platform,
   Text,
   View,
 } from "react-native";
@@ -145,8 +144,8 @@ export default function EditGigScreen() {
         queryKey: ["gigs"],
       });
 
-      // Navigate back to the gig details page after saving
-      router.back();
+      // Navigate back to the gigs page after saving
+      router.replace("/gigs");
     } catch (err) {
       setError(
         err instanceof Error

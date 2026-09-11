@@ -152,8 +152,8 @@ export default function EditBandScreen() {
         }),
       ]);
 
-      // Navigate back to the band details page after saving
-      router.back();
+      // Navigate back to the bands page after saving
+      router.replace("/bands");
     } catch (err) {
       setError(
         err instanceof Error
