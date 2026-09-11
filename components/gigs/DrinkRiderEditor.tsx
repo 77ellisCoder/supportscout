@@ -4,7 +4,9 @@ import {
     View,
 } from "react-native";
 
-import { useDrinkTokens } from "../../hooks/useDrinkTokens";
+import {
+    useDrinkTokenAllocation,
+} from "../../hooks/useDrinkTokenAllocation";
 import { Button } from "../ui/Button";
 import { styles } from "./DrinkRiderEditor.styles";
 
@@ -27,7 +29,7 @@ export function DrinkRiderEditor({
         isLoading,
         addToken,
         removeToken,
-    } = useDrinkTokens(
+    } = useDrinkTokenAllocation(
         gigId,
         bandId
     );

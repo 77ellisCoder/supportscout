@@ -1,14 +1,17 @@
-// hooks/useDrinkTokens.ts
-
+/**
+ * Drink token allocation, used for Gig Edit, and on Web and Device
+ */
 import {
     useMutation,
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
 
-import { DrinkTokenRepository } from "../repositories/device/DrinkTokenRepository";
+import {
+    DrinkTokenRepository,
+} from "../repositories/Repository";
 
-export function useDrinkTokens(
+export function useDrinkTokenAllocation(
     gigId: number,
     bandId: number
 ) {
@@ -22,25 +25,22 @@ export function useDrinkTokens(
 
     const query = useQuery({
         queryKey,
+
         queryFn: () =>
             DrinkTokenRepository.getForGigBand(
                 gigId,
                 bandId
             ),
-        enabled: gigId > 0 && bandId > 0,
+
+        enabled:
+            gigId > 0 &&
+            bandId > 0,
     });
 
     const refresh = () =>
         queryClient.invalidateQueries({
             queryKey,
         });
-
-    const useTokenMutation = useMutation({
-        mutationFn: (tokenId: number) =>
-            DrinkTokenRepository.useToken(tokenId),
-
-        onSuccess: refresh,
-    });
 
     const addTokenMutation = useMutation({
         mutationFn: () =>
@@ -66,13 +66,16 @@ export function useDrinkTokens(
     return {
         ...query,
 
-        useToken: (tokenId: number) =>
-            useTokenMutation.mutate(tokenId),
-
         addToken: () =>
             addTokenMutation.mutate(),
 
         removeToken: () =>
             removeTokenMutation.mutate(),
+
+        isAdding:
+            addTokenMutation.isPending,
+
+        isRemoving:
+            removeTokenMutation.isPending,
     };
 }

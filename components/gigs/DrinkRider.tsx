@@ -4,7 +4,9 @@ import {
     View,
 } from "react-native";
 
-import { useDrinkTokens } from "../../hooks/useDrinkTokens";
+import {
+    useDrinkTokenRedemption,
+} from "../../hooks/useDrinkTokenRedemption";
 import { styles } from "./DrinkRider.styles";
 
 type Props = {
@@ -44,7 +46,7 @@ export function DrinkRider({
     const {
         data: tokens = [],
         useToken,
-    } = useDrinkTokens(
+    } = useDrinkTokenRedemption(
         gigId,
         bandId
     );

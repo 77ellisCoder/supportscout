@@ -97,6 +97,18 @@ export function LineupBuilder({
             )
         );
 
+    const headlinerItem = value.find(
+        (item) => item.role === "headliner"
+    );
+
+    const headlinerBand = bands.find(
+        (band) =>
+            band.bandId === headlinerItem?.bandId
+    );
+
+    const ourBandIsHeadliner =
+        headlinerBand?.isOurBand === true;
+
     function addBand(
         bandId: number
     ) {
@@ -189,6 +201,10 @@ export function LineupBuilder({
                                 return null;
                             }
 
+                            const canManageDrinkRider =
+                                ourBandIsHeadliner ||
+                                band.isOurBand === true;
+
                             return (
                                 <View
                                     key={
@@ -244,16 +260,18 @@ export function LineupBuilder({
                                         </View>
                                     </View>
 
-                                    {drinkRiderGigId != null && (
-                                        <DrinkRiderEditor
-                                            gigId={drinkRiderGigId}
-                                            bandId={item.bandId}
-                                            bandName={band.bandName}
-                                            memberCount={
-                                                band.memberCount ?? 0
-                                            }
-                                        />
-                                    )}
+                                    {/* Headliner can manage drink allocations */}
+                                    {drinkRiderGigId != null &&
+                                        canManageDrinkRider && (
+                                            <DrinkRiderEditor
+                                                gigId={drinkRiderGigId}
+                                                bandId={item.bandId}
+                                                bandName={band.bandName}
+                                                memberCount={
+                                                    band.memberCount ?? 0
+                                                }
+                                            />
+                                        )}
 
                                     <View style={styles.roleRow}>
                                         {ROLES.map((role) => {

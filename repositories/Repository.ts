@@ -12,6 +12,7 @@ const repositories =
         : DeviceRepositories;
 
 export const {
+    DrinkTokenRepository,
     BandRepository,
     GenreRepository,
     GigRepository,
