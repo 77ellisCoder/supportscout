@@ -198,100 +198,35 @@ export function LineupBuilder({
                                         styles.lineupCard
                                     }
                                 >
-                                    <View
-                                        style={
-                                            styles.lineupHeader
-                                        }
-                                    >
-                                        <View
-                                            style={
-                                                styles.orderBadge
-                                            }
-                                        >
-                                            <Text
-                                                style={
-                                                    styles.orderText
-                                                }
-                                            >
+                                    <View style={styles.lineupHeader}>
+                                        <View style={styles.orderBadge}>
+                                            <Text style={styles.orderText}>
                                                 {index + 1}
                                             </Text>
                                         </View>
 
-                                        <View
-                                            style={
-                                                styles.bandContent
-                                            }
-                                        >
-                                            <Text
-                                                style={
-                                                    styles.bandName
-                                                }
-                                            >
-                                                {
-                                                    band.bandName
-                                                }
+                                        <View style={styles.bandContent}>
+                                            <Text style={styles.bandName}>
+                                                {band.bandName}
                                             </Text>
 
-                                            <Text
-                                                style={
-                                                    styles.currentRole
-                                                }
-                                            >
-                                                {formatRole(
-                                                    item.role
-                                                )}
+                                            <Text style={styles.currentRole}>
+                                                {formatRole(item.role)}
                                             </Text>
                                         </View>
 
-                                        {drinkRiderGigId !=
-                                            null && (
-                                                <DrinkRiderEditor
-                                                    gigId={
-                                                        drinkRiderGigId
-                                                    }
-                                                    bandId={
-                                                        item.bandId
-                                                    }
-                                                    bandName={
-                                                        band.bandName
-                                                    }
-                                                    memberCount={
-                                                        band.memberCount ??
-                                                        0
-                                                    }
-                                                />
-                                            )}
-
-                                        <View
-                                            style={
-                                                styles.orderSection
-                                            }
-                                        >
-                                            <Text
-                                                style={
-                                                    styles.orderLabel
-                                                }
-                                            >
+                                        <View style={styles.orderSection}>
+                                            <Text style={styles.orderLabel}>
                                                 LINEUP ORDER
                                             </Text>
 
-                                            <View
-                                                style={
-                                                    styles.orderControls
-                                                }
-                                            >
+                                            <View style={styles.orderControls}>
                                                 <Button
                                                     title="↑"
                                                     variant="counter"
-                                                    disabled={
-                                                        index ===
-                                                        0
-                                                    }
+                                                    disabled={index === 0}
                                                     onPress={() =>
-                                                        moveBand(
-                                                            index,
-                                                            -1
-                                                        )
+                                                        moveBand(index, -1)
                                                     }
                                                 />
 
@@ -299,58 +234,53 @@ export function LineupBuilder({
                                                     title="↓"
                                                     variant="counter"
                                                     disabled={
-                                                        index ===
-                                                        value.length -
-                                                        1
+                                                        index === value.length - 1
                                                     }
                                                     onPress={() =>
-                                                        moveBand(
-                                                            index,
-                                                            1
-                                                        )
+                                                        moveBand(index, 1)
                                                     }
                                                 />
                                             </View>
                                         </View>
                                     </View>
 
-                                    <View
-                                        style={
-                                            styles.roleRow
-                                        }
-                                    >
-                                        {ROLES.map(
-                                            (role) => {
-                                                const selected =
-                                                    item.role ===
-                                                    role.value;
+                                    {drinkRiderGigId != null && (
+                                        <DrinkRiderEditor
+                                            gigId={drinkRiderGigId}
+                                            bandId={item.bandId}
+                                            bandName={band.bandName}
+                                            memberCount={
+                                                band.memberCount ?? 0
+                                            }
+                                        />
+                                    )}
 
-                                                return (
-                                                    <View
-                                                        key={
-                                                            role.value
-                                                        }
+                                    <View style={styles.roleRow}>
+                                        {ROLES.map((role) => {
+                                            const selected =
+                                                item.role === role.value;
+
+                                            return (
+                                                <View
+                                                    key={role.value}
+                                                    style={[
+                                                        styles.roleChip,
+                                                        selected &&
+                                                        styles.roleChipSelected,
+                                                    ]}
+                                                >
+                                                    <Text
                                                         style={[
-                                                            styles.roleChip,
+                                                            styles.roleText,
                                                             selected &&
-                                                            styles.roleChipSelected,
+                                                            styles.roleTextSelected,
                                                         ]}
                                                     >
-                                                        <Text
-                                                            style={[
-                                                                styles.roleText,
-                                                                selected &&
-                                                                styles.roleTextSelected,
-                                                            ]}
-                                                        >
-                                                            {
-                                                                role.label
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                );
-                                            }
-                                        )}
+                                                        {role.label}
+                                                    </Text>
+                                                </View>
+                                            );
+                                        })}
                                     </View>
 
                                     <Pressable

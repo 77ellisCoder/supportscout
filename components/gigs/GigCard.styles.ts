@@ -38,8 +38,8 @@ export const styles = StyleSheet.create({
     },
 
     dateBadge: {
-        width: 60,
-        height: 66,
+        width: 70,
+        height: 70,
 
         flexShrink: 0,
 
