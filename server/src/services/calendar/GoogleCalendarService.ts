@@ -1,28 +1,20 @@
 import { encryptToken, decryptToken } from "./crypto";
 
-const FREEBUSY_SCOPE =
-    "https://www.googleapis.com/auth/calendar.freebusy";
-
-function env(name: string): string {
-    const value = process.env[name];
-
-    if (!value) {
-        throw new Error(
-            `${name} is not configured`
-        );
-    }
-
-    return value;
-}
+const GOOGLE_SCOPES = [
+    "openid",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/calendar.freebusy",
+];
 
 function clientCredentials() {
     return {
         clientId:
-            env("GOOGLE_CLIENT_ID"),
+            process.env.GOOGLE_CLIENT_ID,
         clientSecret:
-            env("GOOGLE_CLIENT_SECRET"),
+            process.env.GOOGLE_CLIENT_SECRET,
         redirectUri:
-            env("GOOGLE_REDIRECT_URI"),
+            process.env.GOOGLE_REDIRECT_URI,
     };
 }
 
@@ -34,16 +26,15 @@ export function createGoogleAuthorizationUrl(
         redirectUri,
     } = clientCredentials();
 
-    const params =
-        new URLSearchParams({
-            client_id: clientId,
-            redirect_uri: redirectUri,
-            response_type: "code",
-            access_type: "offline",
-            prompt: "consent",
-            scope: FREEBUSY_SCOPE,
-            state,
-        });
+    const params = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        response_type: "code",
+        scope: GOOGLE_SCOPES.join(" "),
+        access_type: "offline",
+        prompt: "consent",
+        state,
+    });
 
     return (
         "https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -92,23 +83,42 @@ export async function exchangeGoogleCode(
     ) {
         throw new Error(
             tokens.error_description ??
-                "Google did not return a refresh token."
+            "Google did not return a refresh token."
         );
     }
 
-    const userInfoResponse =
-        await fetch(
-            "https://www.googleapis.com/oauth2/v2/userinfo",
-            {
-                headers: {
-                    Authorization:
-                        `Bearer ${tokens.access_token}`,
-                },
-            }
+    console.log("Google token response:", {
+        access_token_present: !!tokens.access_token,
+        refresh_token_present: !!tokens.refresh_token,
+        token_type: tokens.token_type,
+        expires_in: tokens.expires_in,
+        scope: tokens.scope,
+    });
+
+    const userInfoResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        {
+            headers: {
+                Authorization: `Bearer ${tokens.access_token}`,
+            },
+        }
+    );
+
+    if (!userInfoResponse.ok) {
+        const errorText = await userInfoResponse.text();
+
+        console.error(
+            "Google UserInfo failed:",
+            userInfoResponse.status,
+            errorText
         );
 
-    const userInfo =
-        await userInfoResponse.json();
+        throw new Error(
+            `Google UserInfo ${userInfoResponse.status}: ${errorText}`
+        );
+    }
+
+    const userInfo = await userInfoResponse.json();
 
     if (!userInfoResponse.ok) {
         throw new Error(
@@ -168,7 +178,7 @@ async function getAccessToken(
     if (!response.ok) {
         throw new Error(
             body.error_description ??
-                "Unable to refresh Google Calendar access."
+            "Unable to refresh Google Calendar access."
         );
     }
 
@@ -216,7 +226,7 @@ export async function getGoogleBusyPeriods(
     if (!response.ok) {
         throw new Error(
             body.error?.message ??
-                "Unable to read Google Calendar availability."
+            "Unable to read Google Calendar availability."
         );
     }
 

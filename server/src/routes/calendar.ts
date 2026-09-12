@@ -7,11 +7,13 @@ import crypto from "node:crypto";
 import {
     Pool,
 } from "pg";
+
 import {
     createGoogleAuthorizationUrl,
     exchangeGoogleCode,
     getGoogleBusyPeriods,
 } from "../services/calendar/GoogleCalendarService";
+
 import {
     calculateAvailability,
 } from "../services/calendar/AvailabilityService";
@@ -20,14 +22,35 @@ const calendarRouter = Router();
 
 let pool: Pool;
 
+type CalendarRange = {
+    start: Date;
+    end: Date;
+};
+
+type UserCalendarConnection = {
+    userId: number;
+    encryptedRefreshToken: string;
+    timezone: string;
+};
+
+type BandMemberRow = {
+    userId: number;
+    displayName: string | null;
+    email: string;
+    relationship: string;
+    encryptedRefreshToken: string | null;
+    timezone: string | null;
+};
+
 export function initCalendarRouter(
     databasePool: Pool
 ) {
     pool = databasePool;
+
     return calendarRouter;
 }
 
-function parseBandId(
+function parseId(
     value: unknown
 ): number | null {
     const id = Number(value);
@@ -38,41 +61,105 @@ function parseBandId(
         : null;
 }
 
+function parseDateRange(
+    req: Request
+): {
+    from: Date;
+    to: Date;
+} | null {
+    const from =
+        new Date(
+            String(req.query.from)
+        );
+
+    const to =
+        new Date(
+            String(req.query.to)
+        );
+
+    if (
+        Number.isNaN(
+            from.getTime()
+        ) ||
+        Number.isNaN(
+            to.getTime()
+        ) ||
+        from >= to
+    ) {
+        return null;
+    }
+
+    return {
+        from,
+        to,
+    };
+}
+
+function serializeRanges(
+    ranges: CalendarRange[]
+) {
+    return ranges.map(
+        (item) => ({
+            start:
+                item.start.toISOString(),
+
+            end:
+                item.end.toISOString(),
+        })
+    );
+}
+
 function getSuccessUrl() {
     return (
-        process.env.GOOGLE_CALENDAR_SUCCESS_URL ??
+        process.env
+            .GOOGLE_CALENDAR_SUCCESS_URL ??
         "supportscout://calendar-connected"
     );
 }
-type CalendarRange = {
-    start: Date;
-    end: Date;
-};
+
+/*
+|--------------------------------------------------------------------------
+| CONNECT GOOGLE CALENDAR
+|--------------------------------------------------------------------------
+|
+| Calendar connection now belongs to a USER,
+| not directly to a band.
+|
+*/
 
 calendarRouter.get(
     "/google/connect",
-    (req: Request, res: Response) => {
-        const bandId =
-            parseBandId(
-                req.query.bandId
+    (
+        req: Request,
+        res: Response
+    ) => {
+        const userId =
+            parseId(
+                req.query.userId
             );
 
-        if (!bandId) {
+        if (!userId) {
             return res.status(400).json({
                 error:
-                    "bandId is required",
+                    "userId is required",
             });
         }
 
-        const state = Buffer.from(
-            JSON.stringify({
-                bandId,
-                nonce:
-                    crypto
-                        .randomBytes(24)
-                        .toString("hex"),
-            })
-        ).toString("base64url");
+        const state =
+            Buffer.from(
+                JSON.stringify({
+                    userId,
+
+                    nonce:
+                        crypto
+                            .randomBytes(24)
+                            .toString(
+                                "hex"
+                            ),
+                })
+            ).toString(
+                "base64url"
+            );
 
         res.json({
             url:
@@ -83,6 +170,12 @@ calendarRouter.get(
     }
 );
 
+/*
+|--------------------------------------------------------------------------
+| GOOGLE CALLBACK
+|--------------------------------------------------------------------------
+*/
+
 calendarRouter.get(
     "/google/callback",
     async (
@@ -90,6 +183,44 @@ calendarRouter.get(
         res: Response
     ) => {
         try {
+            console.log(
+                "Google callback query:",
+                req.query
+            );
+
+            const oauthError =
+                typeof req.query.error ===
+                    "string"
+                    ? req.query.error
+                    : null;
+
+            const oauthErrorDescription =
+                typeof req.query
+                    .error_description ===
+                    "string"
+                    ? req.query
+                        .error_description
+                    : null;
+
+            if (oauthError) {
+                console.error(
+                    "Google OAuth returned error:",
+                    oauthError,
+                    oauthErrorDescription
+                );
+
+                return res
+                    .status(400)
+                    .send(
+                        `Google OAuth failed: ${oauthError}` +
+                        (
+                            oauthErrorDescription
+                                ? ` - ${oauthErrorDescription}`
+                                : ""
+                        )
+                    );
+            }
+
             const code =
                 typeof req.query.code ===
                     "string"
@@ -103,6 +234,11 @@ calendarRouter.get(
                     : null;
 
             if (!code || !rawState) {
+                console.error(
+                    "Google OAuth callback missing parameters:",
+                    req.query
+                );
+
                 return res
                     .status(400)
                     .send(
@@ -110,23 +246,52 @@ calendarRouter.get(
                     );
             }
 
-            const state = JSON.parse(
-                Buffer.from(
-                    rawState,
-                    "base64url"
-                ).toString("utf8")
-            );
+            // rest of existing callback...
 
-            const bandId =
-                parseBandId(
-                    state.bandId
+            const state =
+                JSON.parse(
+                    Buffer.from(
+                        rawState,
+                        "base64url"
+                    ).toString(
+                        "utf8"
+                    )
                 );
 
-            if (!bandId) {
+            const userId =
+                parseId(
+                    state.userId
+                );
+
+            if (!userId) {
                 return res
                     .status(400)
                     .send(
                         "Invalid calendar connection state."
+                    );
+            }
+
+            /*
+             * Ensure the user actually exists.
+             */
+            const userResult =
+                await pool.query(
+                    `
+                    SELECT user_id
+                    FROM users
+                    WHERE user_id = $1
+                    `,
+                    [userId]
+                );
+
+            if (
+                userResult.rowCount ===
+                0
+            ) {
+                return res
+                    .status(404)
+                    .send(
+                        "User not found."
                     );
             }
 
@@ -137,8 +302,8 @@ calendarRouter.get(
 
             await pool.query(
                 `
-                INSERT INTO band_calendar_connections (
-                    band_id,
+                INSERT INTO user_calendar_connections (
+                    user_id,
                     provider,
                     provider_account_id,
                     email,
@@ -153,34 +318,45 @@ calendarRouter.get(
                     $4,
                     'Australia/Perth'
                 )
+
                 ON CONFLICT (
-                    band_id,
+                    user_id,
                     provider
                 )
+
                 DO UPDATE SET
                     provider_account_id =
                         EXCLUDED.provider_account_id,
+
                     email =
                         EXCLUDED.email,
+
                     encrypted_refresh_token =
                         EXCLUDED.encrypted_refresh_token,
-                    updated_at = NOW()
+
+                    updated_at =
+                        NOW()
                 `,
                 [
-                    bandId,
-                    connection.providerAccountId,
+                    userId,
+                    connection
+                        .providerAccountId,
                     connection.email,
-                    connection.encryptedRefreshToken,
+                    connection
+                        .encryptedRefreshToken,
                 ]
             );
 
+            const successUrl =
+                getSuccessUrl();
+
             const separator =
-                getSuccessUrl().includes("?")
+                successUrl.includes("?")
                     ? "&"
                     : "?";
 
             res.redirect(
-                `${getSuccessUrl()}${separator}bandId=${bandId}`
+                `${successUrl}${separator}userId=${userId}`
             );
         } catch (error) {
             console.error(
@@ -197,54 +373,220 @@ calendarRouter.get(
     }
 );
 
+/*
+|--------------------------------------------------------------------------
+| USER CALENDAR STATUS
+|--------------------------------------------------------------------------
+*/
+
 calendarRouter.get(
-    "/bands/:bandId/status",
+    "/users/:userId/status",
     async (
         req: Request,
         res: Response
     ) => {
-        const bandId =
-            parseBandId(
-                req.params.bandId
+        const userId =
+            parseId(
+                req.params.userId
             );
 
-        if (!bandId) {
+        if (!userId) {
             return res.status(400).json({
                 error:
-                    "Invalid bandId",
+                    "Invalid userId",
             });
         }
 
-        const result =
-            await pool.query(
-                `
-                SELECT
-                    provider,
-                    email,
-                    timezone
-                FROM band_calendar_connections
-                WHERE band_id = $1
-                `,
-                [bandId]
+        try {
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        provider,
+                        email,
+                        timezone
+
+                    FROM user_calendar_connections
+
+                    WHERE user_id = $1
+                    `,
+                    [userId]
+                );
+
+            const row =
+                result.rows[0];
+
+            res.json({
+                userId,
+
+                connected:
+                    Boolean(row),
+
+                provider:
+                    row?.provider ??
+                    null,
+
+                email:
+                    row?.email ??
+                    null,
+
+                timezone:
+                    row?.timezone ??
+                    "Australia/Perth",
+            });
+        } catch (error) {
+            console.error(
+                "Calendar status lookup failed:",
+                error
             );
 
-        const row =
-            result.rows[0];
-
-        res.json({
-            connected: Boolean(row),
-            provider:
-                row?.provider ??
-                null,
-            email:
-                row?.email ??
-                null,
-            timezone:
-                row?.timezone ??
-                "Australia/Perth",
-        });
+            res.status(500).json({
+                error:
+                    "Unable to load calendar status",
+            });
+        }
     }
 );
+
+/*
+|--------------------------------------------------------------------------
+| USER AVAILABILITY
+|--------------------------------------------------------------------------
+*/
+
+calendarRouter.get(
+    "/users/:userId/availability",
+    async (
+        req: Request,
+        res: Response
+    ) => {
+        const userId =
+            parseId(
+                req.params.userId
+            );
+
+        if (!userId) {
+            return res.status(400).json({
+                error:
+                    "Invalid userId",
+            });
+        }
+
+        const range =
+            parseDateRange(req);
+
+        if (!range) {
+            return res.status(400).json({
+                error:
+                    "Valid from and to dates are required.",
+            });
+        }
+
+        try {
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        user_id::int
+                            AS "userId",
+
+                        encrypted_refresh_token
+                            AS "encryptedRefreshToken",
+
+                        timezone
+
+                    FROM user_calendar_connections
+
+                    WHERE user_id = $1
+                      AND provider = 'google'
+                    `,
+                    [userId]
+                );
+
+            const connection:
+                UserCalendarConnection |
+                undefined =
+                result.rows[0];
+
+            if (!connection) {
+                return res.status(404).json({
+                    error:
+                        "No Google Calendar connected to this user.",
+                });
+            }
+
+            const busy =
+                await getGoogleBusyPeriods(
+                    connection
+                        .encryptedRefreshToken,
+                    range.from,
+                    range.to
+                );
+
+            const available =
+                calculateAvailability(
+                    range.from,
+                    range.to,
+                    busy,
+                    {
+                        startHour: 8,
+                        endHour: 18,
+                        minimumMinutes: 30,
+                        bufferMinutes: 30,
+                        includeWeekends:
+                            false,
+                        utcOffsetMinutes:
+                            480,
+                    }
+                );
+
+            res.json({
+                userId,
+
+                timezone:
+                    connection.timezone,
+
+                busy:
+                    serializeRanges(
+                        busy
+                    ),
+
+                available:
+                    serializeRanges(
+                        available
+                    ),
+            });
+        } catch (error) {
+            console.error(
+                "User availability lookup failed:",
+                error
+            );
+
+            res.status(500).json({
+                error:
+                    "Unable to determine user availability",
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| BAND MEMBER AVAILABILITY
+|--------------------------------------------------------------------------
+|
+| This is where the user -> band relationship starts paying off.
+|
+| A band does NOT own the calendars.
+|
+| Instead:
+|
+| Band
+|   -> user_bands
+|       -> users
+|           -> user_calendar_connections
+|
+*/
 
 calendarRouter.get(
     "/bands/:bandId/availability",
@@ -253,7 +595,7 @@ calendarRouter.get(
         res: Response
     ) => {
         const bandId =
-            parseBandId(
+            parseId(
                 req.params.bandId
             );
 
@@ -264,99 +606,193 @@ calendarRouter.get(
             });
         }
 
-        const from =
-            new Date(
-                String(req.query.from)
-            );
+        const range =
+            parseDateRange(req);
 
-        const to =
-            new Date(
-                String(req.query.to)
-            );
-
-        if (
-            Number.isNaN(
-                from.getTime()
-            ) ||
-            Number.isNaN(
-                to.getTime()
-            ) ||
-            from >= to
-        ) {
+        if (!range) {
             return res.status(400).json({
                 error:
                     "Valid from and to dates are required.",
             });
         }
 
-        const result =
-            await pool.query(
-                `
-                SELECT
-                    encrypted_refresh_token,
-                    timezone
-                FROM band_calendar_connections
-                WHERE band_id = $1
-                  AND provider = 'google'
-                `,
-                [bandId]
+        try {
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        u.user_id::int
+                            AS "userId",
+
+                        u.display_name
+                            AS "displayName",
+
+                        u.email,
+
+                        ub.relationship,
+
+                        ucc.encrypted_refresh_token
+                            AS "encryptedRefreshToken",
+
+                        ucc.timezone
+
+                    FROM user_bands ub
+
+                    INNER JOIN users u
+                        ON u.user_id =
+                            ub.user_id
+
+                    LEFT JOIN user_calendar_connections ucc
+                        ON ucc.user_id =
+                            u.user_id
+                        AND ucc.provider =
+                            'google'
+
+                    WHERE ub.band_id = $1
+
+                    ORDER BY
+                        u.display_name ASC,
+                        u.email ASC
+                    `,
+                    [bandId]
+                );
+
+            const members =
+                result.rows as BandMemberRow[];
+
+            const memberAvailability =
+                await Promise.all(
+                    members.map(
+                        async (
+                            member
+                        ) => {
+                            /*
+                             * User belongs to the band,
+                             * but has not connected
+                             * their calendar yet.
+                             */
+                            if (
+                                !member
+                                    .encryptedRefreshToken
+                            ) {
+                                return {
+                                    userId:
+                                        member.userId,
+
+                                    displayName:
+                                        member.displayName,
+
+                                    email:
+                                        member.email,
+
+                                    relationship:
+                                        member.relationship,
+
+                                    connected:
+                                        false,
+
+                                    timezone:
+                                        null,
+
+                                    busy: [],
+
+                                    available:
+                                        [],
+                                };
+                            }
+
+                            const busy =
+                                await getGoogleBusyPeriods(
+                                    member
+                                        .encryptedRefreshToken,
+                                    range.from,
+                                    range.to
+                                );
+
+                            const available =
+                                calculateAvailability(
+                                    range.from,
+                                    range.to,
+                                    busy,
+                                    {
+                                        startHour:
+                                            8,
+
+                                        endHour:
+                                            18,
+
+                                        minimumMinutes:
+                                            30,
+
+                                        bufferMinutes:
+                                            30,
+
+                                        includeWeekends:
+                                            false,
+
+                                        utcOffsetMinutes:
+                                            480,
+                                    }
+                                );
+
+                            return {
+                                userId:
+                                    member.userId,
+
+                                displayName:
+                                    member.displayName,
+
+                                email:
+                                    member.email,
+
+                                relationship:
+                                    member.relationship,
+
+                                connected:
+                                    true,
+
+                                timezone:
+                                    member.timezone,
+
+                                busy:
+                                    serializeRanges(
+                                        busy
+                                    ),
+
+                                available:
+                                    serializeRanges(
+                                        available
+                                    ),
+                            };
+                        }
+                    )
+                );
+
+            res.json({
+                bandId,
+
+                from:
+                    range.from
+                        .toISOString(),
+
+                to:
+                    range.to
+                        .toISOString(),
+
+                members:
+                    memberAvailability,
+            });
+        } catch (error) {
+            console.error(
+                "Band availability lookup failed:",
+                error
             );
 
-        const connection =
-            result.rows[0];
-
-        if (!connection) {
-            return res.status(404).json({
+            res.status(500).json({
                 error:
-                    "No Google Calendar connected to this band.",
+                    "Unable to determine band availability",
             });
         }
-
-        const busy =
-            await getGoogleBusyPeriods(
-                connection.encrypted_refresh_token,
-                from,
-                to
-            );
-
-        const available =
-            calculateAvailability(
-                from,
-                to,
-                busy,
-                {
-                    startHour: 8,
-                    endHour: 18,
-                    minimumMinutes: 30,
-                    bufferMinutes: 30,
-                    includeWeekends: false,
-                    utcOffsetMinutes: 480,
-                }
-            );
-
-        res.json({
-            bandId,
-            timezone:
-                connection.timezone,
-            busy: busy.map(
-                (item: CalendarRange) => ({
-                    start:
-                        item.start.toISOString(),
-                    end:
-                        item.end.toISOString(),
-                })
-            ),
-
-            available:
-                available.map(
-                    (item: CalendarRange) => ({
-                        start:
-                            item.start.toISOString(),
-                        end:
-                            item.end.toISOString(),
-                    })
-                ),
-        });
     }
 );
 
