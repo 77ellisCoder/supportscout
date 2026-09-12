@@ -16,6 +16,7 @@ import {
 
 import {
     calculateAvailability,
+    intersectAvailability,
 } from "../services/calendar/AvailabilityService";
 
 const calendarRouter = Router();
@@ -768,19 +769,45 @@ calendarRouter.get(
                     )
                 );
 
+            const connectedMembers =
+                memberAvailability.filter(
+                    (member) =>
+                        member.connected
+                );
+
+            const sharedAvailable =
+                intersectAvailability(
+                    connectedMembers.map(
+                        (member) =>
+                            member.available.map(
+                                (period) => ({
+                                    start: new Date(
+                                        period.start
+                                    ),
+                                    end: new Date(
+                                        period.end
+                                    ),
+                                })
+                            )
+                    )
+                );
+
             res.json({
                 bandId,
 
                 from:
-                    range.from
-                        .toISOString(),
+                    range.from.toISOString(),
 
                 to:
-                    range.to
-                        .toISOString(),
+                    range.to.toISOString(),
 
                 members:
                     memberAvailability,
+
+                sharedAvailable:
+                    serializeRanges(
+                        sharedAvailable
+                    ),
             });
         } catch (error) {
             console.error(

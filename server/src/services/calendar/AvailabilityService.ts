@@ -102,7 +102,7 @@ export function calculateAvailability(
     // then convert that local midnight back to UTC.
     const firstLocal = new Date(
         from.getTime() +
-            utcOffsetMinutes * 60_000
+        utcOffsetMinutes * 60_000
     );
     firstLocal.setUTCHours(
         0,
@@ -113,7 +113,7 @@ export function calculateAvailability(
 
     const firstDay = new Date(
         firstLocal.getTime() -
-            utcOffsetMinutes * 60_000
+        utcOffsetMinutes * 60_000
     );
 
     for (
@@ -129,7 +129,7 @@ export function calculateAvailability(
             new Date(
                 day.getTime() +
                 utcOffsetMinutes *
-                    60_000
+                60_000
             );
 
         const weekday =
@@ -144,20 +144,20 @@ export function calculateAvailability(
         }
 
         const localMidnightUtc =
-                day.getTime();
+            day.getTime();
 
         const windowStart =
             new Date(
                 localMidnightUtc +
                 startHour *
-                    3_600_000
+                3_600_000
             );
 
         const windowEnd =
             new Date(
                 localMidnightUtc +
                 endHour *
-                    3_600_000
+                3_600_000
             );
 
         let cursor =
@@ -196,9 +196,9 @@ export function calculateAvailability(
 
             if (
                 freeEnd.getTime() -
-                    cursor.getTime() >=
+                cursor.getTime() >=
                 minimumMinutes *
-                    60_000
+                60_000
             ) {
                 result.push({
                     start: new Date(
@@ -222,14 +222,66 @@ export function calculateAvailability(
         if (
             cursor < dayEnd &&
             dayEnd.getTime() -
-                cursor.getTime() >=
-                minimumMinutes *
-                    60_000
+            cursor.getTime() >=
+            minimumMinutes *
+            60_000
         ) {
             result.push({
                 start: cursor,
                 end: dayEnd,
             });
+        }
+    }
+
+    return result;
+}
+
+export function intersectAvailability(
+    availabilitySets: Interval[][]
+): Interval[] {
+    if (availabilitySets.length === 0) {
+        return [];
+    }
+
+    let result = [...availabilitySets[0]];
+
+    for (
+        let i = 1;
+        i < availabilitySets.length;
+        i++
+    ) {
+        const next = availabilitySets[i];
+        const intersection: Interval[] = [];
+
+        for (const a of result) {
+            for (const b of next) {
+                const start = new Date(
+                    Math.max(
+                        a.start.getTime(),
+                        b.start.getTime()
+                    )
+                );
+
+                const end = new Date(
+                    Math.min(
+                        a.end.getTime(),
+                        b.end.getTime()
+                    )
+                );
+
+                if (start < end) {
+                    intersection.push({
+                        start,
+                        end,
+                    });
+                }
+            }
+        }
+
+        result = intersection;
+
+        if (result.length === 0) {
+            break;
         }
     }
 
