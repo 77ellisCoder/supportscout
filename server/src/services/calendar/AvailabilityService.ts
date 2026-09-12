@@ -144,9 +144,7 @@ export function calculateAvailability(
         }
 
         const localMidnightUtc =
-            day.getTime() -
-            utcOffsetMinutes *
-                60_000;
+                day.getTime();
 
         const windowStart =
             new Date(
