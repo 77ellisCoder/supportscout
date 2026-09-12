@@ -287,3 +287,75 @@ export function intersectAvailability(
 
     return result;
 }
+
+export function mergeBusyPeriods(
+    periods: Interval[]
+): Interval[] {
+    if (periods.length === 0) {
+        return [];
+    }
+
+    const sorted =
+        [...periods].sort(
+            (a, b) =>
+                a.start.getTime() -
+                b.start.getTime()
+        );
+
+    const merged: Interval[] = [
+        {
+            start:
+                new Date(
+                    sorted[0].start
+                ),
+
+            end:
+                new Date(
+                    sorted[0].end
+                ),
+        },
+    ];
+
+    for (
+        let i = 1;
+        i < sorted.length;
+        i++
+    ) {
+        const current =
+            sorted[i];
+
+        const previous =
+            merged[
+                merged.length - 1
+            ];
+
+        if (
+            current.start <=
+            previous.end
+        ) {
+            if (
+                current.end >
+                previous.end
+            ) {
+                previous.end =
+                    new Date(
+                        current.end
+                    );
+            }
+        } else {
+            merged.push({
+                start:
+                    new Date(
+                        current.start
+                    ),
+
+                end:
+                    new Date(
+                        current.end
+                    ),
+            });
+        }
+    }
+
+    return merged;
+}

@@ -1,5 +1,9 @@
 import { encryptToken, decryptToken } from "./crypto";
 
+import type {
+    BusyPeriod,
+} from "./types";
+
 const GOOGLE_SCOPES = [
     "openid",
     "https://www.googleapis.com/auth/userinfo.email",
@@ -190,7 +194,7 @@ export async function getGoogleBusyPeriods(
     encryptedRefreshToken: string,
     from: Date,
     to: Date
-) {
+): Promise<BusyPeriod[]> {
     const accessToken =
         await getAccessToken(
             encryptedRefreshToken
