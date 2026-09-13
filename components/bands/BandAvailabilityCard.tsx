@@ -1,29 +1,19 @@
 import {
-    useEffect,
     useMemo,
     useState,
 } from "react";
 
 import {
     ActivityIndicator,
-    Linking,
     Pressable,
     Text,
     View,
 } from "react-native";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {
-    useQueryClient,
-} from "@tanstack/react-query";
-
-import {
-    startGoogleCalendarConnection,
-} from "../../services/calendar/CalendarService";
 
 import {
     useBandAvailability,
-    useBandCalendarStatus,
 } from "../../hooks/useBandCalendar";
 
 import { colors } from "../../theme";
@@ -32,135 +22,233 @@ type Props = {
     bandId: number;
 };
 
+type GroupedAvailability = {
+    dateKey: string;
+    dateLabel: string;
+    slots: {
+        start: string;
+        end: string;
+    }[];
+};
+
 function startOfDay(value: Date) {
     const result = new Date(value);
-    result.setHours(0, 0, 0, 0);
-    return result;
-}
 
-function addDays(value: Date, days: number) {
-    const result = new Date(value);
-    result.setDate(
-        result.getDate() + days
+    result.setHours(
+        0,
+        0,
+        0,
+        0
     );
+
     return result;
 }
 
-function formatSlot(
-    start: string,
-    end: string
+function addDays(
+    value: Date,
+    days: number
 ) {
-    return `${new Date(start).toLocaleString(
+    const result =
+        new Date(value);
+
+    result.setDate(
+        result.getDate() +
+        days
+    );
+
+    return result;
+}
+
+function formatTime(
+    value: string
+) {
+    return new Date(
+        value
+    ).toLocaleTimeString(
+        "en-AU",
+        {
+            hour: "numeric",
+            minute: "2-digit",
+        }
+    );
+}
+
+function formatDateLabel(
+    value: string
+) {
+    return new Date(
+        value
+    ).toLocaleDateString(
         "en-AU",
         {
             weekday: "short",
             day: "numeric",
             month: "short",
-            hour: "numeric",
-            minute: "2-digit",
         }
-    )} – ${new Date(end).toLocaleTimeString(
-        "en-AU",
-        {
-            hour: "numeric",
-            minute: "2-digit",
+    );
+}
+
+function groupAvailabilityByDay(
+    slots: {
+        start: string;
+        end: string;
+    }[]
+): GroupedAvailability[] {
+    const grouped =
+        new Map<
+            string,
+            GroupedAvailability
+        >();
+
+    for (const slot of slots) {
+        const startDate =
+            new Date(slot.start);
+
+        const dateKey =
+            startDate
+                .toISOString()
+                .slice(0, 10);
+
+        let group =
+            grouped.get(dateKey);
+
+        if (!group) {
+            group = {
+                dateKey,
+                dateLabel:
+                    formatDateLabel(
+                        slot.start
+                    ),
+                slots: [],
+            };
+
+            grouped.set(
+                dateKey,
+                group
+            );
         }
-    )}`;
+
+        group.slots.push({
+            start:
+                slot.start,
+            end:
+                slot.end,
+        });
+    }
+
+    return Array.from(
+        grouped.values()
+    );
+}
+
+function formatProvider(
+    provider: string
+) {
+    switch (provider) {
+        case "icloud":
+            return "iCloud";
+
+        case "google":
+            return "Google";
+
+        default:
+            return provider;
+    }
 }
 
 export function BandAvailabilityCard({
     bandId,
 }: Props) {
-    const queryClient =
-        useQueryClient();
 
     const [from, setFrom] =
         useState(
-            startOfDay(new Date())
+            startOfDay(
+                new Date()
+            )
         );
 
     const [to, setTo] =
         useState(
             addDays(
-                startOfDay(new Date()),
+                startOfDay(
+                    new Date()
+                ),
                 14
             )
         );
 
-    const [showFromPicker, setShowFromPicker] =
-        useState(false);
+    const [
+        showFromPicker,
+        setShowFromPicker,
+    ] = useState(false);
 
-    const [showToPicker, setShowToPicker] =
-        useState(false);
+    const [
+        showToPicker,
+        setShowToPicker,
+    ] = useState(false);
 
-    const [connecting, setConnecting] =
-        useState(false);
-
-    const status =
-        useBandCalendarStatus(
-            bandId
-        );
+    const [
+        showAll,
+        setShowAll,
+    ] = useState(false);
 
     const availability =
         useBandAvailability(
             bandId,
             from,
-            addDays(to, 1),
-            Boolean(
-                status.data?.connected
-            )
+            addDays(to, 1)
         );
 
-    useEffect(() => {
-        const subscription =
-            Linking.addEventListener(
-                "url",
-                ({ url }) => {
-                    if (
-                        url.startsWith(
-                            "supportscout://calendar-connected"
-                        )
-                    ) {
-                        queryClient.invalidateQueries(
-                            {
-                                queryKey: [
-                                    "band",
-                                    bandId,
-                                    "calendar",
-                                ],
-                            }
-                        );
-                    }
-                }
-            );
-
-        return () =>
-            subscription.remove();
-    }, [
-        bandId,
-        queryClient,
-    ]);
-
-    const availableSlots =
+    const members =
         useMemo(
             () =>
                 availability.data
-                    ?.available ?? [],
+                    ?.members ?? [],
             [availability.data]
         );
 
-    async function connect() {
-        try {
-            setConnecting(true);
-            await startGoogleCalendarConnection(
-                bandId
+    const sharedSlots =
+        useMemo(
+            () =>
+                availability.data
+                    ?.sharedAvailable ??
+                [],
+            [availability.data]
+        );
+
+    const groupedAvailability =
+        useMemo(
+            () =>
+                groupAvailabilityByDay(
+                    sharedSlots
+                ),
+            [sharedSlots]
+        );
+
+    const connectedCount =
+        useMemo(
+            () =>
+                members.filter(
+                    (member) =>
+                        member.connected
+                ).length,
+            [members]
+        );
+
+    const displayedAvailability =
+        showAll
+            ? groupedAvailability
+            : groupedAvailability.slice(
+                0,
+                5
             );
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setConnecting(false);
-        }
-    }
+
+    const hiddenDayCount =
+        Math.max(
+            groupedAvailability.length -
+            displayedAvailability.length,
+            0
+        );
 
     return (
         <View
@@ -170,249 +258,525 @@ export function BandAvailabilityCard({
                 borderRadius: 12,
                 backgroundColor:
                     colors.surface,
-                gap: 12,
+                gap: 14,
             }}
         >
-            <Text
+            <View
                 style={{
-                    color: colors.text,
-                    fontSize: 16,
-                    fontWeight: "700",
+                    gap: 4,
                 }}
             >
-                CALENDAR AVAILABILITY
-            </Text>
+                <Text
+                    style={{
+                        color:
+                            colors.text,
+                        fontSize: 16,
+                        fontWeight:
+                            "700",
+                    }}
+                >
+                    CALENDAR AVAILABILITY
+                </Text>
 
-            {!status.data?.connected ? (
-                <>
+                <Text
+                    style={{
+                        color:
+                            colors.textSecondary,
+                    }}
+                >
+                    Check when band
+                    members are available
+                    across their connected
+                    calendars.
+                </Text>
+            </View>
+
+            <View
+                style={{
+                    flexDirection:
+                        "row",
+                    gap: 8,
+                }}
+            >
+                <Pressable
+                    onPress={() =>
+                        setShowFromPicker(
+                            true
+                        )
+                    }
+                    style={{
+                        flex: 1,
+                        padding: 10,
+                        borderWidth: 1,
+                        borderColor:
+                            colors.border,
+                        borderRadius: 8,
+                    }}
+                >
                     <Text
                         style={{
                             color:
                                 colors.textSecondary,
+                            fontSize: 11,
                         }}
                     >
-                        Connect this band's Google
-                        Calendar to use real calendar
-                        availability when planning gigs.
+                        FROM
                     </Text>
 
-                    <Pressable
-                        onPress={connect}
-                        disabled={connecting}
+                    <Text
+                        style={{
+                            color:
+                                colors.text,
+                        }}
+                    >
+                        {from.toLocaleDateString(
+                            "en-AU"
+                        )}
+                    </Text>
+                </Pressable>
+
+                <Pressable
+                    onPress={() =>
+                        setShowToPicker(
+                            true
+                        )
+                    }
+                    style={{
+                        flex: 1,
+                        padding: 10,
+                        borderWidth: 1,
+                        borderColor:
+                            colors.border,
+                        borderRadius: 8,
+                    }}
+                >
+                    <Text
+                        style={{
+                            color:
+                                colors.textSecondary,
+                            fontSize: 11,
+                        }}
+                    >
+                        TO
+                    </Text>
+
+                    <Text
+                        style={{
+                            color:
+                                colors.text,
+                        }}
+                    >
+                        {to.toLocaleDateString(
+                            "en-AU"
+                        )}
+                    </Text>
+                </Pressable>
+            </View>
+
+            {showFromPicker && (
+                <DateTimePicker
+                    value={from}
+                    mode="date"
+                    onChange={(
+                        _,
+                        value
+                    ) => {
+                        setShowFromPicker(
+                            false
+                        );
+
+                        if (!value) {
+                            return;
+                        }
+
+                        const next =
+                            startOfDay(
+                                value
+                            );
+
+                        setFrom(
+                            next
+                        );
+
+                        setShowAll(
+                            false
+                        );
+
+                        if (
+                            next >
+                            to
+                        ) {
+                            setTo(
+                                addDays(
+                                    next,
+                                    14
+                                )
+                            );
+                        }
+                    }}
+                />
+            )}
+
+            {showToPicker && (
+                <DateTimePicker
+                    value={to}
+                    mode="date"
+                    minimumDate={from}
+                    onChange={(
+                        _,
+                        value
+                    ) => {
+                        setShowToPicker(
+                            false
+                        );
+
+                        if (!value) {
+                            return;
+                        }
+
+                        setTo(
+                            startOfDay(
+                                value
+                            )
+                        );
+
+                        setShowAll(
+                            false
+                        );
+                    }}
+                />
+            )}
+
+            {availability.isLoading ? (
+                <ActivityIndicator
+                    color={
+                        colors.primaryLight
+                    }
+                />
+            ) : availability.error ? (
+                <Text
+                    style={{
+                        color:
+                            colors.danger,
+                    }}
+                >
+                    {
+                        availability
+                            .error
+                            .message
+                    }
+                </Text>
+            ) : (
+                <>
+                    <View
                         style={{
                             padding: 12,
                             borderRadius: 8,
-                            backgroundColor:
-                                colors.primary,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                color: colors.background,
-                                fontWeight: "700",
-                                textAlign: "center",
-                            }}
-                        >
-                            {connecting
-                                ? "OPENING GOOGLE..."
-                                : "CONNECT GOOGLE CALENDAR"}
-                        </Text>
-                    </Pressable>
-                </>
-            ) : (
-                <>
-                    <Text
-                        style={{
-                            color:
-                                colors.textSecondary,
-                        }}
-                    >
-                        Connected
-                        {status.data.email
-                            ? ` • ${status.data.email}`
-                            : ""}
-                    </Text>
-
-                    <View
-                        style={{
-                            flexDirection:
-                                "row",
+                            borderWidth: 1,
+                            borderColor:
+                                colors.border,
                             gap: 8,
                         }}
                     >
-                        <Pressable
-                            onPress={() =>
-                                setShowFromPicker(
-                                    true
-                                )
-                            }
-                            style={{
-                                flex: 1,
-                                padding: 10,
-                                borderWidth: 1,
-                                borderColor:
-                                    colors.border,
-                                borderRadius: 8,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color:
-                                        colors.textSecondary,
-                                    fontSize: 11,
-                                }}
-                            >
-                                FROM
-                            </Text>
-                            <Text
-                                style={{
-                                    color:
-                                        colors.text,
-                                }}
-                            >
-                                {from.toLocaleDateString(
-                                    "en-AU"
-                                )}
-                            </Text>
-                        </Pressable>
-
-                        <Pressable
-                            onPress={() =>
-                                setShowToPicker(
-                                    true
-                                )
-                            }
-                            style={{
-                                flex: 1,
-                                padding: 10,
-                                borderWidth: 1,
-                                borderColor:
-                                    colors.border,
-                                borderRadius: 8,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color:
-                                        colors.textSecondary,
-                                    fontSize: 11,
-                                }}
-                            >
-                                TO
-                            </Text>
-                            <Text
-                                style={{
-                                    color:
-                                        colors.text,
-                                }}
-                            >
-                                {to.toLocaleDateString(
-                                    "en-AU"
-                                )}
-                            </Text>
-                        </Pressable>
-                    </View>
-
-                    {showFromPicker && (
-                        <DateTimePicker
-                            value={from}
-                            mode="date"
-                            onChange={(_, value) => {
-                                setShowFromPicker(
-                                    false
-                                );
-                                if (value)
-                                    setFrom(
-                                        startOfDay(
-                                            value
-                                        )
-                                    );
-                            }}
-                        />
-                    )}
-
-                    {showToPicker && (
-                        <DateTimePicker
-                            value={to}
-                            mode="date"
-                            minimumDate={from}
-                            onChange={(_, value) => {
-                                setShowToPicker(
-                                    false
-                                );
-                                if (value)
-                                    setTo(
-                                        startOfDay(
-                                            value
-                                        )
-                                    );
-                            }}
-                        />
-                    )}
-
-                    {availability.isLoading ? (
-                        <ActivityIndicator
-                            color={
-                                colors.primaryLight
-                            }
-                        />
-                    ) : availability.error ? (
-                        <Text
-                            style={{
-                                color: colors.danger,
-                            }}
-                        >
-                            {availability.error.message}
-                        </Text>
-                    ) : availableSlots.length ===
-                      0 ? (
                         <Text
                             style={{
                                 color:
-                                    colors.textSecondary,
+                                    colors.text,
+                                fontWeight:
+                                    "700",
                             }}
                         >
-                            No free working-hour slots
-                            found for this period.
+                            {
+                                connectedCount
+                            }
+                            /
+                            {
+                                members.length
+                            }{" "}
+                            members connected
                         </Text>
-                    ) : (
-                        <View
-                            style={{
-                                gap: 8,
-                            }}
-                        >
+
+                        {members.length ===
+                            0 ? (
                             <Text
                                 style={{
                                     color:
                                         colors.textSecondary,
                                 }}
                             >
-                                Available working-hour
-                                slots:
+                                No band
+                                members have
+                                been linked
+                                yet.
+                            </Text>
+                        ) : (
+                            <View
+                                style={{
+                                    gap: 6,
+                                }}
+                            >
+                                {members.map(
+                                    (
+                                        member
+                                    ) => (
+                                        <View
+                                            key={
+                                                member.userId
+                                            }
+                                            style={{
+                                                flexDirection:
+                                                    "row",
+                                                alignItems:
+                                                    "center",
+                                                justifyContent:
+                                                    "space-between",
+                                                gap: 12,
+                                            }}
+                                        >
+                                            <Text
+                                                numberOfLines={
+                                                    1
+                                                }
+                                                style={{
+                                                    flex: 1,
+                                                    color:
+                                                        colors.textSecondary,
+                                                }}
+                                            >
+                                                {member.displayName ??
+                                                    member.email}
+                                            </Text>
+
+                                            <Text
+                                                numberOfLines={
+                                                    1
+                                                }
+                                                style={{
+                                                    color:
+                                                        member.connected
+                                                            ? colors.primaryLight
+                                                            : colors.textSecondary,
+                                                    fontWeight:
+                                                        "600",
+                                                }}
+                                            >
+                                                {member.connected
+                                                    ? member.providers
+                                                        .map(
+                                                            formatProvider
+                                                        )
+                                                        .join(
+                                                            " + "
+                                                        )
+                                                    : "Not connected"}
+                                            </Text>
+                                        </View>
+                                    )
+                                )}
+                            </View>
+                        )}
+                    </View>
+
+                    <View
+                        style={{
+                            gap: 10,
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection:
+                                    "row",
+                                justifyContent:
+                                    "space-between",
+                                alignItems:
+                                    "center",
+                                gap: 12,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color:
+                                        colors.text,
+                                    fontWeight:
+                                        "700",
+                                }}
+                            >
+                                SHARED
+                                AVAILABILITY
                             </Text>
 
-                            {availableSlots.map(
-                                (
-                                    slot,
-                                    index
-                                ) => (
+                            {connectedCount >
+                                0 && (
                                     <Text
-                                        key={index}
                                         style={{
                                             color:
-                                                colors.text,
+                                                colors.primaryLight,
+                                            fontSize: 12,
+                                            fontWeight:
+                                                "600",
                                         }}
                                     >
-                                        •{" "}
-                                        {formatSlot(
-                                            slot.start,
-                                            slot.end
-                                        )}
+                                        {
+                                            connectedCount
+                                        }
+                                        /
+                                        {
+                                            connectedCount
+                                        }{" "}
+                                        available
                                     </Text>
-                                )
-                            )}
+                                )}
                         </View>
-                    )}
+
+                        {connectedCount ===
+                            0 ? (
+                            <Text
+                                style={{
+                                    color:
+                                        colors.textSecondary,
+                                }}
+                            >
+                                No members have
+                                connected a
+                                calendar yet.
+                            </Text>
+                        ) : groupedAvailability.length ===
+                            0 ? (
+                            <Text
+                                style={{
+                                    color:
+                                        colors.textSecondary,
+                                }}
+                            >
+                                No shared
+                                availability was
+                                found for the
+                                selected period.
+                            </Text>
+                        ) : (
+                            <>
+                                <View
+                                    style={{
+                                        gap: 10,
+                                    }}
+                                >
+                                    {displayedAvailability.map(
+                                        (
+                                            group
+                                        ) => (
+                                            <View
+                                                key={
+                                                    group.dateKey
+                                                }
+                                                style={{
+                                                    flexDirection:
+                                                        "row",
+                                                    alignItems:
+                                                        "flex-start",
+                                                    gap: 16,
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        width: 95,
+                                                        color:
+                                                            colors.textSecondary,
+                                                        fontWeight:
+                                                            "600",
+                                                    }}
+                                                >
+                                                    {
+                                                        group.dateLabel
+                                                    }
+                                                </Text>
+
+                                                <View
+                                                    style={{
+                                                        flex: 1,
+                                                        flexDirection:
+                                                            "row",
+                                                        flexWrap:
+                                                            "wrap",
+                                                        gap: 8,
+                                                    }}
+                                                >
+                                                    {group.slots.map(
+                                                        (
+                                                            slot
+                                                        ) => (
+                                                            <View
+                                                                key={`${slot.start}-${slot.end}`}
+                                                                style={{
+                                                                    paddingHorizontal: 10,
+                                                                    paddingVertical: 6,
+                                                                    borderRadius: 999,
+                                                                    borderWidth: 1,
+                                                                    borderColor:
+                                                                        colors.border,
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        color:
+                                                                            colors.text,
+                                                                        fontSize: 13,
+                                                                    }}
+                                                                >
+                                                                    {formatTime(
+                                                                        slot.start
+                                                                    )}{" "}
+                                                                    –{" "}
+                                                                    {formatTime(
+                                                                        slot.end
+                                                                    )}
+                                                                </Text>
+                                                            </View>
+                                                        )
+                                                    )}
+                                                </View>
+                                            </View>
+                                        )
+                                    )}
+                                </View>
+
+                                {groupedAvailability.length >
+                                    5 && (
+                                        <Pressable
+                                            onPress={() =>
+                                                setShowAll(
+                                                    (
+                                                        current
+                                                    ) =>
+                                                        !current
+                                                )
+                                            }
+                                            style={{
+                                                alignSelf:
+                                                    "flex-start",
+                                                paddingVertical: 6,
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color:
+                                                        colors.primaryLight,
+                                                    fontWeight:
+                                                        "700",
+                                                }}
+                                            >
+                                                {showAll
+                                                    ? "Show less"
+                                                    : `Show ${hiddenDayCount} more ${hiddenDayCount ===
+                                                        1
+                                                        ? "day"
+                                                        : "days"
+                                                    }`}
+                                            </Text>
+                                        </Pressable>
+                                    )}
+                            </>
+                        )}
+                    </View>
                 </>
             )}
         </View>

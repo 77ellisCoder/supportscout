@@ -17,7 +17,6 @@ import {
 import {
     calculateAvailability,
     intersectAvailability,
-    mergeBusyPeriods
 } from "../services/calendar/AvailabilityService";
 
 import {
@@ -42,10 +41,17 @@ type CalendarRange = {
     end: Date;
 };
 
+type CalendarProvider =
+    | "google"
+    | "icloud";
+
 type UserCalendarConnection = {
     userId: number;
-    encryptedRefreshToken: string;
-    timezone: string;
+    provider: CalendarProvider;
+    email: string;
+    encryptedRefreshToken: string | null;
+    encryptedPassword: string | null;
+    timezone: string | null;
 };
 
 type BandMemberRow = {
@@ -53,20 +59,6 @@ type BandMemberRow = {
     displayName: string | null;
     email: string;
     relationship: string;
-
-    provider:
-    "google" |
-    "icloud" |
-    null;
-
-    encryptedRefreshToken:
-    string | null;
-
-    encryptedPassword:
-    string | null;
-
-    timezone:
-    string | null;
 };
 
 export function initCalendarRouter(
@@ -134,6 +126,206 @@ function serializeRanges(
                 item.end.toISOString(),
         })
     );
+}
+
+function mergeBusyPeriods(
+    periods: BusyPeriod[]
+): BusyPeriod[] {
+
+    if (periods.length === 0) {
+        return [];
+    }
+
+    const sorted = [...periods]
+        .sort(
+            (a, b) =>
+                a.start.getTime() -
+                b.start.getTime()
+        );
+
+    const merged: BusyPeriod[] = [
+        {
+            start: new Date(
+                sorted[0].start
+            ),
+            end: new Date(
+                sorted[0].end
+            ),
+        },
+    ];
+
+    for (
+        let index = 1;
+        index < sorted.length;
+        index++
+    ) {
+        const current =
+            sorted[index];
+
+        const previous =
+            merged[
+            merged.length - 1
+            ];
+
+        if (
+            current.start <=
+            previous.end
+        ) {
+            if (
+                current.end >
+                previous.end
+            ) {
+                previous.end =
+                    new Date(
+                        current.end
+                    );
+            }
+
+            continue;
+        }
+
+        merged.push({
+            start: new Date(
+                current.start
+            ),
+            end: new Date(
+                current.end
+            ),
+        });
+    }
+
+    return merged;
+}
+
+async function getUserCalendarConnections(
+    userId: number
+): Promise<UserCalendarConnection[]> {
+
+    const result =
+        await pool.query(
+            `
+            SELECT
+                user_id::int
+                    AS "userId",
+
+                provider,
+
+                email,
+
+                encrypted_refresh_token
+                    AS "encryptedRefreshToken",
+
+                encrypted_password
+                    AS "encryptedPassword",
+
+                timezone
+
+            FROM user_calendar_connections
+
+            WHERE user_id = $1
+
+            ORDER BY provider
+            `,
+            [userId]
+        );
+
+    return result.rows;
+}
+
+async function getConnectionBusyPeriods(
+    connection:
+        UserCalendarConnection,
+    from: Date,
+    to: Date
+): Promise<BusyPeriod[]> {
+
+    switch (
+    connection.provider
+    ) {
+
+        case "google": {
+
+            const refreshToken =
+                connection.encryptedRefreshToken;
+
+            if (!refreshToken) {
+                throw new Error(
+                    `Google connection for user ${connection.userId} has no refresh token`
+                );
+            }
+
+            return getGoogleBusyPeriods(
+                refreshToken!,
+                from,
+                to
+            );
+        }
+
+        case "icloud": {
+
+            const encryptedPassword =
+                connection.encryptedPassword;
+
+            if (!encryptedPassword) {
+                throw new Error(
+                    `iCloud connection for user ${connection.userId} has no password`
+                );
+            }
+
+            return getICloudBusyPeriods(
+                {
+                    username:
+                        connection.email,
+
+                    encryptedPassword:
+                        encryptedPassword!,
+                },
+                from,
+                to
+            );
+        }
+
+        default:
+            return [];
+    }
+}
+
+async function getUserBusyPeriods(
+    userId: number,
+    from: Date,
+    to: Date
+): Promise<{
+    busy: BusyPeriod[];
+    connections:
+    UserCalendarConnection[];
+}> {
+
+    const connections =
+        await getUserCalendarConnections(
+            userId
+        );
+
+    const results =
+        await Promise.all(
+            connections.map(
+                (connection) =>
+                    getConnectionBusyPeriods(
+                        connection,
+                        from,
+                        to
+                    )
+            )
+        );
+
+    const busy =
+        mergeBusyPeriods(
+            results.flat()
+        );
+
+    return {
+        busy,
+        connections,
+    };
 }
 
 function getSuccessUrl() {
@@ -530,24 +722,22 @@ calendarRouter.get(
                     [userId]
                 );
 
-            const connection:
-                UserCalendarConnection |
-                undefined =
-                result.rows[0];
-
-            if (!connection) {
-                return res.status(404).json({
-                    error:
-                        "No Google Calendar connected to this user.",
-                });
-            }
-
-            const busy =
-                await getGoogleBusyPeriods(
-                    connection.encryptedRefreshToken,
+            const {
+                busy,
+                connections,
+            } =
+                await getUserBusyPeriods(
+                    userId,
                     range.from,
                     range.to
                 );
+
+            if (connections.length === 0) {
+                return res.status(404).json({
+                    error:
+                        "No calendars connected to this user.",
+                });
+            }
 
             const available =
                 calculateAvailability(
@@ -570,7 +760,19 @@ calendarRouter.get(
                 userId,
 
                 timezone:
-                    connection.timezone,
+                    connections[0]?.timezone ??
+                    "Australia/Perth",
+
+                providers:
+                    connections.map(
+                        (connection) => ({
+                            provider:
+                                connection.provider,
+
+                            email:
+                                connection.email,
+                        })
+                    ),
 
                 busy:
                     serializeRanges(
@@ -655,25 +857,13 @@ calendarRouter.get(
 
                         u.email,
 
-                        ub.relationship,
-
-                        ucc.provider,
-
-                        ucc.encrypted_refresh_token AS "encryptedRefreshToken",
-
-                        ucc.encrypted_password AS "encryptedPassword",
-                        
-                        ucc.timezone
+                        ub.relationship
 
                     FROM user_bands ub
 
                     INNER JOIN users u
                         ON u.user_id =
                             ub.user_id
-
-                    LEFT JOIN user_calendar_connections ucc
-                        ON ucc.user_id =
-                            u.user_id
 
                     WHERE ub.band_id = $1
 
@@ -710,27 +900,21 @@ calendarRouter.get(
 
             const memberAvailability =
                 await Promise.all(
-                    Array.from(
-                        membersByUser.values()
-                    ).map(
-                        async (
-                            connections
-                        ) => {
+                    members.map(
+                        async (member) => {
 
-                            const member =
-                                connections[0];
-
-                            const connected =
-                                connections.filter(
-                                    (connection) =>
-                                        Boolean(
-                                            connection
-                                                .provider
-                                        )
+                            const {
+                                busy,
+                                connections,
+                            } =
+                                await getUserBusyPeriods(
+                                    member.userId,
+                                    range.from,
+                                    range.to
                                 );
 
                             if (
-                                connected.length ===
+                                connections.length ===
                                 0
                             ) {
                                 return {
@@ -746,89 +930,22 @@ calendarRouter.get(
                                     relationship:
                                         member.relationship,
 
-                                    providers: [],
+                                    connected:
+                                        false,
 
-                                    connected: false,
+                                    providers:
+                                        [],
 
                                     timezone:
-                                        member.timezone ??
                                         "Australia/Perth",
 
-                                    busy: [],
+                                    busy:
+                                        [],
 
-                                    available: [],
+                                    available:
+                                        [],
                                 };
                             }
-
-                            const busySets =
-                                await Promise.all(
-                                    connected.map(
-                                        async (
-                                            connection
-                                        ): Promise<
-                                            BusyPeriod[]
-                                        > => {
-
-                                            switch (
-                                            connection
-                                                .provider
-                                            ) {
-
-                                                case "google": {
-
-                                                    if (
-                                                        !connection
-                                                            .encryptedRefreshToken
-                                                    ) {
-                                                        throw new Error(
-                                                            `Google calendar connection for user ${connection.userId} is missing its refresh token`
-                                                        );
-                                                    }
-
-                                                    return getGoogleBusyPeriods(
-                                                        connection
-                                                            .encryptedRefreshToken,
-                                                        range.from,
-                                                        range.to
-                                                    );
-                                                }
-
-                                                case "icloud": {
-
-                                                    if (
-                                                        !connection
-                                                            .encryptedPassword
-                                                    ) {
-                                                        throw new Error(
-                                                            `iCloud calendar connection for user ${connection.userId} is missing its password`
-                                                        );
-                                                    }
-
-                                                    return getICloudBusyPeriods(
-                                                        {
-                                                            username:
-                                                                connection.email,
-
-                                                            encryptedPassword:
-                                                                connection
-                                                                    .encryptedPassword,
-                                                        },
-                                                        range.from,
-                                                        range.to
-                                                    );
-                                                }
-
-                                                default:
-                                                    return [];
-                                            }
-                                        }
-                                    )
-                                );
-
-                            const busy =
-                                mergeBusyPeriods(
-                                    busySets.flat()
-                                );
 
                             const available =
                                 calculateAvailability(
@@ -860,17 +977,20 @@ calendarRouter.get(
                                 relationship:
                                     member.relationship,
 
+                                connected:
+                                    true,
+
                                 providers:
-                                    connected.map(
-                                        (connection) =>
+                                    connections.map(
+                                        (
                                             connection
-                                                .provider
+                                        ) =>
+                                            connection.provider
                                     ),
 
-                                connected: true,
-
                                 timezone:
-                                    member.timezone ??
+                                    connections[0]
+                                        ?.timezone ??
                                     "Australia/Perth",
 
                                 busy:

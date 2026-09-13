@@ -16,19 +16,43 @@ export type CalendarStatus = {
     timezone: string;
 };
 
-export type AvailabilityResponse = {
-    bandId: number;
+export type BandAvailabilityMember = {
+    userId: number;
+    displayName: string | null;
+    email: string;
+    relationship: string;
+
+    connected: boolean;
+
+    providers: string[];
+
     timezone: string;
+
     busy: AvailabilityInterval[];
+
     available: AvailabilityInterval[];
 };
 
+export type AvailabilityResponse = {
+    bandId: number;
+
+    from: string;
+    to: string;
+
+    memberCount?: number;
+    connectedMemberCount?: number;
+
+    members: BandAvailabilityMember[];
+
+    sharedAvailable: AvailabilityInterval[];
+};
+
 export async function startGoogleCalendarConnection(
-    bandId: number
+    userId: number
 ) {
     const response = await fetch(
-        `${API_URL}/calendar/google/connect?bandId=${encodeURIComponent(
-            bandId
+        `${API_URL}/calendar/google/connect?userId=${encodeURIComponent(
+            userId
         )}`
     );
 
