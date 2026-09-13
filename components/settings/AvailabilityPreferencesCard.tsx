@@ -14,6 +14,10 @@ import {
 } from "react-native";
 
 import {
+    Button,
+} from "../ui/Button";
+
+import {
     AvailabilityWindow,
 } from "../../services/calendar/CalendarService";
 
@@ -664,34 +668,13 @@ export default function AvailabilityPreferencesCard({
                 </Text>
             )}
 
-            <Pressable
-                onPress={
-                    handleSave
-                }
-
-                disabled={
+            <Button
+                title="Save availability"
+                onPress={handleSave}
+                loading={
                     savePreferences.isPending
                 }
-
-                style={[
-                    styles.saveButton,
-
-                    savePreferences.isPending &&
-                    styles.saveButtonDisabled,
-                ]}
-            >
-                {savePreferences.isPending ? (
-                    <ActivityIndicator />
-                ) : (
-                    <Text
-                        style={
-                            styles.saveButtonText
-                        }
-                    >
-                        Save availability
-                    </Text>
-                )}
-            </Pressable>
+            />
         </View>
     );
 }
