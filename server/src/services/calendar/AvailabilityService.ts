@@ -12,6 +12,34 @@ export type AvailabilityOptions = {
     utcOffsetMinutes?: number;
 };
 
+export type AvailabilityWindow = {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+};
+
+export type AvailabilitySettings = {
+    minimumMinutes: number;
+    bufferMinutes: number;
+    utcOffsetMinutes?: number;
+};
+
+function parseTimeToMinutes(
+    value: string
+): number {
+    const [
+        hour,
+        minute,
+    ] = value
+        .split(":")
+        .map(Number);
+
+    return (
+        hour * 60 +
+        minute
+    );
+}
+
 function mergeIntervals(
     intervals: Interval[]
 ): Interval[] {
@@ -236,6 +264,220 @@ export function calculateAvailability(
     return result;
 }
 
+export function calculateAvailabilityFromWindows(
+    from: Date,
+    to: Date,
+    busyPeriods: Interval[],
+    windows: AvailabilityWindow[],
+    settings: AvailabilitySettings
+): Interval[] {
+    const {
+        minimumMinutes,
+        bufferMinutes,
+        utcOffsetMinutes = 480,
+    } = settings;
+
+    const bufferedBusy =
+        busyPeriods.map((item) => ({
+            start: new Date(
+                item.start.getTime() -
+                bufferMinutes * 60_000
+            ),
+
+            end: new Date(
+                item.end.getTime() +
+                bufferMinutes * 60_000
+            ),
+        }));
+
+    const busy =
+        mergeIntervals(
+            bufferedBusy
+        );
+
+    const result: Interval[] = [];
+
+    const firstLocal =
+        new Date(
+            from.getTime() +
+            utcOffsetMinutes *
+            60_000
+        );
+
+    firstLocal.setUTCHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    const firstDay =
+        new Date(
+            firstLocal.getTime() -
+            utcOffsetMinutes *
+            60_000
+        );
+
+    for (
+        let day = new Date(
+            firstDay
+        );
+        day < to;
+        day = new Date(
+            day.getTime() +
+            86_400_000
+        )
+    ) {
+        const localDay =
+            new Date(
+                day.getTime() +
+                utcOffsetMinutes *
+                60_000
+            );
+
+        const weekday =
+            localDay.getUTCDay();
+
+        const dayWindows =
+            windows.filter(
+                (window) =>
+                    window.dayOfWeek ===
+                    weekday
+            );
+
+        if (
+            dayWindows.length ===
+            0
+        ) {
+            continue;
+        }
+
+        for (
+            const window of
+            dayWindows
+        ) {
+            const startMinutes =
+                parseTimeToMinutes(
+                    window.startTime
+                );
+
+            const endMinutes =
+                parseTimeToMinutes(
+                    window.endTime
+                );
+
+            const windowStart =
+                new Date(
+                    day.getTime() +
+                    startMinutes *
+                    60_000
+                );
+
+            const windowEnd =
+                new Date(
+                    day.getTime() +
+                    endMinutes *
+                    60_000
+                );
+
+            let cursor =
+                new Date(
+                    Math.max(
+                        windowStart.getTime(),
+                        from.getTime()
+                    )
+                );
+
+            const dayEnd =
+                new Date(
+                    Math.min(
+                        windowEnd.getTime(),
+                        to.getTime()
+                    )
+                );
+
+            if (
+                cursor >= dayEnd
+            ) {
+                continue;
+            }
+
+            for (
+                const blocked of busy
+            ) {
+                if (
+                    blocked.end <=
+                    cursor ||
+                    blocked.start >=
+                    dayEnd
+                ) {
+                    continue;
+                }
+
+                const freeEnd =
+                    new Date(
+                        Math.min(
+                            blocked.start.getTime(),
+                            dayEnd.getTime()
+                        )
+                    );
+
+                if (
+                    freeEnd.getTime() -
+                    cursor.getTime() >=
+                    minimumMinutes *
+                    60_000
+                ) {
+                    result.push({
+                        start:
+                            new Date(
+                                cursor
+                            ),
+
+                        end:
+                            freeEnd,
+                    });
+                }
+
+                cursor =
+                    new Date(
+                        Math.max(
+                            cursor.getTime(),
+                            blocked.end.getTime()
+                        )
+                    );
+
+                if (
+                    cursor >=
+                    dayEnd
+                ) {
+                    break;
+                }
+            }
+
+            if (
+                cursor < dayEnd &&
+                dayEnd.getTime() -
+                cursor.getTime() >=
+                minimumMinutes *
+                60_000
+            ) {
+                result.push({
+                    start:
+                        cursor,
+
+                    end:
+                        dayEnd,
+                });
+            }
+        }
+    }
+
+    return mergeIntervals(
+        result
+    );
+}
+
 export function intersectAvailability(
     availabilitySets: Interval[][]
 ): Interval[] {
@@ -326,7 +568,7 @@ export function mergeBusyPeriods(
 
         const previous =
             merged[
-                merged.length - 1
+            merged.length - 1
             ];
 
         if (

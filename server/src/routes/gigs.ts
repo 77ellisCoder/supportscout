@@ -200,7 +200,7 @@ gigsRouter.get(
                     SELECT
                         g.gig_id::int
                             AS "gigId",
-                        g.gig_name
+                        g.event_name
                             AS "gigName",
 
                         TO_CHAR(
@@ -243,8 +243,7 @@ gigsRouter.get(
                             g.gig_id
 
                     WHERE
-                        g.archived_at IS NULL
-                        AND ${dateCondition}
+                        ${dateCondition}
 
                     GROUP BY
                         g.gig_id,

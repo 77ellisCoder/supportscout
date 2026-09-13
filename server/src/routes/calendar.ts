@@ -15,7 +15,7 @@ import {
 } from "../services/calendar/GoogleCalendarService";
 
 import {
-    calculateAvailability,
+    calculateAvailabilityFromWindows,
     intersectAvailability,
 } from "../services/calendar/AvailabilityService";
 
@@ -59,6 +59,18 @@ type BandMemberRow = {
     displayName: string | null;
     email: string;
     relationship: string;
+};
+
+type UserAvailabilityPreferences = {
+    minimumMinutes: number;
+    bufferMinutes: number;
+    timezone: string;
+
+    windows: {
+        dayOfWeek: number;
+        startTime: string;
+        endTime: string;
+    }[];
 };
 
 export function initCalendarRouter(
@@ -195,6 +207,73 @@ function mergeBusyPeriods(
     }
 
     return merged;
+}
+
+async function getUserAvailabilityPreferences(
+    userId: number
+): Promise<UserAvailabilityPreferences> {
+    const settingsResult =
+        await pool.query(
+            `
+            SELECT
+                minimum_minutes::int
+                    AS "minimumMinutes",
+
+                buffer_minutes::int
+                    AS "bufferMinutes",
+
+                timezone
+
+            FROM user_availability_settings
+
+            WHERE user_id = $1
+            `,
+            [userId]
+        );
+
+    const windowsResult =
+        await pool.query(
+            `
+            SELECT
+                day_of_week::int
+                    AS "dayOfWeek",
+
+                start_time::text
+                    AS "startTime",
+
+                end_time::text
+                    AS "endTime"
+
+            FROM user_availability_windows
+
+            WHERE user_id = $1
+
+            ORDER BY
+                day_of_week,
+                start_time
+            `,
+            [userId]
+        );
+
+    const settings =
+        settingsResult.rows[0];
+
+    return {
+        minimumMinutes:
+            settings?.minimumMinutes ??
+            60,
+
+        bufferMinutes:
+            settings?.bufferMinutes ??
+            30,
+
+        timezone:
+            settings?.timezone ??
+            "Australia/Perth",
+
+        windows:
+            windowsResult.rows,
+    };
 }
 
 async function getUserCalendarConnections(
@@ -739,18 +818,26 @@ calendarRouter.get(
                 });
             }
 
+            const preferences =
+                await getUserAvailabilityPreferences(
+                    userId
+                );
+
             const available =
-                calculateAvailability(
+                calculateAvailabilityFromWindows(
                     range.from,
                     range.to,
                     busy,
+                    preferences.windows,
                     {
-                        startHour: 8,
-                        endHour: 18,
-                        minimumMinutes: 30,
-                        bufferMinutes: 30,
-                        includeWeekends:
-                            false,
+                        minimumMinutes:
+                            preferences
+                                .minimumMinutes,
+
+                        bufferMinutes:
+                            preferences
+                                .bufferMinutes,
+
                         utcOffsetMinutes:
                             480,
                     }
@@ -794,6 +881,272 @@ calendarRouter.get(
                 error:
                     "Unable to determine user availability",
             });
+        }
+    }
+);
+
+calendarRouter.get(
+    "/users/:userId/preferences",
+    async (
+        req: Request,
+        res: Response
+    ) => {
+        const userId =
+            parseId(
+                req.params.userId
+            );
+
+        if (!userId) {
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "Invalid userId",
+                });
+        }
+
+        try {
+            const preferences =
+                await getUserAvailabilityPreferences(
+                    userId
+                );
+
+            res.json({
+                userId,
+                ...preferences,
+            });
+        } catch (error) {
+            console.error(
+                "Availability preferences lookup failed:",
+                error
+            );
+
+            res.status(500).json({
+                error:
+                    "Unable to load availability preferences",
+            });
+        }
+    }
+);
+
+calendarRouter.put(
+    "/users/:userId/preferences",
+    async (
+        req: Request,
+        res: Response
+    ) => {
+        const userId =
+            parseId(
+                req.params.userId
+            );
+
+        if (!userId) {
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "Invalid userId",
+                });
+        }
+
+        const {
+            minimumMinutes,
+            bufferMinutes,
+            timezone,
+            windows,
+        } = req.body;
+
+        if (
+            !Number.isInteger(
+                minimumMinutes
+            ) ||
+            minimumMinutes < 15
+        ) {
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "minimumMinutes must be at least 15",
+                });
+        }
+
+        if (
+            !Number.isInteger(
+                bufferMinutes
+            ) ||
+            bufferMinutes < 0
+        ) {
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "bufferMinutes must be 0 or greater",
+                });
+        }
+
+        if (
+            typeof timezone !==
+            "string"
+        ) {
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "timezone is required",
+                });
+        }
+
+        if (!Array.isArray(windows)) {
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "windows must be an array",
+                });
+        }
+
+        const validTime =
+            /^([01]\d|2[0-3]):[0-5]\d$/;
+
+        for (const window of windows) {
+            if (
+                !Number.isInteger(
+                    window.dayOfWeek
+                ) ||
+                window.dayOfWeek < 0 ||
+                window.dayOfWeek > 6 ||
+                typeof window.startTime !==
+                    "string" ||
+                typeof window.endTime !==
+                    "string" ||
+                !validTime.test(
+                    window.startTime
+                ) ||
+                !validTime.test(
+                    window.endTime
+                ) ||
+                window.startTime >=
+                    window.endTime
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Invalid availability window",
+                    });
+            }
+        }
+
+        const client =
+            await pool.connect();
+
+        try {
+            await client.query(
+                "BEGIN"
+            );
+
+            await client.query(
+                `
+                INSERT INTO user_availability_settings (
+                    user_id,
+                    minimum_minutes,
+                    buffer_minutes,
+                    timezone,
+                    updated_at
+                )
+                VALUES (
+                    $1,
+                    $2,
+                    $3,
+                    $4,
+                    NOW()
+                )
+                ON CONFLICT (user_id)
+                DO UPDATE SET
+                    minimum_minutes =
+                        EXCLUDED.minimum_minutes,
+
+                    buffer_minutes =
+                        EXCLUDED.buffer_minutes,
+
+                    timezone =
+                        EXCLUDED.timezone,
+
+                    updated_at =
+                        NOW()
+                `,
+                [
+                    userId,
+                    minimumMinutes,
+                    bufferMinutes,
+                    timezone,
+                ]
+            );
+
+            await client.query(
+                `
+                DELETE FROM
+                    user_availability_windows
+                WHERE user_id = $1
+                `,
+                [userId]
+            );
+
+            for (const window of windows) {
+                await client.query(
+                    `
+                    INSERT INTO
+                        user_availability_windows (
+                            user_id,
+                            day_of_week,
+                            start_time,
+                            end_time
+                        )
+                    VALUES (
+                        $1,
+                        $2,
+                        $3,
+                        $4
+                    )
+                    `,
+                    [
+                        userId,
+                        window.dayOfWeek,
+                        window.startTime,
+                        window.endTime,
+                    ]
+                );
+            }
+
+            await client.query(
+                "COMMIT"
+            );
+
+            const preferences =
+                await getUserAvailabilityPreferences(
+                    userId
+                );
+
+            res.json({
+                userId,
+                ...preferences,
+            });
+        } catch (error) {
+            await client.query(
+                "ROLLBACK"
+            );
+
+            console.error(
+                "Availability preferences update failed:",
+                error
+            );
+
+            res.status(500).json({
+                error:
+                    "Unable to save availability preferences",
+            });
+        } finally {
+            client.release();
         }
     }
 );
@@ -947,18 +1300,24 @@ calendarRouter.get(
                                 };
                             }
 
+                            const preferences =
+                                await getUserAvailabilityPreferences(
+                                    member.userId
+                                );
+
                             const available =
-                                calculateAvailability(
+                                calculateAvailabilityFromWindows(
                                     range.from,
                                     range.to,
                                     busy,
+                                    preferences.windows,
                                     {
-                                        startHour: 8,
-                                        endHour: 18,
-                                        minimumMinutes: 30,
-                                        bufferMinutes: 30,
-                                        includeWeekends:
-                                            false,
+                                        minimumMinutes:
+                                            preferences.minimumMinutes,
+
+                                        bufferMinutes:
+                                            preferences.bufferMinutes,
+
                                         utcOffsetMinutes:
                                             480,
                                     }

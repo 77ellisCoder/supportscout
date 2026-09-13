@@ -4,6 +4,21 @@ const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
     "http://localhost:3001";
 
+export type AvailabilityWindow = {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+};
+
+export type AvailabilityPreferences = {
+    userId: number;
+    minimumMinutes: number;
+    bufferMinutes: number;
+    timezone: string;
+    windows: AvailabilityWindow[];
+};
+
+
 export type AvailabilityInterval = {
     start: string;
     end: string;
@@ -107,6 +122,56 @@ export async function getBandAvailability(
         throw new Error(
             body.error ??
                 "Unable to calculate availability."
+        );
+    }
+
+    return response.json();
+}
+
+export async function getAvailabilityPreferences(
+    userId: number
+): Promise<AvailabilityPreferences> {
+    const response = await fetch(
+        `${API_URL}/calendar/users/${userId}/preferences`
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Unable to load availability preferences"
+        );
+    }
+
+    return response.json();
+}
+
+export async function saveAvailabilityPreferences(
+    userId: number,
+    preferences: Omit<
+        AvailabilityPreferences,
+        "userId"
+    >
+): Promise<AvailabilityPreferences> {
+    const response = await fetch(
+        `${API_URL}/calendar/users/${userId}/preferences`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type":
+                    "application/json",
+            },
+            body: JSON.stringify(
+                preferences
+            ),
+        }
+    );
+
+    if (!response.ok) {
+        const body =
+            await response.json();
+
+        throw new Error(
+            body?.error ??
+                "Unable to save availability preferences"
         );
     }
 
