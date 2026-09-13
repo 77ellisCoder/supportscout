@@ -3,6 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 
+import { authRouter } from "./routes/auth";
 import { bandsRouter } from "./routes/bands";
 import { genresRouter } from "./routes/genres";
 import { gigsRouter } from "./routes/gigs";
@@ -45,6 +46,7 @@ verifyEmailConnection()
         );
     });
 
+app.use("/auth", authRouter);
 app.use("/bands", bandsRouter);
 app.use("/genres", genresRouter);
 app.use("/gigs", gigsRouter);

@@ -2,21 +2,31 @@ import { useEffect, useState } from "react";
 
 import {
   ActivityIndicator,
-  Image,
-  Pressable,
   Text,
   View,
 } from "react-native";
 
 import {
-  Stack,
   router,
+  Stack,
 } from "expo-router";
 
 import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+
+import {
+  useSegments,
+} from "expo-router";
+
+import {
+  AuthProvider,
+} from "../contexts/AuthContext";
+
+import {
+  useAuth,
+} from "../hooks/useAuth";
 
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppBootstrapService } from "../services/AppBootstrapService";
@@ -123,143 +133,9 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <Stack
-          screenOptions={{
-            headerLeft: () => (
-              <HeaderHomeButton />
-            ),
-
-            headerStyle: {
-              backgroundColor: colors.background,
-            },
-
-            headerTintColor: colors.text,
-
-            headerShadowVisible: true,
-          }}
-        >
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-            }}
-          />
-
-          {/* Bands */}
-
-          <Stack.Screen
-            name="bands/index"
-            options={{
-              title: "Bands",
-            }}
-          />
-
-          <Stack.Screen
-            name="bands/[id]"
-            options={{
-              headerTitle:
-                backTitle("Band Details"),
-            }}
-          />
-
-          <Stack.Screen
-            name="bands/create"
-            options={{
-              headerTitle:
-                backTitle("Add Band"),
-            }}
-          />
-
-          <Stack.Screen
-            name="bands/edit"
-            options={{
-              headerTitle:
-                backTitle("Edit Band"),
-            }}
-          />
-
-          {/* Venues */}
-
-          <Stack.Screen
-            name="venues/index"
-            options={{
-              title: "Venues",
-            }}
-          />
-
-          <Stack.Screen
-            name="venues/[id]"
-            options={{
-              headerTitle:
-                backTitle("Venue Details"),
-            }}
-          />
-
-          <Stack.Screen
-            name="venues/create"
-            options={{
-              headerTitle:
-                backTitle("Add Venue"),
-            }}
-          />
-
-          <Stack.Screen
-            name="venues/edit"
-            options={{
-              headerTitle:
-                backTitle("Edit Venue"),
-            }}
-          />
-
-          {/* Gigs */}
-
-          <Stack.Screen
-            name="gigs/index"
-            options={{
-              title: "Gigs",
-            }}
-          />
-
-          <Stack.Screen
-            name="gigs/[id]"
-            options={{
-              headerTitle:
-                backTitle("Gig Details"),
-            }}
-          />
-
-          <Stack.Screen
-            name="gigs/create"
-            options={{
-              headerTitle:
-                backTitle("Add Gig"),
-            }}
-          />
-
-          <Stack.Screen
-            name="gigs/edit"
-            options={{
-              headerTitle:
-                backTitle("Edit Gig"),
-            }}
-          />
-
-          {/* Other */}
-
-          <Stack.Screen
-            name="genres/index"
-            options={{
-              title: "Genres",
-            }}
-          />
-
-          <Stack.Screen
-            name="pr/index"
-            options={{
-              title: "PR Contacts",
-            }}
-          />
-        </Stack>
+        <AuthProvider>
+          <AuthenticatedLayout />
+        </AuthProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
   );
@@ -271,5 +147,250 @@ function backTitle(title: string) {
       title={title}
       showBack
     />
+  );
+}
+
+function AuthenticatedLayout() {
+  const {
+    isLoading,
+    isAuthenticated,
+  } = useAuth();
+
+  const segments =
+    useSegments();
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    const onLoginScreen =
+      segments[0] ===
+      "login";
+
+    if (
+      !isAuthenticated &&
+      !onLoginScreen
+    ) {
+      router.replace(
+        "/login"
+      );
+
+      return;
+    }
+
+    if (
+      isAuthenticated &&
+      onLoginScreen
+    ) {
+      router.replace(
+        "/"
+      );
+    }
+  }, [
+    isLoading,
+    isAuthenticated,
+    segments,
+  ]);
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor:
+            colors.background,
+          alignItems:
+            "center",
+          justifyContent:
+            "center",
+        }}
+      >
+        <ActivityIndicator
+          color={
+            colors.primaryLight
+          }
+        />
+
+        <Text
+          style={{
+            color:
+              colors.textSecondary,
+            marginTop: 12,
+          }}
+        >
+          Signing in...
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <Stack
+      screenOptions={{
+        headerLeft: () => (
+          <HeaderHomeButton />
+        ),
+
+        headerStyle: {
+          backgroundColor:
+            colors.background,
+        },
+
+        headerTintColor:
+          colors.text,
+
+        headerShadowVisible:
+          true,
+      }}
+    >
+      <Stack.Screen
+        name="login"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="index"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      {/* Bands */}
+
+      <Stack.Screen
+        name="bands/index"
+        options={{
+          title: "Bands",
+        }}
+      />
+
+      <Stack.Screen
+        name="bands/[id]"
+        options={{
+          headerTitle:
+            backTitle(
+              "Band Details"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="bands/create"
+        options={{
+          headerTitle:
+            backTitle(
+              "Add Band"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="bands/edit"
+        options={{
+          headerTitle:
+            backTitle(
+              "Edit Band"
+            ),
+        }}
+      />
+
+      {/* Venues */}
+
+      <Stack.Screen
+        name="venues/index"
+        options={{
+          title: "Venues",
+        }}
+      />
+
+      <Stack.Screen
+        name="venues/[id]"
+        options={{
+          headerTitle:
+            backTitle(
+              "Venue Details"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="venues/create"
+        options={{
+          headerTitle:
+            backTitle(
+              "Add Venue"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="venues/edit"
+        options={{
+          headerTitle:
+            backTitle(
+              "Edit Venue"
+            ),
+        }}
+      />
+
+      {/* Gigs */}
+
+      <Stack.Screen
+        name="gigs/index"
+        options={{
+          title: "Gigs",
+        }}
+      />
+
+      <Stack.Screen
+        name="gigs/[id]"
+        options={{
+          headerTitle:
+            backTitle(
+              "Gig Details"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="gigs/create"
+        options={{
+          headerTitle:
+            backTitle(
+              "Add Gig"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="gigs/edit"
+        options={{
+          headerTitle:
+            backTitle(
+              "Edit Gig"
+            ),
+        }}
+      />
+
+      {/* Other */}
+
+      <Stack.Screen
+        name="genres/index"
+        options={{
+          title: "Genres",
+        }}
+      />
+
+      <Stack.Screen
+        name="pr/index"
+        options={{
+          title:
+            "PR Contacts",
+        }}
+      />
+    </Stack>
   );
 }
