@@ -18,6 +18,10 @@ import {
 } from "../../services/calendar/CalendarService";
 
 import {
+    AvailabilityTimePicker,
+} from "./AvailabilityTimePicker";
+
+import {
     useAvailabilityPreferences,
     useSaveAvailabilityPreferences,
 } from "../../hooks/useAvailabilityPreferences";
@@ -588,12 +592,12 @@ export default function AvailabilityPreferencesCard({
                                                     styles.timeFields
                                                 }
                                             >
-                                                <TextInput
+                                                <AvailabilityTimePicker
                                                     value={
                                                         window.startTime
                                                     }
 
-                                                    onChangeText={(
+                                                    onChange={(
                                                         value
                                                     ) =>
                                                         updateWindow(
@@ -601,12 +605,6 @@ export default function AvailabilityPreferencesCard({
                                                             "startTime",
                                                             value
                                                         )
-                                                    }
-
-                                                    placeholder="18:00"
-
-                                                    style={
-                                                        styles.timeInput
                                                     }
                                                 />
 
@@ -618,12 +616,12 @@ export default function AvailabilityPreferencesCard({
                                                     to
                                                 </Text>
 
-                                                <TextInput
+                                                <AvailabilityTimePicker
                                                     value={
                                                         window.endTime
                                                     }
 
-                                                    onChangeText={(
+                                                    onChange={(
                                                         value
                                                     ) =>
                                                         updateWindow(
@@ -631,12 +629,6 @@ export default function AvailabilityPreferencesCard({
                                                             "endTime",
                                                             value
                                                         )
-                                                    }
-
-                                                    placeholder="23:00"
-
-                                                    style={
-                                                        styles.timeInput
                                                     }
                                                 />
                                             </View>

@@ -1016,9 +1016,9 @@ calendarRouter.put(
                 window.dayOfWeek < 0 ||
                 window.dayOfWeek > 6 ||
                 typeof window.startTime !==
-                    "string" ||
+                "string" ||
                 typeof window.endTime !==
-                    "string" ||
+                "string" ||
                 !validTime.test(
                     window.startTime
                 ) ||
@@ -1026,7 +1026,7 @@ calendarRouter.put(
                     window.endTime
                 ) ||
                 window.startTime >=
-                    window.endTime
+                window.endTime
             ) {
                 return res
                     .status(400)
@@ -1292,6 +1292,8 @@ calendarRouter.get(
                                     timezone:
                                         "Australia/Perth",
 
+                                    minimumMinutes: 0,
+
                                     busy:
                                         [],
 
@@ -1348,9 +1350,10 @@ calendarRouter.get(
                                     ),
 
                                 timezone:
-                                    connections[0]
-                                        ?.timezone ??
-                                    "Australia/Perth",
+                                    preferences.timezone,
+
+                                minimumMinutes:
+                                    preferences.minimumMinutes,
 
                                 busy:
                                     serializeRanges(
@@ -1372,6 +1375,15 @@ calendarRouter.get(
                         member.connected
                 );
 
+            const minimumSharedMinutes =
+                Math.max(
+                    ...connectedMembers.map(
+                        (member) =>
+                            member.minimumMinutes
+                    ),
+                    0
+                );
+
             const sharedAvailable =
                 intersectAvailability(
                     connectedMembers.map(
@@ -1387,6 +1399,12 @@ calendarRouter.get(
                                 })
                             )
                     )
+                ).filter(
+                    (interval) =>
+                        interval.end.getTime() -
+                        interval.start.getTime() >=
+                        minimumSharedMinutes *
+                        60_000
                 );
 
             res.json({

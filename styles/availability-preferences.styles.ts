@@ -144,15 +144,26 @@ export const styles =
         },
 
         dayRow: {
-            flexDirection:
-                "row",
+            minHeight: 58,
 
-            alignItems:
-                "center",
+            flexDirection: "row",
+            alignItems: "center",
 
-            gap: 14,
+            paddingHorizontal: 14,
+            paddingVertical: 10,
 
-            minHeight: 46,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: "#2d2638",
+
+            backgroundColor: "#110e18",
+
+            gap: 16,
+
+            position: "relative",
+            zIndex: 0,
+
+            overflow: "visible",
         },
 
         dayToggle: {
@@ -299,5 +310,120 @@ export const styles =
 
         errorText: {
             color: "#ff929c",
+        },
+
+        timePickerButton: {
+            minWidth: 105,
+
+            flexDirection:
+                "row",
+
+            alignItems:
+                "center",
+
+            justifyContent:
+                "space-between",
+
+            gap: 8,
+
+            paddingHorizontal: 12,
+
+            paddingVertical: 9,
+
+            borderRadius: 9,
+
+            borderWidth: 1,
+
+            borderColor:
+                "#403650",
+
+            backgroundColor:
+                "#0b0910",
+        },
+
+        timePickerButtonPressed: {
+            opacity: 0.8,
+        },
+
+        timePickerButtonText: {
+            color: "#ffffff",
+
+            fontSize: 14,
+
+            fontWeight: "500",
+        },
+
+        timePickerChevron: {
+            color: "#81788e",
+
+            fontSize: 12,
+        },
+
+        timePickerOverlay: {
+            flex: 1,
+
+            position: "relative",
+        },
+
+        timePickerModalMenu: {
+            position: "absolute",
+
+            width: 140,
+            maxHeight: 300,
+
+            borderRadius: 10,
+
+            borderWidth: 1,
+
+            borderColor:
+                "#403650",
+
+            backgroundColor:
+                "#17121f",
+
+            shadowColor:
+                "#000000",
+
+            shadowOpacity: 0.45,
+
+            shadowRadius: 14,
+
+            shadowOffset: {
+                width: 0,
+                height: 6,
+            },
+
+            elevation: 30,
+
+            overflow: "hidden",
+        },
+
+        timePickerScroll: {
+            maxHeight: 300,
+        },
+
+        timePickerOption: {
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+        },
+
+        timePickerOptionSelected: {
+            backgroundColor:
+                "#7047dc",
+        },
+
+        timePickerOptionPressed: {
+            backgroundColor:
+                "#292035",
+        },
+
+        timePickerOptionText: {
+            color: "#c0b9c9",
+            fontSize: 13,
+        },
+
+        timePickerOptionTextSelected: {
+            color: "#ffffff",
+            fontWeight: "600",
         },
     });
