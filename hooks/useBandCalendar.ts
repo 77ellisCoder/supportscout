@@ -43,18 +43,23 @@ export function useBandAvailability(
             from.toISOString(),
             to.toISOString(),
         ],
-        queryFn: () =>
-            getBandAvailability(
+
+        queryFn: () => {
+
+            return getBandAvailability(
                 bandId,
                 from,
                 to
-            ),
+            );
+        },
+
         enabled:
             enabled &&
             Number.isFinite(
                 bandId
             ) &&
             bandId > 0,
+
         staleTime: 60_000,
     });
 }

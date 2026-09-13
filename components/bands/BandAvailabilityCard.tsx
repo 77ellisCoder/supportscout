@@ -100,25 +100,61 @@ function groupAvailabilityByDay(
             GroupedAvailability
         >();
 
-    for (const slot of slots) {
+    for (
+        const slot of slots
+    ) {
         const startDate =
-            new Date(slot.start);
+            new Date(
+                slot.start
+            );
+
+        const year =
+            startDate.getFullYear();
+
+        const month =
+            String(
+                startDate.getMonth() +
+                1
+            ).padStart(
+                2,
+                "0"
+            );
+
+        const day =
+            String(
+                startDate.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
 
         const dateKey =
-            startDate
-                .toISOString()
-                .slice(0, 10);
+            `${year}-${month}-${day}`;
 
         let group =
-            grouped.get(dateKey);
+            grouped.get(
+                dateKey
+            );
 
         if (!group) {
             group = {
                 dateKey,
+
                 dateLabel:
-                    formatDateLabel(
-                        slot.start
+                    startDate.toLocaleDateString(
+                        "en-AU",
+                        {
+                            weekday:
+                                "short",
+
+                            day:
+                                "numeric",
+
+                            month:
+                                "short",
+                        }
                     ),
+
                 slots: [],
             };
 
@@ -131,6 +167,7 @@ function groupAvailabilityByDay(
         group.slots.push({
             start:
                 slot.start,
+
             end:
                 slot.end,
         });
@@ -138,6 +175,14 @@ function groupAvailabilityByDay(
 
     return Array.from(
         grouped.values()
+    ).sort(
+        (
+            left,
+            right
+        ) =>
+            left.dateKey.localeCompare(
+                right.dateKey
+            )
     );
 }
 
@@ -612,18 +657,10 @@ export function BandAvailabilityCard({
                                             color:
                                                 colors.primaryLight,
                                             fontSize: 12,
-                                            fontWeight:
-                                                "600",
+                                            fontWeight: "600",
                                         }}
                                     >
-                                        {
-                                            connectedCount
-                                        }
-                                        /
-                                        {
-                                            connectedCount
-                                        }{" "}
-                                        available
+                                        All connected members
                                     </Text>
                                 )}
                         </View>

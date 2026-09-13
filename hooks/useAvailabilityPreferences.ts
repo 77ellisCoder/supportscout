@@ -63,9 +63,24 @@ export function useSaveAvailabilityPreferences(
             });
 
             queryClient.invalidateQueries({
-                queryKey: [
-                    "band",
-                ],
+                predicate: (
+                    query
+                ) => {
+                    const key =
+                        query.queryKey;
+
+                    return (
+                        Array.isArray(
+                            key
+                        ) &&
+                        key[0] ===
+                        "band" &&
+                        key[2] ===
+                        "calendar" &&
+                        key[3] ===
+                        "availability"
+                    );
+                },
             });
         },
     });
