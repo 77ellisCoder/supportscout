@@ -1,6 +1,8 @@
 import type { Genre } from "../../models/Genre";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3001";
+import {
+    API_URL,
+} from "../../config/api";
 
 async function parseResponse<T>(
     response: Response

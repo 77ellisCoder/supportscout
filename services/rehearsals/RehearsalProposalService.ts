@@ -2,9 +2,9 @@ import {
     AuthStorage,
 } from "../storage/AuthStorage";
 
-const API_URL =
-    process.env.EXPO_PUBLIC_API_URL ??
-    "http://localhost:3001";
+import {
+    API_URL,
+} from "../../config/api";
 
 export type RehearsalProposal = {
     proposalId: number;

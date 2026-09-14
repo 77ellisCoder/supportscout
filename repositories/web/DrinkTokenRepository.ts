@@ -1,8 +1,8 @@
 import type { DrinkToken } from "../../models/DrinkToken";
 
-const API_URL =
-    process.env.EXPO_PUBLIC_API_URL ??
-    "http://localhost:3001";
+import {
+    API_URL,
+} from "../../config/api";
 
 async function ensureOk(
     response: Response

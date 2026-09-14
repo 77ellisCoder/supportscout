@@ -1,4 +1,5 @@
 import {
+    useEffect,
     useState,
 } from "react";
 
@@ -28,11 +29,31 @@ import {
     bootstrapSync,
 } from "../services/sync/BootstrapSyncService";
 
+import * as AuthSession
+    from "expo-auth-session";
+
+import * as WebBrowser
+    from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
+
+const googleDiscovery = {
+    authorizationEndpoint:
+        "https://accounts.google.com/o/oauth2/v2/auth",
+
+    tokenEndpoint:
+        "https://oauth2.googleapis.com/token",
+
+    revocationEndpoint:
+        "https://oauth2.googleapis.com/revoke",
+};
+
+
 export default function LoginScreen() {
     const {
         login,
-    } =
-        useAuth();
+        googleLogin,
+    } = useAuth();
 
     const [
         email,
@@ -59,6 +80,120 @@ export default function LoginScreen() {
         useState<
             string | null
         >(null);
+
+    const googleClientId =
+        process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID ?? "";
+
+    const redirectUri =
+        AuthSession.makeRedirectUri({
+            scheme:
+                "supportscout",
+        });
+
+    const [
+        googleRequest,
+        googleResponse,
+        promptGoogleLogin,
+    ] =
+        AuthSession.useAuthRequest(
+            {
+                clientId:
+                    googleClientId,
+
+                redirectUri,
+
+                scopes: [
+                    "openid",
+                    "profile",
+                    "email",
+                ],
+
+                responseType:
+                    AuthSession
+                        .ResponseType
+                        .IdToken,
+
+                extraParams: {
+                    nonce:
+                        Math.random()
+                            .toString(36)
+                            .substring(2),
+                },
+            },
+            googleDiscovery
+        );
+
+    useEffect(
+        () => {
+            if (
+                googleResponse?.type !==
+                "success"
+            ) {
+                return;
+            }
+
+            const idToken =
+                googleResponse
+                    .params
+                    .id_token;
+
+            if (!idToken) {
+                setError(
+                    "Google did not return an ID token."
+                );
+
+                return;
+            }
+
+            void handleGoogleLogin(
+                idToken
+            );
+        },
+        [
+            googleResponse,
+        ]
+    );
+
+    async function handleGoogleLogin(
+        idToken: string
+    ) {
+        try {
+            setError(
+                null
+            );
+
+            setIsSubmitting(
+                true
+            );
+
+            await googleLogin(
+                idToken
+            );
+
+            await bootstrapSync();
+
+            router.replace(
+                "/"
+            );
+        } catch (
+        error
+        ) {
+            console.error(
+                "Google login failed:",
+                error
+            );
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Google login failed"
+            );
+        } finally {
+            setIsSubmitting(
+                false
+            );
+        }
+    }
 
     async function handleLogin() {
         if (
@@ -252,6 +387,65 @@ export default function LoginScreen() {
                             isSubmitting
                         }
 
+                        fullWidth
+                    />
+
+                    <View
+                        style={{
+                            flexDirection:
+                                "row",
+
+                            alignItems:
+                                "center",
+
+                            marginVertical:
+                                18,
+                        }}
+                    >
+                        <View
+                            style={{
+                                flex: 1,
+                                height: 1,
+                                backgroundColor:
+                                    "#444",
+                            }}
+                        />
+
+                        <Text
+                            style={{
+                                marginHorizontal:
+                                    12,
+
+                                opacity:
+                                    0.6,
+                            }}
+                        >
+                            OR
+                        </Text>
+
+                        <View
+                            style={{
+                                flex: 1,
+                                height: 1,
+                                backgroundColor:
+                                    "#444",
+                            }}
+                        />
+                    </View>
+
+                    <Button
+                        title="Continue with Google"
+                        variant="secondary"
+                        disabled={
+                            !googleRequest ||
+                            isSubmitting
+                        }
+                        loading={
+                            isSubmitting
+                        }
+                        onPress={() =>
+                            promptGoogleLogin()
+                        }
                         fullWidth
                     />
                 </View>

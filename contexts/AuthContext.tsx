@@ -11,6 +11,7 @@ import {
     AuthUser,
     getCurrentUser,
     login as loginRequest,
+    googleLogin as googleLoginRequest,
 } from "../services/auth/AuthService";
 
 import {
@@ -29,6 +30,10 @@ type AuthContextValue = {
     isLoading: boolean;
 
     isAuthenticated: boolean;
+
+    googleLogin: (
+        idToken: string
+    ) => Promise<void>;
 
     login: (
         email: string,
@@ -145,6 +150,32 @@ export function AuthProvider({
             []
         );
 
+    const googleLogin =
+        useCallback(
+            async (
+                idToken: string
+            ) => {
+                const result =
+                    await googleLoginRequest(
+                        idToken
+                    );
+
+                await AuthStorage
+                    .setToken(
+                        result.token
+                    );
+
+                setToken(
+                    result.token
+                );
+
+                setUser(
+                    result.user
+                );
+            },
+            []
+        );
+
     const logout =
         useCallback(
             async () => {
@@ -191,6 +222,8 @@ export function AuthProvider({
 
                 login,
 
+                googleLogin,
+
                 logout,
             }),
             [
@@ -198,6 +231,7 @@ export function AuthProvider({
                 token,
                 isLoading,
                 login,
+                googleLogin,
                 logout,
             ]
         );

@@ -10,9 +10,9 @@ import type {
     SQLiteDatabase,
 } from "expo-sqlite";
 
-const API_URL =
-    process.env.EXPO_PUBLIC_API_URL ??
-    "http://localhost:3001";
+import {
+    API_URL,
+} from "../../config/api";
 
 type BootstrapSnapshot = {
     syncVersion: number;

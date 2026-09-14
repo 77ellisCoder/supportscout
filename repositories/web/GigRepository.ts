@@ -5,9 +5,9 @@ import type {
     GigStatus,
 } from "../../models/Gig";
 
-const API_URL =
-    process.env.EXPO_PUBLIC_API_URL ??
-    "http://localhost:3001";
+import {
+    API_URL,
+} from "../../config/api";
 
 type GigInput = {
     venueId: number | null;

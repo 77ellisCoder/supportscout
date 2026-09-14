@@ -5,6 +5,7 @@ import {
 import {
     getUserById,
     login,
+    loginWithGoogle,
 } from "../services/auth/AuthService";
 
 import {
@@ -75,6 +76,66 @@ authRouter.post(
                 .json({
                     error:
                         "Unable to log in",
+                });
+        }
+    }
+);
+
+authRouter.post(
+    "/google",
+    async (
+        req,
+        res
+    ) => {
+        try {
+            const {
+                idToken,
+            } =
+                req.body ?? {};
+
+            if (
+                typeof idToken !==
+                "string" ||
+                !idToken.trim()
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Google ID token is required",
+                    });
+            }
+
+            const result =
+                await loginWithGoogle(
+                    idToken.trim()
+                );
+
+            if (!result) {
+                return res
+                    .status(401)
+                    .json({
+                        error:
+                            "Unable to authenticate with Google",
+                    });
+            }
+
+            return res.json(
+                result
+            );
+        } catch (
+            error
+        ) {
+            console.error(
+                "Google login failed:",
+                error
+            );
+
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "Unable to log in with Google",
                 });
         }
     }

@@ -1,7 +1,6 @@
-const API_URL =
-    process.env
-        .EXPO_PUBLIC_API_URL ??
-    "http://localhost:3001";
+import {
+    API_URL,
+} from "../../config/api";
 
 export type AuthUser = {
     userId: number;
@@ -47,6 +46,44 @@ export async function login(
         throw new Error(
             body?.error ??
             "Unable to log in"
+        );
+    }
+
+    return body;
+}
+
+export async function googleLogin(
+    idToken: string
+): Promise<{
+    token: string;
+    user: AuthUser;
+}> {
+    const response =
+        await fetch(
+            `${API_URL}/auth/google`,
+            {
+                method:
+                    "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+
+                body:
+                    JSON.stringify({
+                        idToken,
+                    }),
+            }
+        );
+
+    const body =
+        await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            body?.error ??
+            "Unable to log in with Google"
         );
     }
 
