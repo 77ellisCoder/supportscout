@@ -115,8 +115,13 @@ export default function ProposeRehearsalScreen() {
             endDate.getTime()
         );
 
+    const hasLocation =
+        useCustomLocation
+            ? customLocation.trim().length > 0
+            : selectedLocationId !== null;
+
     async function handleSubmit() {
-        if (!valid) {
+        if (!valid || !hasLocation) {
             return;
         }
 

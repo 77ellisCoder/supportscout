@@ -132,14 +132,23 @@ rehearsalLocationsRouter.get(
                             rl.rehearsal_location_id
                        AND brl.band_id = $1
 
-                    WHERE rl.active = TRUE
+                    WHERE
+                        rl.active = TRUE
+
+                        AND EXISTS (
+                            SELECT 1
+
+                            FROM band_rehearsal_locations brl
+
+                            WHERE
+                                brl.rehearsal_location_id =
+                                    rl.rehearsal_location_id
+
+                                AND brl.band_id =
+                                    ANY($1::bigint[])
+                        )
 
                     ORDER BY
-                        COALESCE(
-                            brl.is_favourite,
-                            FALSE
-                        ) DESC,
-
                         rl.name ASC
                     `,
                     [

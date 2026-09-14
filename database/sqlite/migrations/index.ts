@@ -8,6 +8,7 @@ import { migration003 } from "./003_gigs";
 import { migration004 } from "./004_drink_riders";
 import { migration005 } from "./005_add_band_contact_fields";
 import { migration006 } from "./006_add_genres";
+import { migration007 } from "./007_postgres_sync"
 
 // TODO: Reimplement
 // import { exportDatabaseData } from "../exportDatabaseData";
@@ -25,6 +26,7 @@ const migrations: Migration[] = [
   migration004,
   migration005,
   migration006,
+  migration007
 ];
 
 export async function runMigrations(
@@ -98,16 +100,4 @@ export async function runMigrations(
       throw error;
     }
   }
-
-  const gigs =
-    await database.getAllAsync(
-      "SELECT * FROM gigs"
-    );
-
-  logger.debug(
-    "Existing gigs:",
-    gigs.length
-  );
-
-
 }

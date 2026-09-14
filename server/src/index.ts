@@ -25,6 +25,10 @@ import {
     rehearsalLocationsRouter,
 } from "./routes/rehearsalLocations";
 
+import {
+    initSyncRouter,
+} from "./routes/sync";
+
 const app = express();
 
 const PORT = Number(
@@ -64,6 +68,11 @@ app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
 app.use("/venues", venuesRouter);
 app.use("/calendar", initCalendarRouter(pool));
+
+app.use(
+    "/sync",
+    initSyncRouter(pool)
+);
 
 app.listen(PORT, () => {
     console.log(
