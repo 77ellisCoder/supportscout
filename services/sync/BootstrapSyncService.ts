@@ -73,6 +73,461 @@ export async function bootstrapSync(): Promise<void> {
         async () => {
 
             /*
+             * Bands
+             */
+
+            for (
+                const band
+                of snapshot.bands
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO bands (
+                        band_id,
+                        band_name,
+                        slug,
+                        hometown,
+                        state_region,
+                        country_code,
+                        member_count,
+                        formation_year,
+                        status,
+                        short_description,
+                        internal_notes,
+                        is_our_band,
+                        is_verified,
+                        created_at,
+                        updated_at,
+                        archived_at,
+                        booking_contact_name,
+                        contact_email,
+                        facebook_url,
+                        instagram_url,
+                        website_url
+                    )
+                    VALUES (
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?,
+                        ?
+                    )
+
+                    ON CONFLICT(band_id)
+                    DO UPDATE SET
+                        band_name =
+                            excluded.band_name,
+
+                        slug =
+                            excluded.slug,
+
+                        hometown =
+                            excluded.hometown,
+
+                        state_region =
+                            excluded.state_region,
+
+                        country_code =
+                            excluded.country_code,
+
+                        member_count =
+                            excluded.member_count,
+
+                        formation_year =
+                            excluded.formation_year,
+
+                        status =
+                            excluded.status,
+
+                        short_description =
+                            excluded.short_description,
+
+                        internal_notes =
+                            excluded.internal_notes,
+
+                        is_our_band =
+                            excluded.is_our_band,
+
+                        is_verified =
+                            excluded.is_verified,
+
+                        created_at =
+                            excluded.created_at,
+
+                        updated_at =
+                            excluded.updated_at,
+
+                        archived_at =
+                            excluded.archived_at,
+
+                        booking_contact_name =
+                            excluded.booking_contact_name,
+
+                        contact_email =
+                            excluded.contact_email,
+
+                        facebook_url =
+                            excluded.facebook_url,
+
+                        instagram_url =
+                            excluded.instagram_url,
+
+                        website_url =
+                            excluded.website_url
+                    `,
+                    band.bandId,
+                    band.bandName,
+                    band.slug,
+                    band.hometown,
+                    band.stateRegion,
+                    band.countryCode,
+                    band.memberCount,
+                    band.formationYear,
+                    band.status,
+                    band.shortDescription,
+                    band.internalNotes,
+                    band.isOurBand
+                        ? 1
+                        : 0,
+                    band.isVerified
+                        ? 1
+                        : 0,
+                    band.createdAt,
+                    band.updatedAt,
+                    band.archivedAt,
+                    band.bookingContactName,
+                    band.contactEmail,
+                    band.facebookUrl,
+                    band.instagramUrl,
+                    band.websiteUrl
+                );
+            }
+
+            /*
+             * Genres
+             */
+
+            for (
+                const genre
+                of snapshot.genres
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO genres (
+                        genre_id,
+                        genre_name,
+                        created_at
+                    )
+                    VALUES (?, ?, ?)
+
+                    ON CONFLICT(genre_id)
+                    DO UPDATE SET
+                        genre_name =
+                            excluded.genre_name,
+
+                        created_at =
+                            excluded.created_at
+                    `,
+                    genre.genreId,
+                    genre.genreName,
+                    genre.createdAt
+                );
+            }
+
+            /*
+             * Band ↔ genres
+             */
+
+            for (
+                const bandGenre
+                of snapshot.bandGenres
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO band_genres (
+                        band_id,
+                        genre_id
+                    )
+                    VALUES (?, ?)
+
+                    ON CONFLICT(
+                        band_id,
+                        genre_id
+                    )
+                    DO NOTHING
+                    `,
+                    bandGenre.bandId,
+                    bandGenre.genreId
+                );
+            }
+
+            /*
+             * Venues
+             */
+
+            for (
+                const venue
+                of snapshot.venues
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO venues (
+                        venue_id,
+                        venue_name,
+                        slug,
+                        suburb,
+                        state_region,
+                        country_code,
+                        address,
+                        capacity,
+                        venue_type,
+                        website_url,
+                        booking_url,
+                        booking_email,
+                        short_description,
+                        internal_notes,
+                        status,
+                        is_verified,
+                        created_at,
+                        updated_at,
+                        archived_at
+                    )
+                    VALUES (
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?
+                    )
+
+                    ON CONFLICT(venue_id)
+                    DO UPDATE SET
+                        venue_name =
+                            excluded.venue_name,
+
+                        slug =
+                            excluded.slug,
+
+                        suburb =
+                            excluded.suburb,
+
+                        state_region =
+                            excluded.state_region,
+
+                        country_code =
+                            excluded.country_code,
+
+                        address =
+                            excluded.address,
+
+                        capacity =
+                            excluded.capacity,
+
+                        venue_type =
+                            excluded.venue_type,
+
+                        website_url =
+                            excluded.website_url,
+
+                        booking_url =
+                            excluded.booking_url,
+
+                        booking_email =
+                            excluded.booking_email,
+
+                        short_description =
+                            excluded.short_description,
+
+                        internal_notes =
+                            excluded.internal_notes,
+
+                        status =
+                            excluded.status,
+
+                        is_verified =
+                            excluded.is_verified,
+
+                        created_at =
+                            excluded.created_at,
+
+                        updated_at =
+                            excluded.updated_at,
+
+                        archived_at =
+                            excluded.archived_at
+                    `,
+                    venue.venueId,
+                    venue.venueName,
+                    venue.slug,
+                    venue.suburb,
+                    venue.stateRegion,
+                    venue.countryCode,
+                    venue.address,
+                    venue.capacity,
+                    venue.venueType,
+                    venue.websiteUrl,
+                    venue.bookingUrl,
+                    venue.bookingEmail,
+                    venue.shortDescription,
+                    venue.internalNotes,
+                    venue.status,
+                    venue.isVerified
+                        ? 1
+                        : 0,
+                    venue.createdAt,
+                    venue.updatedAt,
+                    venue.archivedAt
+                );
+            }
+
+            /*
+             * Gigs
+             */
+
+            for (
+                const gig
+                of snapshot.gigs
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO gigs (
+                        gig_id,
+                        venue_id,
+                        gig_date,
+                        event_name,
+                        notes,
+                        status,
+                        created_at,
+                        updated_at,
+                        start_time,
+                        end_time
+                    )
+                    VALUES (
+                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?
+                    )
+
+                    ON CONFLICT(gig_id)
+                    DO UPDATE SET
+                        venue_id =
+                            excluded.venue_id,
+
+                        gig_date =
+                            excluded.gig_date,
+
+                        event_name =
+                            excluded.event_name,
+
+                        notes =
+                            excluded.notes,
+
+                        status =
+                            excluded.status,
+
+                        created_at =
+                            excluded.created_at,
+
+                        updated_at =
+                            excluded.updated_at,
+
+                        start_time =
+                            excluded.start_time,
+
+                        end_time =
+                            excluded.end_time
+                    `,
+                    gig.gigId,
+                    gig.venueId,
+                    gig.gigDate,
+                    gig.eventName,
+                    gig.notes,
+                    gig.status,
+                    gig.createdAt,
+                    gig.updatedAt,
+                    gig.startTime,
+                    gig.endTime
+                );
+            }
+
+            /*
+             * Gig ↔ bands
+             */
+
+            for (
+                const gigBand
+                of snapshot.gigBands
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO gig_bands (
+                        gig_id,
+                        band_id,
+                        billing_order,
+                        role
+                    )
+                    VALUES (?, ?, ?, ?)
+
+                    ON CONFLICT(
+                        gig_id,
+                        band_id
+                    )
+                    DO UPDATE SET
+                        billing_order =
+                            excluded.billing_order,
+
+                        role =
+                            excluded.role
+                    `,
+                    gigBand.gigId,
+                    gigBand.bandId,
+                    gigBand.billingOrder,
+                    gigBand.role
+                );
+            }
+
+            /*
+             * Drink tokens
+             */
+
+            for (
+                const drinkToken
+                of snapshot.gigBandDrinkTokens
+            ) {
+                await db.runAsync(
+                    `
+                    INSERT INTO gig_band_drink_tokens (
+                        token_id,
+                        gig_id,
+                        band_id,
+                        used,
+                        used_at
+                    )
+                    VALUES (?, ?, ?, ?, ?)
+
+                    ON CONFLICT(token_id)
+                    DO UPDATE SET
+                        gig_id =
+                            excluded.gig_id,
+
+                        band_id =
+                            excluded.band_id,
+
+                        used =
+                            excluded.used,
+
+                        used_at =
+                            excluded.used_at
+                    `,
+                    drinkToken.tokenId,
+                    drinkToken.gigId,
+                    drinkToken.bandId,
+                    drinkToken.used
+                        ? 1
+                        : 0,
+                    drinkToken.usedAt
+                );
+            }
+
+            /*
              * Users
              */
 
@@ -114,7 +569,7 @@ export async function bootstrapSync(): Promise<void> {
             }
 
             /*
-             * User ↔ band memberships
+             * User ↔ bands
              */
 
             for (
@@ -241,7 +696,9 @@ export async function bootstrapSync(): Promise<void> {
                     location.defaultSessionMinutes,
                     location.indicativeRate,
                     location.notes,
-                    location.active ? 1 : 0,
+                    location.active
+                        ? 1
+                        : 0,
                     location.createdAt,
                     location.updatedAt
                 );
@@ -366,7 +823,7 @@ export async function bootstrapSync(): Promise<void> {
             }
 
             /*
-             * Record successful bootstrap.
+             * Sync metadata
              */
 
             await db.runAsync(
