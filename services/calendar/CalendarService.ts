@@ -2,7 +2,7 @@ import { Linking } from "react-native";
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 export type AvailabilityWindow = {
     dayOfWeek: number;

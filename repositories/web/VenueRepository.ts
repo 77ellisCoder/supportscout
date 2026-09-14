@@ -2,7 +2,7 @@ import type { Venue } from "../../models/Venue";
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 type VenueInput = {
     venueName: string;

@@ -2,7 +2,7 @@ import type { PrContact } from "../../models/PrContact";
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 export const PrContactRepository = {
     async getAll(): Promise<PrContact[]> {

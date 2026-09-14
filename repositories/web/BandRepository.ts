@@ -5,7 +5,7 @@ import type {
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 type ApiGenre = {
     id: number | string;

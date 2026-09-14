@@ -12,7 +12,7 @@ import type {
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 type BootstrapSnapshot = {
     syncVersion: number;

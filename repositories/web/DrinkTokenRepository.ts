@@ -2,7 +2,7 @@ import type { DrinkToken } from "../../models/DrinkToken";
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 async function ensureOk(
     response: Response

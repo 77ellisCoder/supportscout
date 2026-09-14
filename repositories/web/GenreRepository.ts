@@ -2,7 +2,7 @@ import type { Genre } from "../../models/Genre";
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 async function parseResponse<T>(
     response: Response

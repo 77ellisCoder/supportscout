@@ -35,6 +35,10 @@ import * as AuthSession
 import * as WebBrowser
     from "expo-web-browser";
 
+import {
+    GOOGLE_CLIENT_ID,
+} from "../config/environment";
+
 WebBrowser.maybeCompleteAuthSession();
 
 const googleDiscovery = {
@@ -81,9 +85,6 @@ export default function LoginScreen() {
             string | null
         >(null);
 
-    const googleClientId =
-        process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID ?? "";
-
     const redirectUri =
         AuthSession.makeRedirectUri({
             scheme:
@@ -98,7 +99,7 @@ export default function LoginScreen() {
         AuthSession.useAuthRequest(
             {
                 clientId:
-                    googleClientId,
+                    GOOGLE_CLIENT_ID,
 
                 redirectUri,
 

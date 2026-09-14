@@ -7,7 +7,7 @@ import type {
 
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 type GigInput = {
     venueId: number | null;

@@ -1,6 +1,6 @@
 import {
     API_URL,
-} from "../../config/api";
+} from "../../config/environment";
 
 export type AuthUser = {
     userId: number;
