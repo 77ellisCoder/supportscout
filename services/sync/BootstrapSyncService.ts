@@ -6,6 +6,10 @@ import {
     AuthStorage,
 } from "../storage/AuthStorage";
 
+import type {
+    SQLiteDatabase,
+} from "expo-sqlite";
+
 const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
     "http://localhost:3001";
@@ -71,6 +75,7 @@ export async function bootstrapSync(): Promise<void> {
 
     await db.withTransactionAsync(
         async () => {
+            await clearSnapshotData(db);
 
             /*
              * Bands
@@ -877,4 +882,64 @@ export async function bootstrapSync(): Promise<void> {
             );
         }
     );
+}
+
+/**
+* Clear snapshot-managed data.
+*
+* Delete child tables first so foreign-key
+* constraints remain satisfied.
+* @param db SQLite database reference
+ */
+async function clearSnapshotData(
+    db: SQLiteDatabase
+): Promise<void> {
+
+    await db.runAsync(`
+        DELETE FROM rehearsal_proposals
+    `);
+
+    await db.runAsync(`
+        DELETE FROM band_rehearsal_locations
+    `);
+
+    await db.runAsync(`
+        DELETE FROM user_bands
+    `);
+
+    await db.runAsync(`
+        DELETE FROM gig_band_drink_tokens
+    `);
+
+    await db.runAsync(`
+        DELETE FROM gig_bands
+    `);
+
+    await db.runAsync(`
+        DELETE FROM band_genres
+    `);
+
+    await db.runAsync(`
+        DELETE FROM gigs
+    `);
+
+    await db.runAsync(`
+        DELETE FROM rehearsal_locations
+    `);
+
+    await db.runAsync(`
+        DELETE FROM users
+    `);
+
+    await db.runAsync(`
+        DELETE FROM venues
+    `);
+
+    await db.runAsync(`
+        DELETE FROM genres
+    `);
+
+    await db.runAsync(`
+        DELETE FROM bands
+    `);
 }
