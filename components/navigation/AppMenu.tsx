@@ -4,6 +4,10 @@ import { Platform, View } from "react-native";
 import { MenuItem } from "./MenuItem";
 import { styles } from "./AppMenu.styles";
 
+import {
+    bootstrapSync,
+} from "../../services/sync/BootstrapSyncService";
+
 type AppMenuProps = {
     onClose: () => void;
 };

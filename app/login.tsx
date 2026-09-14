@@ -24,6 +24,10 @@ import {
     styles,
 } from "../styles/login.styles";
 
+import {
+    bootstrapSync,
+} from "../services/sync/BootstrapSyncService";
+
 export default function LoginScreen() {
     const {
         login,
@@ -82,9 +86,9 @@ export default function LoginScreen() {
                 password
             );
 
-            router.replace(
-                "/"
-            );
+            await bootstrapSync();
+
+            router.replace("/");
         } catch (
         loginError
         ) {
