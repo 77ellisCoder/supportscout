@@ -10,6 +10,7 @@ export type RehearsalProposal = {
     proposalId: number;
     bandId: number;
     proposedByUserId: number;
+    rehearsalLocationId: number | null;
     startAt: string;
     endAt: string;
     location: string | null;
