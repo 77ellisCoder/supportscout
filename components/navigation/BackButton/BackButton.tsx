@@ -1,11 +1,22 @@
-import { router } from "expo-router";
-import { Pressable, Text } from "react-native";
+import {
+    router,
+    type Href,
+} from "expo-router";
 
-import { buttonStyles } from "../../../styles/shared/button.styles";
+import {
+    Pressable,
+    Text,
+} from "react-native";
+
+import {
+    buttonStyles,
+} from "../../../styles/shared/button.styles";
 
 type BackButtonProps = {
     label?: string;
-    fallbackRoute?: "/" | "/bands" | "/venues" | "/gigs" | "/genres";
+
+    fallbackRoute?: Href;
+
     onPress?: () => void;
 };
 
@@ -14,31 +25,57 @@ export function BackButton({
     fallbackRoute = "/",
     onPress,
 }: BackButtonProps) {
-    const handlePress = () => {
-        if (onPress) {
-            onPress();
-            return;
-        }
 
-        if (router.canGoBack()) {
-            router.back();
-            return;
-        }
+    const handlePress =
+        () => {
 
-        router.replace(fallbackRoute);
-    };
+            if (
+                onPress
+            ) {
+                onPress();
+
+                return;
+            }
+
+            if (
+                router.canGoBack()
+            ) {
+                router.back();
+
+                return;
+            }
+
+            router.replace(
+                fallbackRoute
+            );
+        };
 
     return (
         <Pressable
             accessibilityRole="button"
-            accessibilityLabel={label}
-            onPress={handlePress}
-            style={({ pressed }) => [
-                buttonStyles.backButton,
-                pressed && buttonStyles.backButtonPressed,
-            ]}
+
+            accessibilityLabel={
+                label
+            }
+
+            onPress={
+                handlePress
+            }
+
+            style={({
+                pressed,
+            }) => [
+                    buttonStyles.backButton,
+
+                    pressed &&
+                    buttonStyles.backButtonPressed,
+                ]}
         >
-            <Text style={buttonStyles.backButtonText}>
+            <Text
+                style={
+                    buttonStyles.backButtonText
+                }
+            >
                 ‹ {label}
             </Text>
         </Pressable>

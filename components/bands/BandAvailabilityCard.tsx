@@ -10,6 +10,10 @@ import {
     View,
 } from "react-native";
 
+import {
+    router,
+} from "expo-router";
+
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import {
@@ -646,8 +650,7 @@ export function BandAvailabilityCard({
                                         "700",
                                 }}
                             >
-                                SHARED
-                                AVAILABILITY
+                                SHARED AVAILABILITY
                             </Text>
 
                             {connectedCount >
@@ -664,6 +667,22 @@ export function BandAvailabilityCard({
                                     </Text>
                                 )}
                         </View>
+
+                        <Text
+                            style={{
+                                color:
+                                    colors.textSecondary,
+
+                                fontSize:
+                                    12,
+
+                                lineHeight:
+                                    17,
+                            }}
+                        >
+                            Times when all connected members are free.
+                            Select a time to propose a rehearsal.
+                        </Text>
 
                         {connectedCount ===
                             0 ? (
@@ -741,22 +760,63 @@ export function BandAvailabilityCard({
                                                         (
                                                             slot
                                                         ) => (
-                                                            <View
+                                                            <Pressable
                                                                 key={`${slot.start}-${slot.end}`}
-                                                                style={{
-                                                                    paddingHorizontal: 10,
-                                                                    paddingVertical: 6,
-                                                                    borderRadius: 999,
-                                                                    borderWidth: 1,
+
+                                                                onPress={() =>
+                                                                    router.push({
+                                                                        pathname:
+                                                                            "/rehearsals/propose",
+
+                                                                        params: {
+                                                                            bandId:
+                                                                                String(
+                                                                                    bandId
+                                                                                ),
+
+                                                                            start:
+                                                                                slot.start,
+
+                                                                            end:
+                                                                                slot.end,
+                                                                        },
+                                                                    })
+                                                                }
+
+                                                                style={({
+                                                                    pressed,
+                                                                }) => ({
+                                                                    paddingHorizontal:
+                                                                        10,
+
+                                                                    paddingVertical:
+                                                                        6,
+
+                                                                    borderRadius:
+                                                                        999,
+
+                                                                    borderWidth:
+                                                                        1,
+
                                                                     borderColor:
-                                                                        colors.border,
-                                                                }}
+                                                                        "#22c55e",
+
+                                                                    backgroundColor:
+                                                                        pressed
+                                                                            ? "rgba(34, 197, 94, 0.25)"
+                                                                            : "rgba(34, 197, 94, 0.12)",
+                                                                })}
                                                             >
                                                                 <Text
                                                                     style={{
                                                                         color:
-                                                                            colors.text,
-                                                                        fontSize: 13,
+                                                                            "#86efac",
+
+                                                                        fontSize:
+                                                                            13,
+
+                                                                        fontWeight:
+                                                                            "600",
                                                                     }}
                                                                 >
                                                                     {formatTime(
@@ -767,7 +827,7 @@ export function BandAvailabilityCard({
                                                                         slot.end
                                                                     )}
                                                                 </Text>
-                                                            </View>
+                                                            </Pressable>
                                                         )
                                                     )}
                                                 </View>

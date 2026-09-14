@@ -17,6 +17,14 @@ import {
     verifyEmailConnection,
 } from "./services/email/EmailService";
 
+import {
+    rehearsalProposalsRouter,
+} from "./routes/rehearsalProposals";
+
+import {
+    rehearsalLocationsRouter,
+} from "./routes/rehearsalLocations";
+
 const app = express();
 
 const PORT = Number(
@@ -50,6 +58,8 @@ app.use("/auth", authRouter);
 app.use("/bands", bandsRouter);
 app.use("/genres", genresRouter);
 app.use("/gigs", gigsRouter);
+app.use("/rehearsal-proposals", rehearsalProposalsRouter);
+app.use("/rehearsal-locations", rehearsalLocationsRouter);
 app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
 app.use("/venues", venuesRouter);
