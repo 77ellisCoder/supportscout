@@ -86,15 +86,7 @@ export default function LoginScreen() {
                 password
             );
 
-            console.log(
-                "LOGIN: starting bootstrap sync..."
-            );
-
             await bootstrapSync();
-
-            console.log(
-                "LOGIN: bootstrap sync complete."
-            );
 
             router.replace("/");
         } catch (

@@ -148,9 +148,6 @@ export function AuthProvider({
     const logout =
         useCallback(
             async () => {
-                console.log(
-                    "AUTH: logout called"
-                );
 
                 try {
                     await clearUserScopedData();
@@ -172,10 +169,6 @@ export function AuthProvider({
 
                 setUser(
                     null
-                );
-
-                console.log(
-                    "AUTH: logout complete"
                 );
             },
             []
