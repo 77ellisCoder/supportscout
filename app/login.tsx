@@ -92,6 +92,16 @@ export default function LoginScreen() {
         });
 
     const [
+        googleNonce,
+    ] =
+        useState(
+            () =>
+                Math.random()
+                    .toString(36)
+                    .substring(2)
+        );
+
+    const [
         googleRequest,
         googleResponse,
         promptGoogleLogin,
@@ -114,11 +124,12 @@ export default function LoginScreen() {
                         .ResponseType
                         .IdToken,
 
+                usePKCE:
+                    false,
+
                 extraParams: {
                     nonce:
-                        Math.random()
-                            .toString(36)
-                            .substring(2),
+                        googleNonce,
                 },
             },
             googleDiscovery
@@ -171,7 +182,19 @@ export default function LoginScreen() {
                 idToken
             );
 
+            console.log(
+                "GOOGLE: authentication complete"
+            );
+
+            console.log(
+                "GOOGLE: starting bootstrap"
+            );
+
             await bootstrapSync();
+
+            console.log(
+                "GOOGLE: bootstrap complete"
+            );
 
             router.replace(
                 "/"
@@ -217,14 +240,32 @@ export default function LoginScreen() {
         );
 
         try {
+            console.log(
+                "LOGIN: starting authentication"
+            );
+
             await login(
                 email.trim(),
                 password
             );
 
+            console.log(
+                "LOGIN: authentication complete"
+            );
+
+            console.log(
+                "LOGIN: starting bootstrap"
+            );
+
             await bootstrapSync();
 
-            router.replace("/");
+            console.log(
+                "LOGIN: bootstrap complete"
+            );
+
+            router.replace(
+                "/"
+            );
         } catch (
         loginError
         ) {
@@ -414,6 +455,8 @@ export default function LoginScreen() {
 
                         <Text
                             style={{
+                                color: "#A7A7B3",
+                                
                                 marginHorizontal:
                                     12,
 

@@ -53,3 +53,23 @@ export function getDatabase(): Promise<SQLite.SQLiteDatabase> {
 
   return databasePromise;
 }
+
+export async function resetDatabaseConnection():
+    Promise<void> {
+
+    if (!databasePromise) {
+        return;
+    }
+
+    try {
+        const db =
+            await databasePromise;
+
+        await db.closeAsync();
+    } catch {
+        // The connection may already be invalid.
+    } finally {
+        databasePromise =
+            null;
+    }
+}

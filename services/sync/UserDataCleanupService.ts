@@ -1,22 +1,14 @@
 import {
     getDatabase,
+    resetDatabaseConnection,
 } from "../../database/sqlite/Database";
 
-export async function clearUserScopedData(): Promise<void> {
+async function clearData(): Promise<void> {
     const db =
         await getDatabase();
 
-    console.log(
-        "Clearing user-scoped SQLite data..."
-    );
-
     await db.withTransactionAsync(
         async () => {
-            /*
-             * Delete child records first so
-             * foreign-key constraints remain happy.
-             */
-
             await db.runAsync(`
                 DELETE FROM rehearsal_proposals
             `);
@@ -37,16 +29,46 @@ export async function clearUserScopedData(): Promise<void> {
                 DELETE FROM users
             `);
 
-            /*
-             * Sync metadata belongs to the
-             * authenticated session/snapshot.
-             */
-
             await db.runAsync(`
                 DELETE FROM sync_metadata
             `);
         }
     );
+}
+
+export async function clearUserScopedData():
+    Promise<void> {
+
+    console.log(
+        "Clearing user-scoped SQLite data..."
+    );
+
+    try {
+        await clearData();
+    } catch (
+        error
+    ) {
+        const message =
+            error instanceof Error
+                ? error.message
+                : String(error);
+
+        if (
+            message.includes(
+                "Invalid VFS state"
+            )
+        ) {
+            console.warn(
+                "SQLite VFS was stale. Reopening database..."
+            );
+
+            await resetDatabaseConnection();
+
+            await clearData();
+        } else {
+            throw error;
+        }
+    }
 
     console.log(
         "User-scoped SQLite data cleared."
