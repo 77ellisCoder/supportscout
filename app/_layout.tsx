@@ -34,6 +34,7 @@ import { SoundService } from "../services/SoundService";
 import { colors } from "../theme";
 
 import { HeaderHomeButton } from "../components/ui/HeaderHomeButton";
+import { HeaderSettingsButton } from "../components/ui/HeaderSettingsButton";
 import { HeaderTitle } from "../components/ui/HeaderTitle";
 
 const queryClient = new QueryClient();
@@ -232,6 +233,10 @@ function AuthenticatedLayout() {
           <HeaderHomeButton />
         ),
 
+        headerRight: () => (
+          <HeaderSettingsButton />
+        ),
+
         headerStyle: {
           backgroundColor:
             colors.background,
@@ -389,6 +394,16 @@ function AuthenticatedLayout() {
         options={{
           title:
             "PR Contacts",
+        }}
+      />
+
+      <Stack.Screen
+        name="settings/index"
+        options={{
+          title: "Settings",
+
+          headerRight: () =>
+            null,
         }}
       />
     </Stack>

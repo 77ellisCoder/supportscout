@@ -11,6 +11,10 @@ import { styles } from "../../styles/index.styles"
 import { headerStyles } from "../../styles/header.styles"
 import { AppMenu } from "../navigation/AppMenu";
 
+import {
+  HeaderSettingsButton,
+} from "../../components/ui/HeaderSettingsButton";
+
 /**
  * Header is the main header screen for the app, providing a centralized location for managing scouting, planning, and booking activities.
  * @component
@@ -55,6 +59,9 @@ export default function AppHeader() {
                 </View>
 
                 <View style={headerStyles.headerSpacer} />
+
+                {/* Settings access */}
+                <HeaderSettingsButton />
             </View>
 
             {menuOpen && (
