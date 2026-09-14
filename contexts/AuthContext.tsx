@@ -17,6 +17,10 @@ import {
     AuthStorage,
 } from "../services/storage/AuthStorage";
 
+import {
+    clearUserScopedData,
+} from "../services/sync/UserDataCleanupService";
+
 type AuthContextValue = {
     user: AuthUser | null;
 
@@ -144,6 +148,21 @@ export function AuthProvider({
     const logout =
         useCallback(
             async () => {
+                console.log(
+                    "AUTH: logout called"
+                );
+
+                try {
+                    await clearUserScopedData();
+                } catch (
+                error
+                ) {
+                    console.error(
+                        "Unable to clear local user data:",
+                        error
+                    );
+                }
+
                 await AuthStorage
                     .clearToken();
 
@@ -153,6 +172,10 @@ export function AuthProvider({
 
                 setUser(
                     null
+                );
+
+                console.log(
+                    "AUTH: logout complete"
                 );
             },
             []
