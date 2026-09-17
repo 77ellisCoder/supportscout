@@ -16,7 +16,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 import { Button } from "../../../components/ui/Button";
 import { usePrContacts } from "../../../hooks/usePrContacts";
-import { PrCampaignRepository } from "../../../repositories/Repository";
+import { PrCampaignRepository } from "../../../repositories"
 
 import { styles } from "../../../styles/pr/campaign-create.styles";
 

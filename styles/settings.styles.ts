@@ -114,4 +114,66 @@ export const styles =
             color:
                 "#9b94a8",
         },
+
+        settingsCard: {
+            width:
+                "100%",
+
+            maxWidth:
+                960,
+
+            padding:
+                18,
+
+            borderWidth:
+                1,
+
+            borderColor:
+                "#2d2738",
+
+            borderRadius:
+                14,
+
+            backgroundColor:
+                "#15121c",
+
+            flexDirection:
+                "row",
+
+            alignItems:
+                "center",
+
+            justifyContent:
+                "space-between",
+
+            gap:
+                20,
+        },
+
+        settingsDetails: {
+            flex:
+                1,
+
+            gap:
+                3,
+        },
+
+        settingsTitle: {
+            fontSize:
+                17,
+
+            fontWeight:
+                "600",
+
+            color:
+                "#ffffff",
+        },
+
+        settingsDescription: {
+            fontSize:
+                13,
+
+            color:
+                "#9b94a8",
+        },
     });

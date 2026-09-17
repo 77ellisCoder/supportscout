@@ -23,7 +23,7 @@ import { useBands } from "../../hooks/useBands";
 import { useGigDetail } from "../../hooks/useGigDetail";
 import { useVenues } from "../../hooks/useVenues";
 
-import { GigRepository } from "../../repositories/Repository";
+import { GigRepository } from "../../repositories";
 
 import { colors } from "../../theme";
 

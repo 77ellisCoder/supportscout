@@ -15,7 +15,7 @@ import { Button } from "../../../components/ui/Button";
 import { usePrCampaign } from "../../../hooks/usePrCampaign";
 import {
     PrCampaignRepository,
-} from "../../../repositories/Repository";
+} from "../../../repositories"
 
 import { styles } from "../../../styles/pr/campaign.styles";
 

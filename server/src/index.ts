@@ -29,6 +29,10 @@ import {
     initSyncRouter,
 } from "./routes/sync";
 
+import {
+    userBandsRouter,
+} from "./routes/userBands";
+
 const app = express();
 
 const PORT = Number(
@@ -68,6 +72,7 @@ app.use("/pr-contacts", prContactsRouter);
 app.use("/pr-campaigns", prCampaignsRouter);
 app.use("/venues", venuesRouter);
 app.use("/calendar", initCalendarRouter(pool));
+app.use("/users", userBandsRouter);
 
 app.use(
     "/sync",

@@ -17,3 +17,7 @@ export {
 export {
     VenueRepository,
 } from "./VenueRepository";
+
+export {
+    UserBandRepository,
+} from "./UserBandRepository";

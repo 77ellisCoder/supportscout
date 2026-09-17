@@ -12,7 +12,7 @@ import {
 } from "../../components/bands/BandForm";
 
 import { useBand } from "../../hooks/useBand";
-import { BandRepository } from "../../repositories/Repository";
+import { BandRepository } from "../../repositories";
 
 export default function EditBandScreen() {
   const { id } =

@@ -6,6 +6,7 @@ import {
     getUserById,
     login,
     loginWithGoogle,
+    setPassword
 } from "../services/auth/AuthService";
 
 import {
@@ -192,6 +193,70 @@ authRouter.get(
                 .json({
                     error:
                         "Unable to load current user",
+                });
+        }
+    }
+);
+
+authRouter.put(
+    "/password",
+    requireAuth,
+    async (
+        req: AuthenticatedRequest,
+        res
+    ) => {
+        try {
+            const userId =
+                req.auth?.userId;
+
+            if (!userId) {
+                return res
+                    .status(401)
+                    .json({
+                        error:
+                            "Authentication required",
+                    });
+            }
+
+            const {
+                password,
+            } =
+                req.body ?? {};
+
+            if (
+                typeof password !==
+                "string" ||
+                password.length < 8
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Password must be at least 8 characters",
+                    });
+            }
+
+            await setPassword(
+                userId,
+                password
+            );
+
+            return res.json({
+                success: true,
+            });
+        } catch (
+            error
+        ) {
+            console.error(
+                "Unable to set password:",
+                error
+            );
+
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "Unable to set password",
                 });
         }
     }

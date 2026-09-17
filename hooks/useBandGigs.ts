@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { GigRepository } from "../repositories/Repository";
+import { GigRepository } from "../repositories";
 
 export function useBandGigs(
     bandId: number,

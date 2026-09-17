@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
     PrCampaignRepository,
-} from "../repositories/Repository";
+} from "../repositories";
 
 export function usePrCampaigns() {
     return useQuery({

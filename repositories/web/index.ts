@@ -25,3 +25,7 @@ export {
 export {
     PrContactRepository,
 } from "./PrContactRepository";
+
+export {
+    UserBandRepository,
+} from "./UserBandRepository";

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
     VenueRepository,
-} from "../repositories/Repository";
+} from "../repositories";
 
 export function useVenues() {
     return useQuery({

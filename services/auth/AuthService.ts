@@ -2,6 +2,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    AuthStorage,
+} from "../storage/AuthStorage";
+
 export type AuthUser = {
     userId: number;
     email: string;
@@ -115,4 +119,49 @@ export async function getCurrentUser(
     }
 
     return body;
+}
+
+export async function setPassword(
+    password: string
+): Promise<void> {
+    const token =
+        await AuthStorage.getToken();
+
+    if (!token) {
+        throw new Error(
+            "Authentication required"
+        );
+    }
+
+    const response =
+        await fetch(
+            `${API_URL}/auth/password`,
+            {
+                method:
+                    "PUT",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    Authorization:
+                        `Bearer ${token}`,
+                },
+
+                body:
+                    JSON.stringify({
+                        password,
+                    }),
+            }
+        );
+
+    const body =
+        await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            body?.error ??
+            "Unable to set password"
+        );
+    }
 }

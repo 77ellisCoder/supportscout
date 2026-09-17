@@ -1,7 +1,7 @@
 import { Platform } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
-import { GenreRepository } from "../repositories/Repository";
+import { GenreRepository } from "../repositories";
 
 export function useGenres(search = "") {
     return useQuery({

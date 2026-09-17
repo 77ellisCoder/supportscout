@@ -7,7 +7,7 @@ import {
     type GenreFormValues,
 } from "../../components/genres/GenreForm";
 
-import { GenreRepository } from "../../repositories/Repository";
+import { GenreRepository } from "../../repositories";
 
 export default function CreateGenreScreen() {
     const queryClient = useQueryClient();

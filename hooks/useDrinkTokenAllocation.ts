@@ -9,7 +9,7 @@ import {
 
 import {
     DrinkTokenRepository,
-} from "../repositories/Repository";
+} from "../repositories";
 
 export function useDrinkTokenAllocation(
     gigId: number,

@@ -10,7 +10,7 @@ import {
 import { useBands } from "../../hooks/useBands";
 import { useVenues } from "../../hooks/useVenues";
 
-import { GigRepository } from "../../repositories/Repository";
+import { GigRepository } from "../../repositories";
 
 export default function CreateGigScreen() {
     const queryClient = useQueryClient();

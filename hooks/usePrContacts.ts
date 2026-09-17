@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { PrContactRepository } from "../repositories/Repository";
+import { PrContactRepository } from "../repositories";
 
 export function usePrContacts() {
     return useQuery({

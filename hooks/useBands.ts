@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { BandRepository } from "../repositories/Repository";
+import { BandRepository } from "../repositories";
 
 export function useBands(search = "") {
   return useQuery({

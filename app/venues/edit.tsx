@@ -12,7 +12,7 @@ import {
 } from "../../components/venues/VenueForm";
 
 import { useVenue } from "../../hooks/useVenue";
-import { VenueRepository } from "../../repositories/Repository";
+import { VenueRepository } from "../../repositories";
 
 
 

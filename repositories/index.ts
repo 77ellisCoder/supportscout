@@ -17,8 +17,8 @@ export const {
     GenreRepository,
     GigRepository,
     VenueRepository,
+    UserBandRepository
 } = repositories;
-
 
 // TODO: server/web only for now
 export {

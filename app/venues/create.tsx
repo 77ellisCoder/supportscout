@@ -7,7 +7,7 @@ import {
     type VenueFormValues,
 } from "../../components/venues/VenueForm";
 
-import { VenueRepository } from "../../repositories/Repository";
+import { VenueRepository } from "../../repositories";
 
 import { ScreenActionBar} from "../../components/ui/ScreenActionBar"
 
