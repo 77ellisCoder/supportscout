@@ -56,6 +56,45 @@ export async function login(
     return body;
 }
 
+export async function register(
+    email: string,
+    password: string,
+    displayName: string
+): Promise<LoginResponse> {
+    const response =
+        await fetch(
+            `${API_URL}/auth/register`,
+            {
+                method:
+                    "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+
+                body:
+                    JSON.stringify({
+                        email,
+                        password,
+                        displayName,
+                    }),
+            }
+        );
+
+    const body =
+        await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            body?.error ??
+            "Unable to create account"
+        );
+    }
+
+    return body;
+}
+
 export async function googleLogin(
     idToken: string
 ): Promise<{

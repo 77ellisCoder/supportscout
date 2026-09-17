@@ -6,7 +6,8 @@ import {
     getUserById,
     login,
     loginWithGoogle,
-    setPassword
+    register,
+    setPassword,
 } from "../services/auth/AuthService";
 
 import {
@@ -125,7 +126,7 @@ authRouter.post(
                 result
             );
         } catch (
-            error
+        error
         ) {
             console.error(
                 "Google login failed:",
@@ -245,7 +246,7 @@ authRouter.put(
                 success: true,
             });
         } catch (
-            error
+        error
         ) {
             console.error(
                 "Unable to set password:",
@@ -257,6 +258,103 @@ authRouter.put(
                 .json({
                     error:
                         "Unable to set password",
+                });
+        }
+    }
+);
+
+authRouter.post(
+    "/register",
+    async (
+        req,
+        res
+    ) => {
+        try {
+            const {
+                email,
+                password,
+                displayName,
+            } =
+                req.body ?? {};
+
+            if (
+                typeof email !==
+                "string" ||
+                !email.trim()
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Email is required",
+                    });
+            }
+
+            if (
+                typeof password !==
+                "string" ||
+                password.length < 8
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Password must be at least 8 characters",
+                    });
+            }
+
+            if (
+                displayName !==
+                undefined &&
+                displayName !==
+                null &&
+                typeof displayName !==
+                "string"
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Invalid display name",
+                    });
+            }
+
+            const result =
+                await register(
+                    email,
+                    password,
+                    displayName ?? null
+                );
+
+            return res
+                .status(201)
+                .json(
+                    result
+                );
+        } catch (error) {
+            if (
+                error instanceof Error &&
+                error.message ===
+                "EMAIL_ALREADY_EXISTS"
+            ) {
+                return res
+                    .status(409)
+                    .json({
+                        error:
+                            "An account already exists with this email",
+                    });
+            }
+
+            console.error(
+                "Unable to register user:",
+                error
+            );
+
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "Unable to create account",
                 });
         }
     }

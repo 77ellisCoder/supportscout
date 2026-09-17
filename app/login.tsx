@@ -432,6 +432,20 @@ export default function LoginScreen() {
                         fullWidth
                     />
 
+                    <Button
+                        title="Create account"
+                        variant="secondary"
+                        disabled={
+                            isSubmitting
+                        }
+                        onPress={() =>
+                            router.push(
+                                "/register"
+                            )
+                        }
+                        fullWidth
+                    />
+
                     <View
                         style={{
                             flexDirection:
@@ -456,7 +470,7 @@ export default function LoginScreen() {
                         <Text
                             style={{
                                 color: "#A7A7B3",
-                                
+
                                 marginHorizontal:
                                     12,
 

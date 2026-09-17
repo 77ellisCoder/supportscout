@@ -102,6 +102,131 @@ export async function login(
     };
 }
 
+export async function register(
+    email: string,
+    password: string,
+    displayName: string | null
+): Promise<LoginResult> {
+    const normalizedEmail =
+        email
+            .trim()
+            .toLowerCase();
+
+    const normalizedDisplayName =
+        displayName?.trim() ||
+        null;
+
+    const passwordHash =
+        await bcrypt.hash(
+            password,
+            12
+        );
+
+    const client =
+        await pool.connect();
+
+    try {
+        await client.query(
+            "BEGIN"
+        );
+
+        const existingResult =
+            await client.query(
+                `
+                SELECT
+                    user_id
+
+                FROM users
+
+                WHERE LOWER(email) =
+                    LOWER($1)
+
+                LIMIT 1
+                `,
+                [
+                    normalizedEmail,
+                ]
+            );
+
+        if (
+            existingResult.rowCount &&
+            existingResult.rowCount > 0
+        ) {
+            throw new Error(
+                "EMAIL_ALREADY_EXISTS"
+            );
+        }
+
+        const userResult =
+            await client.query(
+                `
+                INSERT INTO users (
+                    email,
+                    display_name
+                )
+                VALUES (
+                    $1,
+                    $2
+                )
+
+                RETURNING
+                    user_id::int
+                        AS "userId",
+
+                    email,
+
+                    display_name
+                        AS "displayName"
+                `,
+                [
+                    normalizedEmail,
+                    normalizedDisplayName,
+                ]
+            );
+
+        const user: AuthUser =
+            userResult.rows[0];
+
+        await client.query(
+            `
+            INSERT INTO user_auth_credentials (
+                user_id,
+                password_hash
+            )
+            VALUES (
+                $1,
+                $2
+            )
+            `,
+            [
+                user.userId,
+                passwordHash,
+            ]
+        );
+
+        await client.query(
+            "COMMIT"
+        );
+
+        return {
+            token:
+                createToken(
+                    user
+                ),
+
+            user,
+        };
+    } catch (error) {
+        await client.query(
+            "ROLLBACK"
+        );
+
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
 export async function getUserById(
     userId: number
 ): Promise<AuthUser | null> {

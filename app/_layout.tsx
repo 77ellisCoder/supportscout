@@ -165,13 +165,15 @@ function AuthenticatedLayout() {
       return;
     }
 
-    const onLoginScreen =
+    const onAuthScreen =
       segments[0] ===
-      "login";
+      "login" ||
+      segments[0] ===
+      "register";
 
     if (
       !isAuthenticated &&
-      !onLoginScreen
+      !onAuthScreen
     ) {
       router.replace(
         "/login"
@@ -182,7 +184,7 @@ function AuthenticatedLayout() {
 
     if (
       isAuthenticated &&
-      onLoginScreen
+      onAuthScreen
     ) {
       router.replace(
         "/"

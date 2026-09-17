@@ -12,6 +12,7 @@ import {
     getCurrentUser,
     login as loginRequest,
     googleLogin as googleLoginRequest,
+    register as registerRequest,
 } from "../services/auth/AuthService";
 
 import {
@@ -38,6 +39,12 @@ type AuthContextValue = {
     login: (
         email: string,
         password: string
+    ) => Promise<void>;
+
+    register: (
+        email: string,
+        password: string,
+        displayName: string
     ) => Promise<void>;
 
     logout:
@@ -150,6 +157,36 @@ export function AuthProvider({
             []
         );
 
+    const register =
+        useCallback(
+            async (
+                email: string,
+                password: string,
+                displayName: string
+            ) => {
+                const result =
+                    await registerRequest(
+                        email,
+                        password,
+                        displayName
+                    );
+
+                await AuthStorage
+                    .setToken(
+                        result.token
+                    );
+
+                setToken(
+                    result.token
+                );
+
+                setUser(
+                    result.user
+                );
+            },
+            []
+        );
+
     const googleLogin =
         useCallback(
             async (
@@ -224,6 +261,8 @@ export function AuthProvider({
 
                 googleLogin,
 
+                register,
+
                 logout,
             }),
             [
@@ -232,6 +271,7 @@ export function AuthProvider({
                 isLoading,
                 login,
                 googleLogin,
+                register,
                 logout,
             ]
         );
