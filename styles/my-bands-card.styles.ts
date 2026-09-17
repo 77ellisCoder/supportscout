@@ -2,6 +2,10 @@ import {
     StyleSheet,
 } from "react-native";
 
+import {
+    layout,
+} from "./shared/layout.styles";
+
 export const styles =
     StyleSheet.create({
         card: {
@@ -9,7 +13,7 @@ export const styles =
                 "100%",
 
             maxWidth:
-                960,
+                layout.contentMaxWidth,
 
             padding:
                 18,

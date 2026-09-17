@@ -2,6 +2,10 @@ import {
     StyleSheet,
 } from "react-native";
 
+import {
+    layout,
+} from "./shared/layout.styles";
+
 export const styles =
     StyleSheet.create({
         container: {
@@ -15,7 +19,7 @@ export const styles =
         header: {
             width: "100%",
 
-            maxWidth: 960,
+            maxWidth: layout.contentMaxWidth,
 
             alignSelf:
                 "center",
@@ -36,7 +40,7 @@ export const styles =
 
         card: {
             width: "100%",
-            maxWidth: 960,
+            maxWidth: layout.contentMaxWidth,
 
             alignSelf:
                 "center",
