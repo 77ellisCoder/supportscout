@@ -1,11 +1,19 @@
-import { Pool } from "pg";
+import {
+    Pool,
+} from "pg";
 
-if (!process.env.DATABASE_URL) {
+const connectionString =
+    process.env.NEON_DATABASE_URL_POOLED ??
+    process.env.NEON_DATABASE_URL ??
+    process.env.DATABASE_URL;
+
+if (!connectionString) {
     throw new Error(
-        "DATABASE_URL environment variable is not set"
+        "Database connection URL is not set"
     );
 }
 
-export const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
+export const pool =
+    new Pool({
+        connectionString,
+    });
