@@ -5,6 +5,14 @@ import {
 } from "@tanstack/react-query";
 
 import {
+    Platform,
+} from "react-native";
+
+import {
+    bootstrapSync,
+} from "../services/sync/BootstrapSyncService";
+
+import {
     UserBandRepository,
 } from "../repositories";
 
@@ -17,6 +25,26 @@ export function useMyBands() {
 
         queryFn: () =>
             UserBandRepository.getMine(),
+    });
+}
+
+async function refreshUserBands(
+    queryClient: ReturnType<
+        typeof useQueryClient
+    >
+) {
+    if (
+        Platform.OS !==
+        "web"
+    ) {
+        await bootstrapSync();
+    }
+
+    await queryClient.invalidateQueries({
+        queryKey: [
+            "user-bands",
+            "mine",
+        ],
     });
 }
 
@@ -33,12 +61,9 @@ export function useAddMyBand() {
             ),
 
         onSuccess: async () => {
-            await queryClient.invalidateQueries({
-                queryKey: [
-                    "user-bands",
-                    "mine",
-                ],
-            });
+            await refreshUserBands(
+                queryClient
+            );
         },
     });
 }
@@ -56,12 +81,9 @@ export function useRemoveMyBand() {
             ),
 
         onSuccess: async () => {
-            await queryClient.invalidateQueries({
-                queryKey: [
-                    "user-bands",
-                    "mine",
-                ],
-            });
+            await refreshUserBands(
+                queryClient
+            );
         },
     });
 }
