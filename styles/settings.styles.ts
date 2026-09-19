@@ -40,7 +40,7 @@ export const styles =
             width:
                 "100%",
 
-            
+
 
             padding:
                 18,
@@ -118,7 +118,7 @@ export const styles =
             width:
                 "100%",
 
-            
+
 
             padding:
                 18,
@@ -179,7 +179,7 @@ export const styles =
             width:
                 "100%",
 
-            
+
 
             padding:
                 18,
@@ -263,5 +263,91 @@ export const styles =
 
             color:
                 "#ff8f8f",
+        },
+
+        calendarProvider: {
+            gap:
+                16,
+        },
+
+        iCloudForm: {
+            maxWidth:
+                640,
+
+            paddingTop:
+                4,
+
+            gap:
+                14,
+        },
+
+        calendarField: {
+            gap:
+                6,
+        },
+
+        calendarFieldLabel: {
+            fontSize:
+                13,
+
+            fontWeight:
+                "600",
+
+            color:
+                "#ffffff",
+        },
+
+        calendarInput: {
+            width:
+                "100%",
+
+            minHeight:
+                44,
+
+            paddingHorizontal:
+                12,
+
+            paddingVertical:
+                10,
+
+            borderWidth:
+                1,
+
+            borderColor:
+                "#3a3347",
+
+            borderRadius:
+                10,
+
+            backgroundColor:
+                "#0d0d14",
+
+            fontSize:
+                14,
+
+            color:
+                "#ffffff",
+        },
+
+        calendarFieldHelp: {
+            fontSize:
+                12,
+
+            color:
+                "#9b94a8",
+        },
+
+        calendarFormActions: {
+            flexDirection:
+                "row",
+
+            justifyContent:
+                "flex-end",
+
+            alignItems:
+                "center",
+
+            gap:
+                10,
         },
     });

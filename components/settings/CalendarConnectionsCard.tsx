@@ -2,8 +2,13 @@ import {
     ActivityIndicator,
     Alert,
     Text,
+    TextInput,
     View,
 } from "react-native";
+
+import {
+    useState,
+} from "react";
 
 import {
     useMutation,
@@ -16,6 +21,7 @@ import {
 } from "../ui/Button";
 
 import {
+    connectICloudCalendar,
     disconnectCalendar,
     getCalendarConnections,
     startGoogleCalendarConnection,
@@ -28,6 +34,21 @@ import {
 export default function CalendarConnectionsCard() {
     const queryClient =
         useQueryClient();
+
+    const [
+        showICloudForm,
+        setShowICloudForm,
+    ] = useState(false);
+
+    const [
+        iCloudEmail,
+        setICloudEmail,
+    ] = useState("");
+
+    const [
+        iCloudPassword,
+        setICloudPassword,
+    ] = useState("");
 
     const {
         data:
@@ -50,6 +71,13 @@ export default function CalendarConnectionsCard() {
             connection =>
                 connection.provider ===
                 "google"
+        );
+
+    const icloud =
+        connections.find(
+            connection =>
+                connection.provider ===
+                "icloud"
         );
 
     const disconnectGoogle =
@@ -76,6 +104,70 @@ export default function CalendarConnectionsCard() {
                     mutationError instanceof Error
                         ? mutationError.message
                         : "Unable to disconnect Google Calendar."
+                );
+            },
+        });
+
+    const connectICloud =
+        useMutation({
+            mutationFn: () =>
+                connectICloudCalendar(
+                    iCloudEmail.trim(),
+                    iCloudPassword.trim()
+                ),
+
+            onSuccess: async () => {
+                setICloudPassword("");
+                setShowICloudForm(false);
+
+                await queryClient
+                    .invalidateQueries({
+                        queryKey: [
+                            "calendar-connections",
+                        ],
+                    });
+            },
+
+            onError: (
+                mutationError
+            ) => {
+                Alert.alert(
+                    "Unable to connect",
+                    mutationError instanceof Error
+                        ? mutationError.message
+                        : "Unable to connect iCloud Calendar."
+                );
+            },
+        });
+
+    const disconnectICloud =
+        useMutation({
+            mutationFn: () =>
+                disconnectCalendar(
+                    "icloud"
+                ),
+
+            onSuccess: async () => {
+                setICloudEmail("");
+                setICloudPassword("");
+                setShowICloudForm(false);
+
+                await queryClient
+                    .invalidateQueries({
+                        queryKey: [
+                            "calendar-connections",
+                        ],
+                    });
+            },
+
+            onError: (
+                mutationError
+            ) => {
+                Alert.alert(
+                    "Unable to disconnect",
+                    mutationError instanceof Error
+                        ? mutationError.message
+                        : "Unable to disconnect iCloud Calendar."
                 );
             },
         });
@@ -116,6 +208,69 @@ export default function CalendarConnectionsCard() {
 
                     onPress: () =>
                         disconnectGoogle
+                            .mutate(),
+                },
+            ]
+        );
+    }
+
+    function handleICloudForm() {
+        setICloudEmail(
+            icloud?.email ?? ""
+        );
+
+        setICloudPassword("");
+
+        setShowICloudForm(
+            true
+        );
+    }
+
+    function handleICloudCancel() {
+        setICloudPassword("");
+
+        setShowICloudForm(
+            false
+        );
+    }
+
+    function handleICloudSave() {
+        if (
+            !iCloudEmail.trim() ||
+            !iCloudPassword.trim()
+        ) {
+            Alert.alert(
+                "Missing details",
+                "Enter your Apple ID email and app-specific password."
+            );
+
+            return;
+        }
+
+        connectICloud.mutate();
+    }
+
+    function handleICloudDisconnect() {
+        Alert.alert(
+            "Disconnect iCloud Calendar?",
+            "iCloud Calendar will no longer be included when calculating your availability.",
+            [
+                {
+                    text:
+                        "Cancel",
+
+                    style:
+                        "cancel",
+                },
+                {
+                    text:
+                        "Disconnect",
+
+                    style:
+                        "destructive",
+
+                    onPress: () =>
+                        disconnectICloud
                             .mutate(),
                 },
             ]
@@ -240,30 +395,188 @@ export default function CalendarConnectionsCard() {
 
                     <View
                         style={
-                            styles.calendarConnection
+                            styles.calendarProvider
                         }
                     >
                         <View
                             style={
-                                styles.calendarDetails
+                                styles.calendarConnection
                             }
                         >
-                            <Text
+                            <View
                                 style={
-                                    styles.settingsTitle
+                                    styles.calendarDetails
                                 }
                             >
-                                iCloud Calendar
-                            </Text>
+                                <Text
+                                    style={
+                                        styles.settingsTitle
+                                    }
+                                >
+                                    iCloud Calendar
+                                </Text>
 
-                            <Text
+                                <Text
+                                    style={
+                                        icloud
+                                            ? styles.calendarConnected
+                                            : styles.settingsDescription
+                                    }
+                                >
+                                    {icloud
+                                        ? "Connected"
+                                        : "Not connected"}
+                                </Text>
+
+                                {icloud?.email ? (
+                                    <Text
+                                        style={
+                                            styles.accountEmail
+                                        }
+                                    >
+                                        {icloud.email}
+                                    </Text>
+                                ) : null}
+                            </View>
+
+                            <View
                                 style={
-                                    styles.settingsDescription
+                                    styles.calendarActions
                                 }
                             >
-                                iCloud connection management coming next.
-                            </Text>
+                                <Button
+                                    title={
+                                        icloud
+                                            ? "Reconnect"
+                                            : "Connect"
+                                    }
+                                    variant="secondary"
+                                    onPress={
+                                        handleICloudForm
+                                    }
+                                />
+
+                                {icloud ? (
+                                    <Button
+                                        title="Disconnect"
+                                        variant="secondary"
+                                        onPress={
+                                            handleICloudDisconnect
+                                        }
+                                    />
+                                ) : null}
+                            </View>
                         </View>
+
+                        {showICloudForm ? (
+                            <View
+                                style={
+                                    styles.iCloudForm
+                                }
+                            >
+                                <View
+                                    style={
+                                        styles.calendarField
+                                    }
+                                >
+                                    <Text
+                                        style={
+                                            styles.calendarFieldLabel
+                                        }
+                                    >
+                                        Apple ID email
+                                    </Text>
+
+                                    <TextInput
+                                        value={
+                                            iCloudEmail
+                                        }
+                                        onChangeText={
+                                            setICloudEmail
+                                        }
+                                        autoCapitalize="none"
+                                        autoCorrect={
+                                            false
+                                        }
+                                        keyboardType="email-address"
+                                        placeholder="you@example.com"
+                                        placeholderTextColor="#6f687b"
+                                        style={
+                                            styles.calendarInput
+                                        }
+                                    />
+                                </View>
+
+                                <View
+                                    style={
+                                        styles.calendarField
+                                    }
+                                >
+                                    <Text
+                                        style={
+                                            styles.calendarFieldLabel
+                                        }
+                                    >
+                                        App-specific password
+                                    </Text>
+
+                                    <TextInput
+                                        value={
+                                            iCloudPassword
+                                        }
+                                        onChangeText={
+                                            setICloudPassword
+                                        }
+                                        autoCapitalize="none"
+                                        autoCorrect={
+                                            false
+                                        }
+                                        secureTextEntry
+                                        placeholder="xxxx-xxxx-xxxx-xxxx"
+                                        placeholderTextColor="#6f687b"
+                                        style={
+                                            styles.calendarInput
+                                        }
+                                    />
+
+                                    <Text
+                                        style={
+                                            styles.calendarFieldHelp
+                                        }
+                                    >
+                                        Use an Apple app-specific password, not your Apple ID password.
+                                    </Text>
+                                </View>
+
+                                <View
+                                    style={
+                                        styles.calendarFormActions
+                                    }
+                                >
+                                    <Button
+                                        title="Cancel"
+                                        variant="secondary"
+                                        onPress={
+                                            handleICloudCancel
+                                        }
+                                    />
+
+                                    <Button
+                                        title={
+                                            connectICloud.isPending
+                                                ? "Connecting..."
+                                                : "Save connection"
+                                        }
+                                        onPress={
+                                            handleICloudSave
+                                        }
+                                        disabled={
+                                            connectICloud.isPending
+                                        }
+                                    />
+                                </View>
+                            </View>
+                        ) : null}
                     </View>
                 </>
             )}
