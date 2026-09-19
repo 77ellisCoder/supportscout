@@ -3,7 +3,9 @@ import {
     Request,
     Response,
 } from "express";
+
 import crypto from "node:crypto";
+
 import {
     Pool,
 } from "pg";
@@ -333,11 +335,29 @@ async function getConnectionBusyPeriods(
                 );
             }
 
-            return getGoogleBusyPeriods(
-                refreshToken!,
-                from,
-                to
-            );
+            try {
+                return await getGoogleBusyPeriods(
+                    refreshToken,
+                    from,
+                    to
+                );
+            } catch (error) {
+                console.error(
+                    "Google calendar connection failed:",
+                    {
+                        userId:
+                            connection.userId,
+                        email:
+                            connection.email,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : error,
+                    }
+                );
+
+                throw error;
+            }
         }
 
         case "icloud": {
