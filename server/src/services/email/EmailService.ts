@@ -1,24 +1,20 @@
-import nodemailer from "nodemailer";
+import fs from "node:fs/promises";
 
-const smtpPort = Number(
-    process.env.SMTP_PORT ?? 465
-);
+import {
+    Resend,
+} from "resend";
 
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: smtpPort,
-    secure:
-        process.env.SMTP_SECURE === "true",
+const apiKey =
+    process.env.RESEND_API_KEY;
 
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-    },
-});
-
-export async function verifyEmailConnection() {
-    await transporter.verify();
+if (!apiKey) {
+    throw new Error(
+        "RESEND_API_KEY is required"
+    );
 }
+
+const resend =
+    new Resend(apiKey);
 
 type SendEmailInput = {
     to: string;
@@ -37,19 +33,43 @@ export async function sendEmail({
     text,
     attachment,
 }: SendEmailInput) {
-    return transporter.sendMail({
-        from: process.env.PR_FROM_EMAIL,
-        to,
+
+    const attachments =
+        attachment
+            ? [
+                {
+                    filename:
+                        attachment.filename,
+
+                    content:
+                        await fs.readFile(
+                            attachment.path
+                        ),
+                },
+            ]
+            : undefined;
+
+    const {
+        data,
+        error,
+    } = await resend.emails.send({
+        from:
+            process.env.PR_FROM_EMAIL ?? process.env.FROM_SUPPORTSCOUT,
+
+        to: [to],
+
         subject,
+
         text,
 
-        attachments: attachment
-            ? [
-                  {
-                      filename: attachment.filename,
-                      path: attachment.path,
-                  },
-              ]
-            : [],
+        attachments,
     });
+
+    if (error) {
+        throw new Error(
+            `Resend email failed: ${error.message}`
+        );
+    }
+
+    return data;
 }

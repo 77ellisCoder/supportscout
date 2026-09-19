@@ -14,10 +14,6 @@ import { initCalendarRouter } from "./routes/calendar";
 import { pool } from "./database/postgres";
 
 import {
-    verifyEmailConnection,
-} from "./services/email/EmailService";
-
-import {
     rehearsalProposalsRouter,
 } from "./routes/rehearsalProposals";
 
@@ -47,20 +43,6 @@ app.get("/health", (_req, res) => {
         status: "ok",
     });
 });
-
-// Verify email connection on startup
-verifyEmailConnection()
-    .then(() => {
-        console.log(
-            "SMTP connection verified"
-        );
-    })
-    .catch((error) => {
-        console.error(
-            "SMTP connection failed:",
-            error
-        );
-    });
 
 app.use("/auth", authRouter);
 app.use("/bands", bandsRouter);

@@ -43,3 +43,6 @@ yarn-error.*
 
 # uploads
 server/uploads/
+
+# Database backups
+backups/
