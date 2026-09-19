@@ -19,6 +19,7 @@ import {
 import AvailabilityPreferencesCard from "../../components/settings/AvailabilityPreferencesCard";
 
 import MyBandsCard from "../../components/settings/MyBandsCard";
+import CalendarConnectionsCard from "../../components/settings/CalendarConnectionsCard";
 
 import {
   styles,
@@ -163,6 +164,8 @@ export default function SettingsScreen() {
       </View>
 
       <MyBandsCard />
+
+      <CalendarConnectionsCard />
 
       <AvailabilityPreferencesCard
         userId={

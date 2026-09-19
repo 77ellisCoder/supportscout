@@ -11,6 +11,11 @@ import {
 } from "pg";
 
 import {
+    AuthenticatedRequest,
+    requireAuth,
+} from "../middleware/requireAuth";
+
+import {
     createGoogleAuthorizationUrl,
     exchangeGoogleCode,
     getGoogleBusyPeriods,
@@ -437,6 +442,67 @@ function getSuccessUrl() {
 
 /*
 |--------------------------------------------------------------------------
+| USER CALENDAR CONNECTIONS
+|--------------------------------------------------------------------------
+*/
+
+calendarRouter.get(
+    "/connections",
+    requireAuth,
+    async (
+        req: AuthenticatedRequest,
+        res: Response
+    ) => {
+        const userId =
+            req.auth?.userId;
+
+        if (!userId) {
+            return res.status(401).json({
+                error:
+                    "Authentication required",
+            });
+        }
+
+        try {
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        provider,
+                        email,
+                        timezone,
+                        updated_at
+                            AS "updatedAt"
+
+                    FROM user_calendar_connections
+
+                    WHERE user_id = $1
+
+                    ORDER BY provider
+                    `,
+                    [userId]
+                );
+
+            return res.json({
+                connections:
+                    result.rows,
+            });
+        } catch (error) {
+            console.error(
+                "Calendar connections lookup failed:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "Unable to load calendar connections",
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
 | CONNECT GOOGLE CALENDAR
 |--------------------------------------------------------------------------
 |
@@ -447,19 +513,18 @@ function getSuccessUrl() {
 
 calendarRouter.get(
     "/google/connect",
+    requireAuth,
     (
-        req: Request,
+        req: AuthenticatedRequest,
         res: Response
     ) => {
         const userId =
-            parseId(
-                req.query.userId
-            );
+            req.auth?.userId;
 
         if (!userId) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error:
-                    "userId is required",
+                    "Authentication required",
             });
         }
 
@@ -479,7 +544,7 @@ calendarRouter.get(
                 "base64url"
             );
 
-        res.json({
+        return res.json({
             url:
                 createGoogleAuthorizationUrl(
                     state
@@ -1458,28 +1523,45 @@ calendarRouter.get(
     }
 );
 
-/* icloud */
+/*
+|--------------------------------------------------------------------------
+| CONNECT ICLOUD CALENDAR
+|--------------------------------------------------------------------------
+|
+| Calendar connection now belongs to a USER,
+| not directly to a band.
+|
+*/
 calendarRouter.post(
     "/icloud/connect",
+    requireAuth,
     async (
-        req: Request,
+        req: AuthenticatedRequest,
         res: Response
     ) => {
         try {
+            const userId =
+                req.auth?.userId;
+
+            if (!userId) {
+                return res.status(401).json({
+                    error:
+                        "Authentication required",
+                });
+            }
+
             const {
-                userId,
                 email,
                 appSpecificPassword,
             } = req.body;
 
             if (
-                !userId ||
                 !email ||
                 !appSpecificPassword
             ) {
                 return res.status(400).json({
                     error:
-                        "userId, email and appSpecificPassword are required",
+                        "email and appSpecificPassword are required",
                 });
             }
 
@@ -1511,17 +1593,22 @@ calendarRouter.post(
                     $4,
                     'Australia/Perth'
                 )
+
                 ON CONFLICT (
                     user_id,
                     provider
                 )
+
                 DO UPDATE SET
                     provider_account_id =
                         EXCLUDED.provider_account_id,
+
                     email =
                         EXCLUDED.email,
+
                     encrypted_password =
                         EXCLUDED.encrypted_password,
+
                     updated_at =
                         NOW()
                 `,
@@ -1535,10 +1622,10 @@ calendarRouter.post(
 
             return res.json({
                 success: true,
-                provider: "icloud",
+                provider:
+                    "icloud",
                 email,
             });
-
         } catch (error) {
             console.error(
                 "iCloud connection failed:",
@@ -1550,6 +1637,68 @@ calendarRouter.post(
                     error instanceof Error
                         ? error.message
                         : "Unable to connect iCloud Calendar",
+            });
+        }
+    }
+);
+
+calendarRouter.delete(
+    "/connections/:provider",
+    requireAuth,
+    async (
+        req: AuthenticatedRequest,
+        res: Response
+    ) => {
+        const userId =
+            req.auth?.userId;
+
+        if (!userId) {
+            return res.status(401).json({
+                error:
+                    "Authentication required",
+            });
+        }
+
+        const provider =
+            req.params.provider;
+
+        if (
+            provider !== "google" &&
+            provider !== "icloud"
+        ) {
+            return res.status(400).json({
+                error:
+                    "Unsupported calendar provider",
+            });
+        }
+
+        try {
+            await pool.query(
+                `
+                DELETE FROM user_calendar_connections
+
+                WHERE user_id = $1
+                  AND provider = $2
+                `,
+                [
+                    userId,
+                    provider,
+                ]
+            );
+
+            return res.json({
+                success: true,
+                provider,
+            });
+        } catch (error) {
+            console.error(
+                "Calendar disconnect failed:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "Unable to disconnect calendar",
             });
         }
     }

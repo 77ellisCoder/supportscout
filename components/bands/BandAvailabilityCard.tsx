@@ -302,7 +302,7 @@ export function BandAvailabilityCard({
     return (
         <View
             style={{
-                marginTop: 8,
+                marginBottom: 12,
                 padding: 16,
                 borderRadius: 12,
                 backgroundColor:

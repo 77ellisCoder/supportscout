@@ -12,9 +12,6 @@ export const styles =
             width:
                 "100%",
 
-            maxWidth:
-                layout.contentMaxWidth,
-
             padding:
                 18,
 

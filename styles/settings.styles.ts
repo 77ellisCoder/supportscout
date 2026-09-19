@@ -40,8 +40,7 @@ export const styles =
             width:
                 "100%",
 
-            maxWidth:
-                960,
+            
 
             padding:
                 18,
@@ -119,8 +118,7 @@ export const styles =
             width:
                 "100%",
 
-            maxWidth:
-                960,
+            
 
             padding:
                 18,
@@ -175,5 +173,95 @@ export const styles =
 
             color:
                 "#9b94a8",
+        },
+
+        calendarCard: {
+            width:
+                "100%",
+
+            
+
+            padding:
+                18,
+
+            borderWidth:
+                1,
+
+            borderColor:
+                "#2d2738",
+
+            borderRadius:
+                14,
+
+            backgroundColor:
+                "#15121c",
+
+            gap:
+                18,
+        },
+
+        calendarHeader: {
+            gap:
+                4,
+        },
+
+        calendarConnection: {
+            flexDirection:
+                "row",
+
+            alignItems:
+                "center",
+
+            justifyContent:
+                "space-between",
+
+            gap:
+                20,
+        },
+
+        calendarDetails: {
+            flex:
+                1,
+
+            gap:
+                3,
+        },
+
+        calendarActions: {
+            flexDirection:
+                "row",
+
+            alignItems:
+                "center",
+
+            gap:
+                10,
+        },
+
+        calendarConnected: {
+            fontSize:
+                13,
+
+            fontWeight:
+                "600",
+
+            color:
+                "#b89cff",
+        },
+
+        calendarDivider: {
+            height:
+                1,
+
+            backgroundColor:
+                "#2d2738",
+        },
+
+        calendarError: {
+            fontSize:
+                13,
+
+            color:
+                "#ff8f8f",
         },
     });

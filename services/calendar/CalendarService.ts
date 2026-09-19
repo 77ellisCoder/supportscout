@@ -4,6 +4,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    AuthStorage,
+} from "../storage/AuthStorage";
+
 export type AvailabilityWindow = {
     dayOfWeek: number;
     startTime: string;
@@ -62,13 +66,24 @@ export type AvailabilityResponse = {
     sharedAvailable: AvailabilityInterval[];
 };
 
-export async function startGoogleCalendarConnection(
-    userId: number
-) {
+export async function startGoogleCalendarConnection() {
+    const token =
+        await AuthStorage.getToken();
+
+    if (!token) {
+        throw new Error(
+            "Authentication required."
+        );
+    }
+
     const response = await fetch(
-        `${API_URL}/calendar/google/connect?userId=${encodeURIComponent(
-            userId
-        )}`
+        `${API_URL}/calendar/google/connect`,
+        {
+            headers: {
+                Authorization:
+                    `Bearer ${token}`,
+            },
+        }
     );
 
     if (!response.ok) {
@@ -77,10 +92,152 @@ export async function startGoogleCalendarConnection(
         );
     }
 
-    const { url } =
+    const {
+        url,
+    } = await response.json();
+
+    await Linking.openURL(
+        url
+    );
+}
+
+export type CalendarProvider =
+    "google" |
+    "icloud";
+
+export type CalendarConnection = {
+    provider:
+        CalendarProvider;
+
+    email:
+        string | null;
+
+    timezone:
+        string;
+
+    updatedAt:
+        string;
+};
+
+export async function getCalendarConnections():
+    Promise<CalendarConnection[]> {
+
+    const token =
+        await AuthStorage.getToken();
+
+    if (!token) {
+        throw new Error(
+            "Authentication required."
+        );
+    }
+
+    const response =
+        await fetch(
+            `${API_URL}/calendar/connections`,
+            {
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`,
+                },
+            }
+        );
+
+    if (!response.ok) {
+        throw new Error(
+            "Unable to load calendar connections."
+        );
+    }
+
+    const body =
         await response.json();
 
-    await Linking.openURL(url);
+    return body.connections;
+}
+
+export async function connectICloudCalendar(
+    email: string,
+    appSpecificPassword: string
+) {
+    const token =
+        await AuthStorage.getToken();
+
+    if (!token) {
+        throw new Error(
+            "Authentication required."
+        );
+    }
+
+    const response =
+        await fetch(
+            `${API_URL}/calendar/icloud/connect`,
+            {
+                method:
+                    "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    Authorization:
+                        `Bearer ${token}`,
+                },
+
+                body:
+                    JSON.stringify({
+                        email,
+                        appSpecificPassword,
+                    }),
+            }
+        );
+
+    const body =
+        await response
+            .json()
+            .catch(
+                () => ({})
+            );
+
+    if (!response.ok) {
+        throw new Error(
+            body.error ??
+                "Unable to connect iCloud Calendar."
+        );
+    }
+
+    return body;
+}
+
+export async function disconnectCalendar(
+    provider: CalendarProvider
+) {
+    const token =
+        await AuthStorage.getToken();
+
+    if (!token) {
+        throw new Error(
+            "Authentication required."
+        );
+    }
+
+    const response =
+        await fetch(
+            `${API_URL}/calendar/connections/${provider}`,
+            {
+                method:
+                    "DELETE",
+
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`,
+                },
+            }
+        );
+
+    if (!response.ok) {
+        throw new Error(
+            "Unable to disconnect calendar."
+        );
+    }
 }
 
 export async function getCalendarStatus(
@@ -121,7 +278,7 @@ export async function getBandAvailability(
 
         throw new Error(
             body.error ??
-                "Unable to calculate availability."
+            "Unable to calculate availability."
         );
     }
 
@@ -171,7 +328,7 @@ export async function saveAvailabilityPreferences(
 
         throw new Error(
             body?.error ??
-                "Unable to save availability preferences"
+            "Unable to save availability preferences"
         );
     }
 
