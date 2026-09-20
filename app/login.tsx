@@ -4,6 +4,7 @@ import {
 } from "react";
 
 import {
+    Platform,
     Text,
     TextInput,
     View,
@@ -36,6 +37,7 @@ import * as WebBrowser
     from "expo-web-browser";
 
 import {
+    GOOGLE_ANDROID_CLIENT_ID,
     GOOGLE_CLIENT_ID,
 } from "../config/environment";
 
@@ -85,11 +87,29 @@ export default function LoginScreen() {
             string | null
         >(null);
 
+    const googleClientId =
+        Platform.OS === "android"
+            ? GOOGLE_ANDROID_CLIENT_ID
+            : GOOGLE_CLIENT_ID;
+
     const redirectUri =
         AuthSession.makeRedirectUri({
             scheme:
                 "supportscout",
         });
+
+    console.log(
+        "GOOGLE AUTH CONFIG:",
+        {
+            platform:
+                Platform.OS,
+
+            redirectUri,
+
+            clientId:
+                googleClientId,
+        }
+    );
 
     const [
         googleNonce,
@@ -109,7 +129,7 @@ export default function LoginScreen() {
         AuthSession.useAuthRequest(
             {
                 clientId:
-                    GOOGLE_CLIENT_ID,
+                    googleClientId,
 
                 redirectUri,
 
