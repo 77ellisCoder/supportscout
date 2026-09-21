@@ -37,11 +37,24 @@ import * as WebBrowser
     from "expo-web-browser";
 
 import {
-    GOOGLE_ANDROID_CLIENT_ID,
+    GoogleSignin,
+} from "@react-native-google-signin/google-signin";
+
+import {
     GOOGLE_CLIENT_ID,
 } from "../config/environment";
 
 WebBrowser.maybeCompleteAuthSession();
+
+if (Platform.OS === "android") {
+    GoogleSignin.configure({
+        webClientId:
+            GOOGLE_CLIENT_ID,
+
+        offlineAccess:
+            false,
+    });
+}
 
 const googleDiscovery = {
     authorizationEndpoint:
@@ -87,29 +100,11 @@ export default function LoginScreen() {
             string | null
         >(null);
 
-    const googleClientId =
-        Platform.OS === "android"
-            ? GOOGLE_ANDROID_CLIENT_ID
-            : GOOGLE_CLIENT_ID;
-
     const redirectUri =
         AuthSession.makeRedirectUri({
             scheme:
                 "supportscout",
         });
-
-    console.log(
-        "GOOGLE AUTH CONFIG:",
-        {
-            platform:
-                Platform.OS,
-
-            redirectUri,
-
-            clientId:
-                googleClientId,
-        }
-    );
 
     const [
         googleNonce,
@@ -129,7 +124,7 @@ export default function LoginScreen() {
         AuthSession.useAuthRequest(
             {
                 clientId:
-                    googleClientId,
+                    GOOGLE_CLIENT_ID,
 
                 redirectUri,
 
@@ -222,6 +217,75 @@ export default function LoginScreen() {
         } catch (
         error
         ) {
+            console.error(
+                "Google login failed:",
+                error
+            );
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Google login failed"
+            );
+        } finally {
+            setIsSubmitting(
+                false
+            );
+        }
+    }
+
+    async function handleNativeGoogleLogin() {
+        try {
+            setError(
+                null
+            );
+
+            setIsSubmitting(
+                true
+            );
+
+            await GoogleSignin
+                .hasPlayServices({
+                    showPlayServicesUpdateDialog:
+                        true,
+                });
+
+            const result =
+                await GoogleSignin
+                    .signIn();
+
+            const idToken =
+                result.data
+                    ?.idToken;
+
+            if (!idToken) {
+                throw new Error(
+                    "Google did not return an ID token."
+                );
+            }
+
+            await googleLogin(
+                idToken
+            );
+
+            console.log(
+                "GOOGLE: authentication complete"
+            );
+
+            console.log(
+                "GOOGLE: starting bootstrap"
+            );
+
+            await bootstrapSync();
+
+            console.log(
+                "GOOGLE: bootstrap complete"
+            );
+
+            router.replace(
+                "/"
+            );
+        } catch (error) {
             console.error(
                 "Google login failed:",
                 error
@@ -515,15 +579,27 @@ export default function LoginScreen() {
                         title="Continue with Google"
                         variant="secondary"
                         disabled={
-                            !googleRequest ||
+                            (
+                                Platform.OS !== "android" &&
+                                !googleRequest
+                            ) ||
                             isSubmitting
                         }
                         loading={
                             isSubmitting
                         }
-                        onPress={() =>
-                            promptGoogleLogin()
-                        }
+                        onPress={() => {
+                            if (
+                                Platform.OS ===
+                                "android"
+                            ) {
+                                void handleNativeGoogleLogin();
+
+                                return;
+                            }
+
+                            void promptGoogleLogin();
+                        }}
                         fullWidth
                     />
                 </View>
