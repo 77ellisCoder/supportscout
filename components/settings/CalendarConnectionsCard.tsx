@@ -364,6 +364,12 @@ export default function CalendarConnectionsCard() {
                             }
                         >
                             <Button
+                                style={
+                                    styles.compactButton
+                                }
+                                textStyle={
+                                    styles.compactButtonText
+                                }
                                 title={
                                     google
                                         ? "Reconnect"
@@ -377,6 +383,12 @@ export default function CalendarConnectionsCard() {
 
                             {google ? (
                                 <Button
+                                    style={
+                                        styles.compactButton
+                                    }
+                                    textStyle={
+                                        styles.compactButtonText
+                                    }
                                     title="Disconnect"
                                     variant="secondary"
                                     onPress={
@@ -445,6 +457,12 @@ export default function CalendarConnectionsCard() {
                                 }
                             >
                                 <Button
+                                    style={
+                                        styles.compactButton
+                                    }
+                                    textStyle={
+                                        styles.compactButtonText
+                                    }
                                     title={
                                         icloud
                                             ? "Reconnect"
@@ -458,6 +476,12 @@ export default function CalendarConnectionsCard() {
 
                                 {icloud ? (
                                     <Button
+                                        style={
+                                            styles.compactButton
+                                        }
+                                        textStyle={
+                                            styles.compactButtonText
+                                        }
                                         title="Disconnect"
                                         variant="secondary"
                                         onPress={
@@ -554,6 +578,12 @@ export default function CalendarConnectionsCard() {
                                     }
                                 >
                                     <Button
+                                        style={
+                                            styles.compactButton
+                                        }
+                                        textStyle={
+                                            styles.compactButtonText
+                                        }
                                         title="Cancel"
                                         variant="secondary"
                                         onPress={
@@ -562,6 +592,12 @@ export default function CalendarConnectionsCard() {
                                     />
 
                                     <Button
+                                        style={
+                                            styles.compactButton
+                                        }
+                                        textStyle={
+                                            styles.compactButtonText
+                                        }
                                         title={
                                             connectICloud.isPending
                                                 ? "Connecting..."

@@ -116,6 +116,8 @@ export function Button({
 
                 isDisabled &&
                 styles.disabled,
+
+                style,
             ]}
         >
             {loading ? (
@@ -147,6 +149,8 @@ export function Button({
 
                             variant === "counter" &&
                             styles.counterText,
+
+                            textStyle
                         ]}
                     >
                         {title}

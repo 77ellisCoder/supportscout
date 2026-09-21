@@ -110,6 +110,12 @@ export default function SettingsScreen() {
         <Button
           title="Sign out"
           variant="secondary"
+          style={
+            styles.compactButton
+          }
+          textStyle={
+            styles.compactButtonText
+          }
           onPress={
             handleLogout
           }
@@ -155,6 +161,12 @@ export default function SettingsScreen() {
         <Button
           title="Manage password"
           variant="secondary"
+          style={
+            styles.compactButton
+          }
+          textStyle={
+            styles.compactButtonText
+          }
           onPress={() =>
             router.push(
               "/settings/security"

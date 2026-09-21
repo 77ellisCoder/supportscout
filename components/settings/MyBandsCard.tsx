@@ -109,6 +109,12 @@ export default function MyBandsCard() {
             <Button
                 title="Manage bands"
                 variant="secondary"
+                style={
+                    styles.compactButton
+                }
+                textStyle={
+                    styles.compactButtonText
+                }
                 onPress={() =>
                     router.push(
                         "/settings/bands"

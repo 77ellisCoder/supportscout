@@ -368,27 +368,7 @@ export function initSyncRouter(
                         ).rows;
 
                     userBands =
-                        (
-                            await pool.query(
-                                `
-                                SELECT
-                                    user_id::int
-                                        AS "userId",
-
-                                    band_id::int
-                                        AS "bandId",
-
-                                    relationship
-
-                                FROM user_bands
-
-                                WHERE
-                                    band_id =
-                                    ANY($1::bigint[])
-                                `,
-                                [bandIds]
-                            )
-                        ).rows;
+                        userBandsResult.rows;
 
                     rehearsalLocations =
                         (

@@ -130,4 +130,20 @@ export const styles =
             color:
                 "#ef5b68",
         },
+
+        compactButton: {
+            minHeight: 34,
+
+            paddingHorizontal: 12,
+
+            paddingVertical: 6,
+
+            borderRadius: 8,
+        },
+
+        compactButtonText: {
+            fontSize: 12,
+
+            lineHeight: 16,
+        },
     });

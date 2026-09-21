@@ -23,6 +23,14 @@ import {
     clearUserScopedData,
 } from "../services/sync/UserDataCleanupService";
 
+import {
+    Platform,
+} from "react-native";
+
+import {
+    GoogleSignin,
+} from "@react-native-google-signin/google-signin";
+
 type AuthContextValue = {
     user: AuthUser | null;
 
@@ -226,6 +234,23 @@ export function AuthProvider({
                         "Unable to clear local user data:",
                         error
                     );
+                }
+
+                if (
+                    Platform.OS ===
+                    "android"
+                ) {
+                    try {
+                        await GoogleSignin
+                            .signOut();
+                    } catch (
+                    error
+                    ) {
+                        console.error(
+                            "Unable to sign out of Google:",
+                            error
+                        );
+                    }
                 }
 
                 await AuthStorage

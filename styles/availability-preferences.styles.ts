@@ -8,24 +8,24 @@ export const styles =
             backgroundColor:
                 "#16131f",
 
-            borderRadius: 18,
+            borderRadius: 16,
 
             borderWidth: 1,
 
             borderColor:
                 "#302840",
 
-            padding: 20,
+            padding: 16,
 
-            gap: 18,
+            gap: 14,
         },
 
         header: {
-            gap: 6,
+            gap: 4,
         },
 
         title: {
-            fontSize: 22,
+            fontSize: 20,
 
             fontWeight: "700",
 
@@ -33,9 +33,9 @@ export const styles =
         },
 
         subtitle: {
-            fontSize: 14,
+            fontSize: 13,
 
-            lineHeight: 20,
+            lineHeight: 18,
 
             color: "#aaa4b7",
         },
@@ -50,17 +50,17 @@ export const styles =
             justifyContent:
                 "space-between",
 
-            gap: 20,
+            gap: 12,
         },
 
         settingText: {
             flex: 1,
 
-            gap: 3,
+            gap: 2,
         },
 
         settingLabel: {
-            fontSize: 15,
+            fontSize: 14,
 
             fontWeight: "600",
 
@@ -68,9 +68,9 @@ export const styles =
         },
 
         settingDescription: {
-            fontSize: 13,
+            fontSize: 12,
 
-            lineHeight: 18,
+            lineHeight: 17,
 
             color: "#948da3",
         },
@@ -82,22 +82,22 @@ export const styles =
             alignItems:
                 "center",
 
-            gap: 6,
+            gap: 5,
         },
 
         numberInput: {
-            width: 70,
+            width: 58,
 
             borderWidth: 1,
 
             borderColor:
                 "#403650",
 
-            borderRadius: 10,
+            borderRadius: 8,
 
-            paddingHorizontal: 12,
+            paddingHorizontal: 8,
 
-            paddingVertical: 9,
+            paddingVertical: 6,
 
             color: "#ffffff",
 
@@ -106,20 +106,24 @@ export const styles =
 
             textAlign:
                 "center",
+
+            fontSize: 13,
         },
 
         unitText: {
             color: "#948da3",
+
+            fontSize: 12,
         },
 
         timezoneBox: {
-            gap: 5,
+            gap: 4,
         },
 
         timezoneValue: {
             color: "#a991ff",
 
-            fontSize: 14,
+            fontSize: 13,
         },
 
         divider: {
@@ -130,52 +134,73 @@ export const styles =
         },
 
         sectionTitle: {
-            fontSize: 17,
+            fontSize: 16,
 
             fontWeight: "700",
 
             color: "#ffffff",
         },
 
-        days: {
-            gap: 10,
+        /*
+         * Weekly availability
+         */
 
-            minWidth: 520,
+        days: {
+            width: "100%",
+
+            gap: 6,
         },
 
         dayRow: {
-            minHeight: 58,
+            width: "100%",
 
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection:
+                "row",
 
-            paddingHorizontal: 14,
-            paddingVertical: 10,
+            alignItems:
+                "center",
 
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#2d2638",
+            paddingHorizontal: 8,
 
-            backgroundColor: "#110e18",
-
-            gap: 16,
-
-            position: "relative",
-            zIndex: 0,
-
-            overflow: "visible",
-        },
-
-        dayToggle: {
-            width: 120,
+            paddingVertical: 6,
 
             borderRadius: 10,
 
-            paddingVertical: 10,
+            borderWidth: 1,
 
-            paddingHorizontal: 12,
+            borderColor:
+                "#2d2638",
+
+            backgroundColor:
+                "#110e18",
+
+            gap: 8,
+
+            position:
+                "relative",
+
+            zIndex: 0,
+
+            overflow:
+                "visible",
+        },
+
+        dayToggle: {
+            width: 96,
+
+            borderRadius: 8,
+
+            paddingVertical: 7,
+
+            paddingHorizontal: 8,
 
             borderWidth: 1,
+
+            alignItems:
+                "center",
+
+            justifyContent:
+                "center",
         },
 
         dayToggleEnabled: {
@@ -198,11 +223,17 @@ export const styles =
             color: "#8f879c",
 
             fontWeight: "600",
+
+            fontSize: 12,
         },
 
         dayToggleTextEnabled: {
             color: "#ffffff",
         },
+
+        /*
+         * Time controls
+         */
 
         timeFields: {
             flexDirection:
@@ -211,17 +242,17 @@ export const styles =
             alignItems:
                 "center",
 
-            gap: 10,
+            gap: 6,
         },
 
         timeInput: {
-            width: 85,
+            width: 76,
 
-            paddingHorizontal: 10,
+            paddingHorizontal: 8,
 
-            paddingVertical: 9,
+            paddingVertical: 7,
 
-            borderRadius: 9,
+            borderRadius: 8,
 
             borderWidth: 1,
 
@@ -235,85 +266,18 @@ export const styles =
 
             textAlign:
                 "center",
+
+            fontSize: 12,
         },
 
         toText: {
             color: "#857d91",
-        },
 
-        saveButton: {
-            marginTop: 4,
-
-            borderRadius: 12,
-
-            paddingVertical: 13,
-
-            paddingHorizontal: 18,
-
-            alignItems:
-                "center",
-
-            backgroundColor:
-                "#7047dc",
-        },
-
-        saveButtonDisabled: {
-            opacity: 0.6,
-        },
-
-        saveButtonText: {
-            color: "#ffffff",
-
-            fontWeight: "700",
-
-            fontSize: 15,
-        },
-
-        saveError: {
-            color: "#ff7d8a",
-
-            fontSize: 13,
-        },
-
-        saveSuccess: {
-            color: "#86d39d",
-
-            fontSize: 13,
-        },
-
-        loading: {
-            padding: 30,
-
-            alignItems:
-                "center",
-
-            gap: 12,
-        },
-
-        loadingText: {
-            color: "#aaa4b7",
-        },
-
-        errorBox: {
-            padding: 18,
-
-            borderRadius: 12,
-
-            borderWidth: 1,
-
-            borderColor:
-                "#65333b",
-
-            backgroundColor:
-                "#28171c",
-        },
-
-        errorText: {
-            color: "#ff929c",
+            fontSize: 11,
         },
 
         timePickerButton: {
-            minWidth: 105,
+            minWidth: 76,
 
             flexDirection:
                 "row",
@@ -322,15 +286,13 @@ export const styles =
                 "center",
 
             justifyContent:
-                "space-between",
+                "center",
 
-            gap: 8,
+            paddingHorizontal: 8,
 
-            paddingHorizontal: 12,
+            paddingVertical: 7,
 
-            paddingVertical: 9,
-
-            borderRadius: 9,
+            borderRadius: 8,
 
             borderWidth: 1,
 
@@ -348,7 +310,7 @@ export const styles =
         timePickerButtonText: {
             color: "#ffffff",
 
-            fontSize: 14,
+            fontSize: 12,
 
             fontWeight: "500",
         },
@@ -356,22 +318,29 @@ export const styles =
         timePickerChevron: {
             color: "#81788e",
 
-            fontSize: 12,
+            fontSize: 10,
         },
+
+        /*
+         * Web time-picker menu
+         */
 
         timePickerOverlay: {
             flex: 1,
 
-            position: "relative",
+            position:
+                "relative",
         },
 
         timePickerModalMenu: {
-            position: "absolute",
+            position:
+                "absolute",
 
-            width: 140,
-            maxHeight: 300,
+            width: 130,
 
-            borderRadius: 10,
+            maxHeight: 280,
+
+            borderRadius: 9,
 
             borderWidth: 1,
 
@@ -390,21 +359,24 @@ export const styles =
 
             shadowOffset: {
                 width: 0,
+
                 height: 6,
             },
 
             elevation: 30,
 
-            overflow: "hidden",
+            overflow:
+                "hidden",
         },
 
         timePickerScroll: {
-            maxHeight: 300,
+            maxHeight: 280,
         },
 
         timePickerOption: {
-            paddingHorizontal: 14,
-            paddingVertical: 10,
+            paddingHorizontal: 12,
+
+            paddingVertical: 8,
         },
 
         timePickerOptionSelected: {
@@ -419,11 +391,96 @@ export const styles =
 
         timePickerOptionText: {
             color: "#c0b9c9",
-            fontSize: 13,
+
+            fontSize: 12,
         },
 
         timePickerOptionTextSelected: {
             color: "#ffffff",
+
             fontWeight: "600",
+        },
+
+        /*
+         * Save / status
+         */
+
+        saveButton: {
+            marginTop: 2,
+
+            borderRadius: 10,
+
+            paddingVertical: 10,
+
+            paddingHorizontal: 16,
+
+            alignItems:
+                "center",
+
+            backgroundColor:
+                "#7047dc",
+        },
+
+        saveButtonDisabled: {
+            opacity: 0.6,
+        },
+
+        saveButtonText: {
+            color: "#ffffff",
+
+            fontWeight: "700",
+
+            fontSize: 14,
+        },
+
+        saveError: {
+            color: "#ff7d8a",
+
+            fontSize: 12,
+        },
+
+        saveSuccess: {
+            color: "#86d39d",
+
+            fontSize: 12,
+        },
+
+        /*
+         * Loading / error states
+         */
+
+        loading: {
+            padding: 24,
+
+            alignItems:
+                "center",
+
+            gap: 10,
+        },
+
+        loadingText: {
+            color: "#aaa4b7",
+
+            fontSize: 13,
+        },
+
+        errorBox: {
+            padding: 14,
+
+            borderRadius: 10,
+
+            borderWidth: 1,
+
+            borderColor:
+                "#65333b",
+
+            backgroundColor:
+                "#28171c",
+        },
+
+        errorText: {
+            color: "#ff929c",
+
+            fontSize: 13,
         },
     });

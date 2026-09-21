@@ -7,20 +7,20 @@ export const styles =
         container: {
             flexGrow: 1,
 
-            padding: 24,
+            padding: 18,
 
-            gap: 22,
+            gap: 16,
 
             backgroundColor:
                 "#0d0d14",
         },
 
         header: {
-            gap: 5,
+            gap: 4,
         },
 
         title: {
-            fontSize: 28,
+            fontSize: 26,
 
             fontWeight:
                 "700",
@@ -30,74 +30,58 @@ export const styles =
         },
 
         subtitle: {
-            fontSize: 14,
+            fontSize: 13,
+
+            lineHeight: 18,
 
             color:
                 "#9b94a8",
         },
 
+        /*
+         * Account
+         */
+
         accountCard: {
-            width:
-                "100%",
+            width: "100%",
 
+            padding: 16,
 
-
-            padding:
-                18,
-
-            borderWidth:
-                1,
+            borderWidth: 1,
 
             borderColor:
                 "#2d2738",
 
-            borderRadius:
-                14,
+            borderRadius: 14,
 
             backgroundColor:
                 "#15121c",
 
-            flexDirection:
-                "row",
-
-            alignItems:
-                "center",
-
-            justifyContent:
-                "space-between",
-
-            gap:
-                20,
+            gap: 12,
         },
 
         accountDetails: {
-            flex:
-                1,
+            width: "100%",
 
-            gap:
-                3,
+            gap: 3,
         },
 
         sectionLabel: {
-            marginBottom:
-                4,
+            marginBottom: 3,
 
-            fontSize:
-                11,
+            fontSize: 11,
 
             fontWeight:
                 "700",
 
-            letterSpacing:
-                0.8,
+            letterSpacing: 0.8,
 
             color:
                 "#9b94a8",
         },
 
         accountName: {
-            fontSize:
-                17,
+            fontSize: 16,
 
             fontWeight:
                 "600",
@@ -107,58 +91,46 @@ export const styles =
         },
 
         accountEmail: {
-            fontSize:
-                13,
+            width: "100%",
+
+            fontSize: 13,
+
+            lineHeight: 18,
 
             color:
                 "#9b94a8",
         },
 
+        /*
+         * General settings cards
+         */
+
         settingsCard: {
-            width:
-                "100%",
+            width: "100%",
 
+            padding: 16,
 
-
-            padding:
-                18,
-
-            borderWidth:
-                1,
+            borderWidth: 1,
 
             borderColor:
                 "#2d2738",
 
-            borderRadius:
-                14,
+            borderRadius: 14,
 
             backgroundColor:
                 "#15121c",
 
-            flexDirection:
-                "row",
-
-            alignItems:
-                "center",
-
-            justifyContent:
-                "space-between",
-
-            gap:
-                20,
+            gap: 12,
         },
 
         settingsDetails: {
-            flex:
-                1,
+            width: "100%",
 
-            gap:
-                3,
+            gap: 4,
         },
 
         settingsTitle: {
-            fontSize:
-                17,
+            fontSize: 16,
 
             fontWeight:
                 "600",
@@ -168,63 +140,54 @@ export const styles =
         },
 
         settingsDescription: {
-            fontSize:
-                13,
+            width: "100%",
+
+            fontSize: 13,
+
+            lineHeight: 18,
 
             color:
                 "#9b94a8",
         },
 
+        /*
+         * Calendar connections
+         */
+
         calendarCard: {
-            width:
-                "100%",
+            width: "100%",
 
+            padding: 16,
 
-
-            padding:
-                18,
-
-            borderWidth:
-                1,
+            borderWidth: 1,
 
             borderColor:
                 "#2d2738",
 
-            borderRadius:
-                14,
+            borderRadius: 14,
 
             backgroundColor:
                 "#15121c",
 
-            gap:
-                18,
+            gap: 14,
         },
 
         calendarHeader: {
-            gap:
-                4,
+            width: "100%",
+
+            gap: 4,
         },
 
         calendarConnection: {
-            flexDirection:
-                "row",
+            width: "100%",
 
-            alignItems:
-                "center",
-
-            justifyContent:
-                "space-between",
-
-            gap:
-                20,
+            gap: 10,
         },
 
         calendarDetails: {
-            flex:
-                1,
+            width: "100%",
 
-            gap:
-                3,
+            gap: 4,
         },
 
         calendarActions: {
@@ -234,13 +197,17 @@ export const styles =
             alignItems:
                 "center",
 
-            gap:
-                10,
+            justifyContent:
+                "flex-start",
+
+            flexWrap:
+                "wrap",
+
+            gap: 8,
         },
 
         calendarConnected: {
-            fontSize:
-                13,
+            fontSize: 12,
 
             fontWeight:
                 "600",
@@ -250,45 +217,49 @@ export const styles =
         },
 
         calendarDivider: {
-            height:
-                1,
+            height: 1,
 
             backgroundColor:
                 "#2d2738",
         },
 
         calendarError: {
-            fontSize:
-                13,
+            fontSize: 12,
+
+            lineHeight: 17,
 
             color:
                 "#ff8f8f",
         },
 
         calendarProvider: {
-            gap:
-                16,
+            width: "100%",
+
+            gap: 12,
         },
 
+        /*
+         * iCloud connection form
+         */
+
         iCloudForm: {
-            maxWidth:
-                640,
+            width: "100%",
 
-            paddingTop:
-                4,
+            maxWidth: 640,
 
-            gap:
-                14,
+            paddingTop: 2,
+
+            gap: 12,
         },
 
         calendarField: {
-            gap:
-                6,
+            width: "100%",
+
+            gap: 5,
         },
 
         calendarFieldLabel: {
-            fontSize:
-                13,
+            fontSize: 12,
 
             fontWeight:
                 "600",
@@ -298,40 +269,36 @@ export const styles =
         },
 
         calendarInput: {
-            width:
-                "100%",
+            width: "100%",
 
-            minHeight:
-                44,
+            minHeight: 40,
 
-            paddingHorizontal:
-                12,
+            paddingHorizontal: 10,
 
-            paddingVertical:
-                10,
+            paddingVertical: 8,
 
-            borderWidth:
-                1,
+            borderWidth: 1,
 
             borderColor:
                 "#3a3347",
 
-            borderRadius:
-                10,
+            borderRadius: 9,
 
             backgroundColor:
                 "#0d0d14",
 
-            fontSize:
-                14,
+            fontSize: 13,
 
             color:
                 "#ffffff",
         },
 
         calendarFieldHelp: {
-            fontSize:
-                12,
+            width: "100%",
+
+            fontSize: 12,
+
+            lineHeight: 17,
 
             color:
                 "#9b94a8",
@@ -342,12 +309,30 @@ export const styles =
                 "row",
 
             justifyContent:
-                "flex-end",
+                "flex-start",
 
             alignItems:
                 "center",
 
-            gap:
-                10,
+            flexWrap:
+                "wrap",
+
+            gap: 8,
+        },
+
+        compactButton: {
+            minHeight: 34,
+
+            paddingHorizontal: 12,
+
+            paddingVertical: 6,
+
+            borderRadius: 8,
+        },
+
+        compactButtonText: {
+            fontSize: 12,
+
+            lineHeight: 16,
         },
     });
