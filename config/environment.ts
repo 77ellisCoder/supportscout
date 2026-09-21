@@ -1,6 +1,6 @@
 export const API_URL =
     process.env.EXPO_PUBLIC_API_URL ??
-    "http://localhost:3001";
+    "https://supportscout.onrender.com";
 
 export const GOOGLE_CLIENT_ID =
     process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID ??
