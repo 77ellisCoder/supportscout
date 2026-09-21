@@ -201,20 +201,18 @@ export default function LoginScreen() {
                 "GOOGLE: authentication complete"
             );
 
-            console.log(
-                "GOOGLE: starting bootstrap"
-            );
-
             if (
                 Platform.OS !==
                 "web"
             ) {
+                console.log(
+                    "GOOGLE: starting bootstrap"
+                );
                 await bootstrapSync();
+                console.log(
+                    "GOOGLE: bootstrap complete"
+                );
             }
-
-            console.log(
-                "GOOGLE: bootstrap complete"
-            );
 
             router.replace(
                 "/"
@@ -277,20 +275,19 @@ export default function LoginScreen() {
                 "GOOGLE: authentication complete"
             );
 
-            console.log(
-                "GOOGLE: starting bootstrap"
-            );
 
             if (
                 Platform.OS !==
                 "web"
             ) {
+                console.log(
+                    "GOOGLE: starting bootstrap"
+                );
                 await bootstrapSync();
+                console.log(
+                    "GOOGLE: bootstrap complete"
+                );
             }
-
-            console.log(
-                "GOOGLE: bootstrap complete"
-            );
 
             router.replace(
                 "/"
@@ -347,20 +344,18 @@ export default function LoginScreen() {
                 "LOGIN: authentication complete"
             );
 
-            console.log(
-                "LOGIN: starting bootstrap"
-            );
-
             if (
                 Platform.OS !==
                 "web"
             ) {
+                console.log(
+                    "LOGIN: starting bootstrap"
+                );
                 await bootstrapSync();
+                console.log(
+                    "LOGIN: bootstrap complete"
+                );
             }
-
-            console.log(
-                "LOGIN: bootstrap complete"
-            );
 
             router.replace(
                 "/"

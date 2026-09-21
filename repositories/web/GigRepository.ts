@@ -27,7 +27,14 @@ async function readError(
     fallback: string
 ): Promise<string> {
     try {
-        const body = await response.json();
+        const body =
+            await response.json();
+
+        console.log(
+            "API ERROR RESPONSE:",
+            response.status,
+            body
+        );
 
         if (
             body &&
@@ -35,8 +42,14 @@ async function readError(
         ) {
             return body.error;
         }
-    } catch {
-        // Ignore invalid/non-JSON error body.
+    } catch (
+    error
+    ) {
+        console.log(
+            "API ERROR BODY COULD NOT BE READ:",
+            response.status,
+            error
+        );
     }
 
     return fallback;
