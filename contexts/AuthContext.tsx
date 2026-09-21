@@ -224,18 +224,9 @@ export function AuthProvider({
     const logout =
         useCallback(
             async () => {
-
-                try {
-                    await clearUserScopedData();
-                } catch (
-                error
-                ) {
-                    console.error(
-                        "Unable to clear local user data:",
-                        error
-                    );
-                }
-
+                /*
+                 * Sign out of the native Google session.
+                 */
                 if (
                     Platform.OS ===
                     "android"
@@ -253,6 +244,9 @@ export function AuthProvider({
                     }
                 }
 
+                /*
+                 * End the SupportScout session first.
+                 */
                 await AuthStorage
                     .clearToken();
 
@@ -263,6 +257,29 @@ export function AuthProvider({
                 setUser(
                     null
                 );
+
+                /*
+                 * Then clean up user-scoped local data.
+                 *
+                 * Web SQLite can already have an open
+                 * OPFS access handle, so cleanup failure
+                 * must not prevent logout.
+                 */
+                if (
+                    Platform.OS !==
+                    "web"
+                ) {
+                    try {
+                        await clearUserScopedData();
+                    } catch (
+                    error
+                    ) {
+                        console.error(
+                            "Unable to clear local user data:",
+                            error
+                        );
+                    }
+                }
             },
             []
         );

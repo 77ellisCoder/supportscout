@@ -205,7 +205,12 @@ export default function LoginScreen() {
                 "GOOGLE: starting bootstrap"
             );
 
-            await bootstrapSync();
+            if (
+                Platform.OS !==
+                "web"
+            ) {
+                await bootstrapSync();
+            }
 
             console.log(
                 "GOOGLE: bootstrap complete"
@@ -276,7 +281,12 @@ export default function LoginScreen() {
                 "GOOGLE: starting bootstrap"
             );
 
-            await bootstrapSync();
+            if (
+                Platform.OS !==
+                "web"
+            ) {
+                await bootstrapSync();
+            }
 
             console.log(
                 "GOOGLE: bootstrap complete"
@@ -341,7 +351,12 @@ export default function LoginScreen() {
                 "LOGIN: starting bootstrap"
             );
 
-            await bootstrapSync();
+            if (
+                Platform.OS !==
+                "web"
+            ) {
+                await bootstrapSync();
+            }
 
             console.log(
                 "LOGIN: bootstrap complete"

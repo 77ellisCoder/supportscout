@@ -81,20 +81,18 @@ export function AppMenu({ onClose }: AppMenuProps) {
             />
             */}
 
-            <MenuItem
-                title="Sync Data Now"
-                description="Sync main server data to device"
-                onPress={
-                    handleBootstrapSync
-                }
-            />
+            {Platform.OS !== "web" && (
+                <MenuItem
+                    title="Sync Data Now"
+                    description="Sync main server data to device"
+                    onPress={
+                        handleBootstrapSync
+                    }
+                />
+            )}
         </View>
     );
 }
-
-import {
-    getDatabase,
-} from "../../database/sqlite/Database";
 
 async function handleBootstrapSync() {
     try {
