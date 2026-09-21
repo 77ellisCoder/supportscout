@@ -15,11 +15,6 @@ type GigCardProps = {
 export function GigCard({
     gig,
 }: GigCardProps) {
-    console.log(
-    "GIG CARD DATE:",
-    gig.gigId,
-    gig.gigDate
-);
     return (
         <Pressable
             onPress={() =>

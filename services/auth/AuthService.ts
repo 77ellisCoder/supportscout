@@ -123,12 +123,6 @@ export async function googleLogin(
     const body =
         await response.json();
 
-    console.log(
-    "GOOGLE AUTH API RESPONSE:",
-    response.status,
-    body
-);
-
     if (!response.ok) {
         throw new Error(
             body?.error ??
