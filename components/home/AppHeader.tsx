@@ -12,7 +12,7 @@ import { headerStyles } from "../../styles/header.styles"
 import { AppMenu } from "../navigation/AppMenu";
 
 import {
-  HeaderSettingsButton,
+    HeaderSettingsButton,
 } from "../../components/ui/HeaderSettingsButton";
 
 /**
@@ -30,38 +30,60 @@ export default function AppHeader() {
 
     return (
         <>
-            <View style={[styles.appHeader, { paddingTop: insets.top }]}>
-                <Pressable
-                    onPress={() => setMenuOpen((current) => !current)}
-                    style={styles.menuButton}
-                    accessibilityRole="button"
-                    accessibilityLabel={menuOpen ? "Close menu" : "Open menu"}
-                >
-                    {menuOpen ? (
-                        <Text style={headerStyles.closeIcon}>×</Text>
-                    ) : (
-                        <Image
-                            source={require("../../assets/branding/logo-icon.png")}
-                            style={headerStyles.logoIcon}
-                            resizeMode="contain"
-                        />
-                    )}
-                </Pressable>
+            <View
+                style={[
+                    styles.appHeader,
+                    { paddingTop: insets.top },
+                ]}
+            >
+                <View style={headerStyles.headerRow}>
+                    <Pressable
+                        onPress={() =>
+                            setMenuOpen((current) => !current)
+                        }
+                        style={headerStyles.menuButton}
+                        accessibilityRole="button"
+                        accessibilityLabel={
+                            menuOpen
+                                ? "Close menu"
+                                : "Open menu"
+                        }
+                    >
+                        {menuOpen ? (
+                            <Text style={headerStyles.closeIcon}>
+                                ×
+                            </Text>
+                        ) : (
+                            <Image
+                                source={require(
+                                    "../../assets/branding/logo-icon.png"
+                                )}
+                                style={headerStyles.logoIcon}
+                                resizeMode="contain"
+                            />
+                        )}
+                    </Pressable>
 
-                <View style={headerStyles.brand}>
-                    <Text style={headerStyles.brandName}>
-                        Support<Text style={headerStyles.brandAccent}>Scout</Text>
-                    </Text>
+                    <View
+                        style={headerStyles.brand}
+                        pointerEvents="none"
+                    >
+                        <Text style={headerStyles.brandName}>
+                            Support
+                            <Text style={headerStyles.brandAccent}>
+                                Scout
+                            </Text>
+                        </Text>
 
-                    <Text style={headerStyles.tagline}>
-                        FIND THE RIGHT SUPPORT. BUILD BETTER LINEUPS.
-                    </Text>
+                        <Text style={headerStyles.tagline}>
+                            FIND THE RIGHT SUPPORT. BUILD BETTER LINEUPS.
+                        </Text>
+                    </View>
+
+                    <View style={headerStyles.settingsContainer}>
+                        <HeaderSettingsButton />
+                    </View>
                 </View>
-
-                <View style={headerStyles.headerSpacer} />
-
-                {/* Settings access */}
-                <HeaderSettingsButton />
             </View>
 
             {menuOpen && (

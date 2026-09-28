@@ -31,9 +31,30 @@ export const headerStyles = StyleSheet.create({
         fontWeight: "300",
     },
 
-    brand: {
-        flex: 1,
+    headerRow: {
+        width: "100%",
+        minHeight: 56,
+        flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
+        position: "relative",
+    },
+
+    brand: {
+        position: "absolute",
+        left: 56,
+        right: 56,
+        top: 0,
+        bottom: 0,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    settingsContainer: {
+        width: 48,
+        height: 48,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
     brandName: {
