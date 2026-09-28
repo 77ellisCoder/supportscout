@@ -70,6 +70,16 @@ export async function bootstrapSync(): Promise<void> {
     const snapshot =
         body as BootstrapSnapshot;
 
+console.log(
+    "BOOTSTRAP SNAPSHOT COUNTS:",
+    {
+        bands: snapshot.bands.length,
+        venues: snapshot.venues.length,
+        gigs: snapshot.gigs.length,
+        userBands: snapshot.userBands.length,
+    }
+);
+
     const db =
         await getDatabase();
 
