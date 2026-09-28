@@ -169,6 +169,7 @@ export default function BandsScreen() {
           </View>
         ) : (
           <FlatList
+            style={styles.listView}
             data={sortedBands}
             keyExtractor={(item) => String(item.bandId)}
             contentContainerStyle={styles.list}

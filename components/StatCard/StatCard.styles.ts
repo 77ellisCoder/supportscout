@@ -54,9 +54,14 @@ export const styles = StyleSheet.create({
         color: colors.textMuted,
     },
 
+    valueName: {
+        fontSize: 24,
+        lineHeight: 30,
+    },
+
     caption: {
         ...typography.small,
         color: colors.textSecondary,
-        marginTop: spacing.xs,
+        marginTop: "auto",
     },
 });

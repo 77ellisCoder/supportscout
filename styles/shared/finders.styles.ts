@@ -17,6 +17,7 @@ export const finderStyles = StyleSheet.create({
 
     container: {
         ...layoutStyles.contentContainer,
+        flex: 1,
     },
 
     resultHeader: {
@@ -143,5 +144,9 @@ export const finderStyles = StyleSheet.create({
         paddingVertical: spacing.md,
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
+    },
+
+    listView: {
+        flex: 1,
     },
 });

@@ -1,8 +1,10 @@
 import {
     ActivityIndicator,
     Pressable,
+    StyleProp,
     Text,
     View,
+    ViewStyle,
 } from "react-native";
 
 import { colors } from "../../theme";
@@ -15,6 +17,8 @@ type StatCardProps = {
     loading?: boolean;
     highlighted?: boolean;
     onPress?: () => void;
+    valueVariant?: "stat" | "name";
+    style?: StyleProp<ViewStyle>;
 };
 
 export function StatCard({
@@ -24,6 +28,8 @@ export function StatCard({
     loading = false,
     highlighted = false,
     onPress,
+    valueVariant = "stat",
+    style,
 }: StatCardProps) {
     return (
         <Pressable
@@ -33,6 +39,7 @@ export function StatCard({
             style={({ pressed }) => [
                 styles.card,
                 pressed && onPress && styles.cardPressed,
+                style,
             ]}
         >
             <Text style={styles.label}>
@@ -50,6 +57,8 @@ export function StatCard({
                 <Text
                     style={[
                         styles.value,
+                        valueVariant === "name" &&
+                        styles.valueName,
                         highlighted
                             ? styles.valueHighlighted
                             : styles.valueMuted,

@@ -151,10 +151,32 @@ export const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
 
+  statsSection: {
+    width: "100%",
+    gap: 10,
+  },
+
+  myBandCard: {
+    width: "100%",
+    minHeight: 120,
+    flexBasis: "auto",
+    flexGrow: 0,
+  },
+
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
+  },
+
+  statsGridCard: {
+    flexBasis: "48%",
+    flexGrow: 1,
+    minWidth: "48%",
+  },
+
+  myBandRow: {
+    width: "100%",
   },
 
   errorCard: {

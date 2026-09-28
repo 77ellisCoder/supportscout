@@ -408,6 +408,26 @@ function AuthenticatedLayout() {
             null,
         }}
       />
+
+      <Stack.Screen
+        name="settings/bands"
+        options={{
+          headerTitle:
+            backTitle(
+              "My Bands"
+            ),
+        }}
+      />
+
+      <Stack.Screen
+        name="settings/security"
+        options={{
+          headerTitle:
+            backTitle(
+              "Settings"
+            ),
+        }}
+      />
     </Stack>
   );
 }

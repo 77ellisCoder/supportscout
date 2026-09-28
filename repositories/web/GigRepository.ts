@@ -22,6 +22,29 @@ type GigInput = {
     }[];
 };
 
+function normaliseGigListItem(
+    gig: GigListItem
+): GigListItem {
+    return {
+        ...gig,
+
+        gigId: Number(
+            gig.gigId
+        ),
+
+        venueId:
+            gig.venueId == null
+                ? null
+                : Number(
+                    gig.venueId
+                ),
+
+        bandCount: Number(
+            gig.bandCount ?? 0
+        ),
+    };
+}
+
 async function readError(
     response: Response,
     fallback: string
@@ -75,20 +98,9 @@ export const GigRepository = {
         const gigs =
             (await response.json()) as GigListItem[];
 
-        return gigs.map((gig) => ({
-            ...gig,
-
-            gigId: Number(gig.gigId),
-
-            venueId:
-                gig.venueId == null
-                    ? null
-                    : Number(gig.venueId),
-
-            bandCount: Number(
-                gig.bandCount ?? 0
-            ),
-        }));
+        return gigs.map(
+            normaliseGigListItem
+        );
     },
 
     async getById(
@@ -125,7 +137,12 @@ export const GigRepository = {
             );
         }
 
-        return response.json();
+        const gigs =
+            (await response.json()) as GigListItem[];
+
+        return gigs.map(
+            normaliseGigListItem
+        );
     },
 
     async getDetailById(
@@ -213,7 +230,12 @@ export const GigRepository = {
             );
         }
 
-        return response.json();
+        const gigs =
+            (await response.json()) as GigListItem[];
+
+        return gigs.map(
+            normaliseGigListItem
+        );
     },
 
     async create(

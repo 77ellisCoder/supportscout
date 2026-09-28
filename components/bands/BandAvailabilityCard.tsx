@@ -21,6 +21,7 @@ import {
 } from "../../hooks/useBandCalendar";
 
 import { colors } from "../../theme";
+import { detailStyles } from "../../styles/shared/details.styles";
 
 type Props = {
     bandId: number;
@@ -315,15 +316,7 @@ export function BandAvailabilityCard({
                     gap: 4,
                 }}
             >
-                <Text
-                    style={{
-                        color:
-                            colors.text,
-                        fontSize: 16,
-                        fontWeight:
-                            "700",
-                    }}
-                >
+                <Text style={detailStyles.sectionLabel}>
                     CALENDAR AVAILABILITY
                 </Text>
 
