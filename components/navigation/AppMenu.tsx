@@ -1,5 +1,8 @@
 import { router } from "expo-router";
-import { Platform, View } from "react-native";
+import { Alert, Platform, View } from "react-native";
+import { useState } from "react"
+
+import { useQueryClient } from "@tanstack/react-query";
 
 import { MenuItem } from "./MenuItem";
 import { styles } from "./AppMenu.styles";
@@ -17,6 +20,46 @@ type AppMenuProps = {
 };
 
 export function AppMenu({ onClose }: AppMenuProps) {
+    const queryClient = useQueryClient();
+
+    const [isSyncing, setIsSyncing] =
+        useState(false);
+
+    const handleBootstrapSync = async () => {
+        if (isSyncing) return;
+
+        setIsSyncing(true);
+
+        try {
+            console.log("Starting bootstrap sync...");
+
+            await bootstrapSync();
+
+            console.log("Bootstrap sync complete.");
+
+            await queryClient.invalidateQueries();
+
+            Alert.alert(
+                "Sync complete",
+                "Local data updated successfully."
+            );
+        } catch (error) {
+            console.error(
+                "Bootstrap sync failed:",
+                error
+            );
+
+            Alert.alert(
+                "Sync failed",
+                error instanceof Error
+                    ? error.message
+                    : "Unable to update local data."
+            );
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
     const {
         data: myBands = [],
     } = useMyBands();
@@ -106,7 +149,7 @@ export function AppMenu({ onClose }: AppMenuProps) {
                 disabled
             />
 
-            
+
             {Platform.OS === "web" && (
                 <MenuItem
                     title="PR Contacts"
@@ -117,32 +160,19 @@ export function AppMenu({ onClose }: AppMenuProps) {
 
             {Platform.OS !== "web" && (
                 <MenuItem
-                    title="Sync Data Now"
-                    description="Sync main server data to device"
-                    onPress={
-                        handleBootstrapSync
+                    title={
+                        isSyncing
+                            ? "Syncing Data..."
+                            : "Sync Data Now"
                     }
+                    description={
+                        isSyncing
+                            ? "Updating local database"
+                            : "Sync main server data to device"
+                    }
+                    onPress={handleBootstrapSync}
                 />
             )}
         </View>
     );
-}
-
-async function handleBootstrapSync() {
-    try {
-        console.log(
-            "Starting bootstrap sync..."
-        );
-
-        await bootstrapSync();
-
-        console.log(
-            "Bootstrap sync complete."
-        );
-    } catch (error) {
-        console.error(
-            "Bootstrap sync failed:",
-            error
-        );
-    }
 }
