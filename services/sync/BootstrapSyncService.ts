@@ -14,6 +14,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    getErrorMessage,
+} from "../../utils/error";
+
 type BootstrapRow = Record<
     string,
     string | number | boolean | null
@@ -67,8 +71,10 @@ export async function bootstrapSync(): Promise<void> {
 
     if (!response.ok) {
         throw new Error(
-            body?.error ??
-            "Unable to bootstrap SupportScout"
+            getErrorMessage(
+                body,
+                "Unable to bootstrap SupportScout"
+            )
         );
     }
 

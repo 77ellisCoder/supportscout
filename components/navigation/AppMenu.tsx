@@ -15,6 +15,10 @@ import {
     bootstrapSync,
 } from "../../services/sync/BootstrapSyncService";
 
+import {
+    getErrorMessage,
+} from "../../utils/error";
+
 type AppMenuProps = {
     onClose: () => void;
 };
@@ -69,9 +73,10 @@ export function AppMenu({ onClose }: AppMenuProps) {
 
             Alert.alert(
                 "Sync failed",
-                error instanceof Error
-                    ? error.message
-                    : "Unable to update local data."
+                getErrorMessage(
+                    error,
+                    "Unable to update local data."
+                )
             );
         } finally {
             setIsSyncing(false);

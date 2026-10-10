@@ -6,6 +6,10 @@ import {
     AuthStorage,
 } from "../storage/AuthStorage";
 
+import {
+    getErrorMessage,
+} from "../../utils/error";
+
 export type AuthUser = {
     userId: number;
     email: string;
@@ -48,8 +52,10 @@ export async function login(
 
     if (!response.ok) {
         throw new Error(
-            body?.error ??
-            "Unable to log in"
+            getErrorMessage(
+                body,
+                "Unable to log in"
+            )
         );
     }
 
@@ -87,8 +93,10 @@ export async function register(
 
     if (!response.ok) {
         throw new Error(
-            body?.error ??
-            "Unable to create account"
+            getErrorMessage(
+                body,
+                "Unable to create account"
+            )
         );
     }
 
@@ -125,8 +133,10 @@ export async function googleLogin(
 
     if (!response.ok) {
         throw new Error(
-            body?.error ??
-            "Unable to log in with Google"
+            getErrorMessage(
+                body,
+                "Unable to log in with Google"
+            )
         );
     }
 
@@ -152,8 +162,10 @@ export async function getCurrentUser(
 
     if (!response.ok) {
         throw new Error(
-            body?.error ??
-            "Unable to load user"
+            getErrorMessage(
+                body,
+                "Unable to load user"
+            )
         );
     }
 
@@ -199,8 +211,10 @@ export async function setPassword(
 
     if (!response.ok) {
         throw new Error(
-            body?.error ??
-            "Unable to set password"
+            getErrorMessage(
+                body,
+                "Unable to set password"
+            )
         );
     }
 }
