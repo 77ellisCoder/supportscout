@@ -7,6 +7,7 @@ import {
 import {
     useDrinkTokenRedemption,
 } from "../../hooks/useDrinkTokenRedemption";
+import { parseDateValue } from "../../utils/date";
 import { styles } from "./DrinkRider.styles";
 
 type Props = {
@@ -38,10 +39,21 @@ export function DrinkRider({
 }: Props) {
 
     const today = getLocalDateString();
+    const parsedGigDate = parseDateValue(gigDate);
+    const parsedToday = parseDateValue(today);
 
-    const isGigDay = gigDate === today;
-    const isBeforeGig = today < gigDate;
-    const isAfterGig = today > gigDate;
+    const isGigDay =
+        parsedGigDate !== null &&
+        parsedToday !== null &&
+        parsedGigDate.getTime() === parsedToday.getTime();
+    const isBeforeGig =
+        parsedGigDate !== null &&
+        parsedToday !== null &&
+        parsedGigDate.getTime() > parsedToday.getTime();
+    const isAfterGig =
+        parsedGigDate !== null &&
+        parsedToday !== null &&
+        parsedGigDate.getTime() < parsedToday.getTime();
 
     const {
         data: tokens = [],

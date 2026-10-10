@@ -17,6 +17,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/gig-details.styles";
 import { DrinkRider } from "../../components/gigs/DrinkRider";
 import { Button } from "../../components/ui/Button";
+import { parseDateValue } from "../../utils/date";
 
 import { ScreenActionBar } from "../../components/ui/ScreenActionBar"
 
@@ -216,9 +217,13 @@ export default function GigDetailsScreen() {
 }
 
 function formatGigDate(
-    value: string
+    value: string | null | undefined
 ): string {
-    const date = new Date(value);
+    const date = parseDateValue(value);
+
+    if (!date) {
+        return value?.trim() || "Unknown date";
+    }
 
     return date.toLocaleDateString("en-AU", {
         weekday: "long",

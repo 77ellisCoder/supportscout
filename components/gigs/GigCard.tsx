@@ -6,6 +6,7 @@ import {
 } from "react-native";
 
 import type { GigListItem } from "../../models/Gig";
+import { parseDateValue } from "../../utils/date";
 import { styles } from "./GigCard.styles";
 
 type GigCardProps = {
@@ -82,30 +83,29 @@ export function GigCard({
 }
 
 function parseGigDate(
-    value: string
-): Date {
-    const [year, month, day] =
-        value.split("-").map(Number);
-
-    return new Date(
-        year,
-        month - 1,
-        day
-    );
+    value: string | null | undefined
+): Date | null {
+    return parseDateValue(value);
 }
 
 function formatGigDay(
-    value: string
+    value: string | null | undefined
 ): string {
-    return String(
-        parseGigDate(value).getDate()
-    );
+    const date = parseGigDate(value);
+
+    return date ? String(date.getDate()) : "—";
 }
 
 function formatGigMonth(
-    value: string
+    value: string | null | undefined
 ): string {
-    return parseGigDate(value)
+    const date = parseGigDate(value);
+
+    if (!date) {
+        return "—";
+    }
+
+    return date
         .toLocaleDateString("en-AU", {
             month: "short",
         })
@@ -113,10 +113,13 @@ function formatGigMonth(
 }
 
 function formatGigYear(
-    value: string
+    value: string | null | undefined
 ): string {
-    return parseGigDate(value)
-        .toLocaleDateString("en-AU", {
+    const date = parseGigDate(value);
+
+    return date
+        ? date.toLocaleDateString("en-AU", {
             year: "numeric",
-        });
+        })
+        : "—";
 }

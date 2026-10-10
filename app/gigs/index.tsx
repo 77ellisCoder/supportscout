@@ -15,6 +15,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/gigs.styles";
 import { Button } from "../../components/ui/Button";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { parseDateValue } from "../../utils/date";
 
 export default function GigsScreen() {
   const {
@@ -29,29 +30,31 @@ export default function GigsScreen() {
   const upcomingGigs = useMemo(() => {
     return gigs
       .filter((gig) => {
-        const date = new Date(gig.gigDate);
+        const date = parseDateValue(gig.gigDate);
 
-        return date >= today;
+        return date ? date >= today : false;
       })
-      .sort(
-        (a, b) =>
-          new Date(a.gigDate).getTime() -
-          new Date(b.gigDate).getTime()
-      );
+      .sort((a, b) => {
+        const aTime = parseDateValue(a.gigDate)?.getTime() ?? Number.POSITIVE_INFINITY;
+        const bTime = parseDateValue(b.gigDate)?.getTime() ?? Number.POSITIVE_INFINITY;
+
+        return aTime - bTime;
+      });
   }, [gigs]);
 
   const pastGigs = useMemo(() => {
     return gigs
       .filter((gig) => {
-        const date = new Date(gig.gigDate);
+        const date = parseDateValue(gig.gigDate);
 
-        return date < today;
+        return date ? date < today : false;
       })
-      .sort(
-        (a, b) =>
-          new Date(b.gigDate).getTime() -
-          new Date(a.gigDate).getTime()
-      );
+      .sort((a, b) => {
+        const aTime = parseDateValue(a.gigDate)?.getTime() ?? Number.NEGATIVE_INFINITY;
+        const bTime = parseDateValue(b.gigDate)?.getTime() ?? Number.NEGATIVE_INFINITY;
+
+        return bTime - aTime;
+      });
   }, [gigs]);
 
   if (isLoading) {
