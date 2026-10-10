@@ -1,0 +1,455 @@
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+
+import * as DocumentPicker from "expo-document-picker";
+
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { Button } from "../../components/ui/Button";
+import { ScreenActionBar } from "../../components/ui/ScreenActionBar";
+import { useBand } from "../../hooks/useBand";
+import { colors, radius, spacing, typography } from "../../theme";
+import { createBandEpkArchive } from "../../utils/epk";
+
+type PickedFile = {
+  name: string;
+  uri: string;
+  size?: number | null;
+  mimeType?: string | null;
+};
+
+export default function BandEpkScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: band, isLoading, error } = useBand(Number(id));
+
+  const [bioDraft, setBioDraft] = useState<string | null>(null);
+  const [pressReleaseDraft, setPressReleaseDraft] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<PickedFile | null>(null);
+  const [photoFiles, setPhotoFiles] = useState<PickedFile[]>([]);
+  const [songFiles, setSongFiles] = useState<PickedFile[]>([]);
+  const [additionalFiles, setAdditionalFiles] = useState<PickedFile[]>([]);
+  const [isPicking, setIsPicking] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedbackIsError, setFeedbackIsError] = useState(false);
+
+  useEffect(() => {
+    if (
+      Platform.OS !== "web" ||
+      !feedback ||
+      feedbackIsError
+    ) {
+      return;
+    }
+
+    const timeout = window.setTimeout(
+      () => setFeedback(null),
+      4000
+    );
+
+    return () => window.clearTimeout(timeout);
+  }, [feedback, feedbackIsError]);
+
+  async function chooseFiles(
+    type: string,
+    multiple: boolean
+  ): Promise<PickedFile[]> {
+    setFeedback(null);
+    setIsPicking(true);
+
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type,
+        multiple,
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled) {
+        return [];
+      }
+
+      return result.assets.map((asset) => ({
+        name: asset.name,
+        uri: asset.uri,
+        size: asset.size,
+        mimeType: asset.mimeType,
+      }));
+    } catch (pickError) {
+      setFeedback(
+        pickError instanceof Error
+          ? pickError.message
+          : "Unable to select files."
+      );
+      setFeedbackIsError(true);
+      return [];
+    } finally {
+      setIsPicking(false);
+    }
+  }
+
+  async function chooseLogo() {
+    const [file] = await chooseFiles("image/*", false);
+    if (file) setLogoFile(file);
+  }
+
+  async function choosePhotos() {
+    const files = await chooseFiles("image/*", true);
+    if (files.length) setPhotoFiles((current) => [...current, ...files]);
+  }
+
+  async function chooseSongs() {
+    const files = await chooseFiles("audio/*", true);
+    if (files.length) setSongFiles((current) => [...current, ...files]);
+  }
+
+  async function chooseAdditionalFiles() {
+    const files = await chooseFiles("*/*", true);
+    if (files.length) setAdditionalFiles((current) => [...current, ...files]);
+  }
+
+  async function createEpk() {
+    if (!band) return;
+
+    const bioText = bioDraft ?? band.shortDescription ?? "";
+    const pressReleaseText = pressReleaseDraft ??
+      `${band.bandName}\n\n${band.shortDescription ?? ""}`.trim();
+
+    if (!bioText.trim() || !pressReleaseText.trim()) {
+      setFeedback("Add both a band bio and a press release before exporting.");
+      setFeedbackIsError(true);
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+      setFeedback(null);
+
+      const result = await createBandEpkArchive({
+        bandName: band.bandName,
+        bioText,
+        pressReleaseText,
+        logoFile,
+        photoFiles,
+        songFiles,
+        additionalFiles,
+      });
+
+      if (Platform.OS === "web") {
+        setFeedbackIsError(false);
+        setFeedback(`Download started: ${result.fileName}`);
+      } else {
+        Alert.alert("EPK created", `Saved as ${result.fileName}`);
+      }
+    } catch (createError) {
+      setFeedback(
+        createError instanceof Error
+          ? createError.message
+          : "Unable to create the EPK archive."
+      );
+      setFeedbackIsError(true);
+    } finally {
+      setIsCreating(false);
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator color={colors.primaryLight} />
+        <Text style={styles.loadingText}>Loading band...</Text>
+      </View>
+    );
+  }
+
+  if (error || !band) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.errorText}>
+          {error?.message ?? "Unable to load band details."}
+        </Text>
+      </View>
+    );
+  }
+
+  const bioText = bioDraft ?? band.shortDescription ?? "";
+  const pressReleaseText = pressReleaseDraft ??
+    `${band.bandName}\n\n${band.shortDescription ?? ""}`.trim();
+  const pickerDisabled = isPicking || isCreating;
+
+  return (
+    <View style={styles.screen}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.eyebrow}>ELECTRONIC PRESS KIT</Text>
+        <Text style={styles.title}>{band.bandName}</Text>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>BAND BIO</Text>
+          <TextInput
+            accessibilityLabel="Band bio"
+            multiline
+            value={bioText}
+            onChangeText={setBioDraft}
+            placeholder="Write the band bio"
+            placeholderTextColor={colors.textMuted}
+            style={styles.textArea}
+            textAlignVertical="top"
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>PRESS RELEASE</Text>
+          <TextInput
+            accessibilityLabel="Press release"
+            multiline
+            value={pressReleaseText}
+            onChangeText={setPressReleaseDraft}
+            placeholder="Write the press release"
+            placeholderTextColor={colors.textMuted}
+            style={[styles.textArea, styles.pressReleaseInput]}
+            textAlignVertical="top"
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>LOGO</Text>
+          <Button
+            title={logoFile ? "Replace logo" : "Choose logo"}
+            variant="secondary"
+            disabled={pickerDisabled}
+            loading={isPicking}
+            onPress={chooseLogo}
+          />
+          {logoFile && (
+            <FileRow
+              file={logoFile}
+              onRemove={() => setLogoFile(null)}
+            />
+          )}
+        </View>
+
+        <AssetSection
+          title="PRESS IMAGES"
+          files={photoFiles}
+          buttonTitle="Add images"
+          disabled={pickerDisabled}
+          onChoose={choosePhotos}
+          onRemove={(index) => setPhotoFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+        />
+
+        <AssetSection
+          title="MUSIC"
+          files={songFiles}
+          buttonTitle="Add audio files"
+          disabled={pickerDisabled}
+          onChoose={chooseSongs}
+          onRemove={(index) => setSongFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+        />
+
+        <AssetSection
+          title="ADDITIONAL MATERIALS"
+          files={additionalFiles}
+          buttonTitle="Add files"
+          disabled={pickerDisabled}
+          onChoose={chooseAdditionalFiles}
+          onRemove={(index) => setAdditionalFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+        />
+
+        {feedback && (
+          <Text
+            accessibilityRole="alert"
+            style={feedbackIsError ? styles.errorText : styles.successText}
+          >
+            {feedback}
+          </Text>
+        )}
+      </ScrollView>
+
+      <ScreenActionBar>
+        <Button
+          title="Back"
+          variant="ghost"
+          disabled={isCreating}
+          onPress={() => router.back()}
+        />
+        <Button
+          title="Create EPK"
+          loading={isCreating}
+          disabled={isPicking}
+          onPress={createEpk}
+        />
+      </ScreenActionBar>
+    </View>
+  );
+}
+
+function AssetSection({
+  title,
+  files,
+  buttonTitle,
+  disabled,
+  onChoose,
+  onRemove,
+}: {
+  title: string;
+  files: PickedFile[];
+  buttonTitle: string;
+  disabled: boolean;
+  onChoose: () => void;
+  onRemove: (index: number) => void;
+}) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      <Button
+        title={buttonTitle}
+        variant="secondary"
+        disabled={disabled}
+        onPress={onChoose}
+      />
+      {files.map((file, index) => (
+        <FileRow
+          key={`${file.uri}-${index}`}
+          file={file}
+          onRemove={() => onRemove(index)}
+        />
+      ))}
+    </View>
+  );
+}
+
+function FileRow({
+  file,
+  onRemove,
+}: {
+  file: PickedFile;
+  onRemove: () => void;
+}) {
+  return (
+    <View style={styles.fileRow}>
+      <View style={styles.fileInfo}>
+        <Text style={styles.fileName} numberOfLines={1}>{file.name}</Text>
+        {file.size != null && (
+          <Text style={styles.fileSize}>{formatFileSize(file.size)}</Text>
+        )}
+      </View>
+      <Button title="Remove" variant="ghost" onPress={onRemove} />
+    </View>
+  );
+}
+
+function formatFileSize(size: number): string {
+  if (size < 1024 * 1024) {
+    return `${Math.max(1, Math.round(size / 1024))} KB`;
+  }
+
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  scroll: {
+    flex: 1,
+  },
+  content: {
+    width: "100%",
+    maxWidth: 820,
+    alignSelf: "center",
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.xl,
+  },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: spacing.xl,
+    backgroundColor: colors.background,
+  },
+  loadingText: {
+    ...typography.small,
+    color: colors.textSecondary,
+    marginTop: spacing.sm,
+  },
+  eyebrow: {
+    ...typography.label,
+    color: colors.primaryLight,
+  },
+  title: {
+    ...typography.h1,
+    color: colors.text,
+    marginBottom: spacing.lg,
+  },
+  section: {
+    paddingVertical: spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  sectionTitle: {
+    ...typography.label,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+  },
+  textArea: {
+    ...typography.body,
+    minHeight: 150,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    color: colors.text,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+  },
+  pressReleaseInput: {
+    minHeight: 220,
+  },
+  fileRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    marginTop: spacing.sm,
+    paddingLeft: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+  },
+  fileInfo: {
+    flex: 1,
+    minWidth: 0,
+  },
+  fileName: {
+    ...typography.small,
+    color: colors.text,
+  },
+  fileSize: {
+    ...typography.small,
+    color: colors.textMuted,
+  },
+  errorText: {
+    ...typography.small,
+    color: colors.danger,
+    marginTop: spacing.sm,
+  },
+  successText: {
+    ...typography.small,
+    color: colors.primaryLight,
+    marginTop: spacing.sm,
+  },
+});
