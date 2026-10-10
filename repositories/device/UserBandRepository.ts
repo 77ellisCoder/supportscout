@@ -14,6 +14,10 @@ import {
     AuthStorage,
 } from "../../services/storage/AuthStorage";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 type UserBandRow = {
     band_id: number;
     band_name: string;
@@ -93,11 +97,10 @@ export const UserBandRepository = {
                 }
             );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to add band (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to add band (${response.status})`
+        );
     },
 
     async remove(
@@ -119,10 +122,9 @@ export const UserBandRepository = {
                 }
             );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to remove band (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to remove band (${response.status})`
+        );
     },
 };

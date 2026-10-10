@@ -10,6 +10,10 @@ import {
     AuthStorage,
 } from "../../services/storage/AuthStorage";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 type ApiUserBand = {
     bandId: number | string;
     bandName: string;
@@ -60,11 +64,10 @@ export const UserBandRepository = {
                 }
             );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load your bands (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to load your bands (${response.status})`
+        );
 
         const rows: ApiUserBand[] =
             await response.json();
@@ -93,11 +96,10 @@ export const UserBandRepository = {
                 }
             );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to add band (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to add band (${response.status})`
+        );
     },
 
     async remove(
@@ -119,10 +121,9 @@ export const UserBandRepository = {
                 }
             );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to remove band (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to remove band (${response.status})`
+        );
     },
 };
