@@ -1,4 +1,7 @@
-import { StyleSheet } from "react-native";
+import {
+    StyleSheet,
+    type ViewStyle,
+} from "react-native";
 
 import {
     colors,
@@ -23,10 +26,10 @@ export const entityCardStyles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
 
-        cursor: "pointer" as any,
+        cursor: "pointer",
 
         ...shadows.card,
-    },
+    } as ViewStyle,
 
     cardPressed: {
         backgroundColor: colors.surfaceHover,

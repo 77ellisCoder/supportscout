@@ -14,26 +14,31 @@ import {
     API_URL,
 } from "../../config/environment";
 
+type BootstrapRow = Record<
+    string,
+    string | number | boolean | null
+>;
+
 type BootstrapSnapshot = {
     syncVersion: number;
     syncedAt: string;
 
-    bands: any[];
-    genres: any[];
-    bandGenres: any[];
+    bands: BootstrapRow[];
+    genres: BootstrapRow[];
+    bandGenres: BootstrapRow[];
 
-    venues: any[];
+    venues: BootstrapRow[];
 
-    gigs: any[];
-    gigBands: any[];
-    gigBandDrinkTokens: any[];
+    gigs: BootstrapRow[];
+    gigBands: BootstrapRow[];
+    gigBandDrinkTokens: BootstrapRow[];
 
-    users: any[];
-    userBands: any[];
+    users: BootstrapRow[];
+    userBands: BootstrapRow[];
 
-    rehearsalLocations: any[];
-    bandRehearsalLocations: any[];
-    rehearsalProposals: any[];
+    rehearsalLocations: BootstrapRow[];
+    bandRehearsalLocations: BootstrapRow[];
+    rehearsalProposals: BootstrapRow[];
 };
 
 export async function bootstrapSync(): Promise<void> {
