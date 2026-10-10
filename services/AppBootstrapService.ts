@@ -8,6 +8,10 @@ import { logger } from "../utils/logger";
 class AppBootstrapServiceClass {
     private started = false;
 
+    reset(): void {
+        this.started = false;
+    }
+
     async initialise(): Promise<void> {
         // Web uses the API/PostgreSQL.
         // SQLite bootstrap is only required for native platforms.
