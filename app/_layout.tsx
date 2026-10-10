@@ -37,7 +37,29 @@ import { HeaderHomeButton } from "../components/ui/HeaderHomeButton";
 import { HeaderSettingsButton } from "../components/ui/HeaderSettingsButton";
 import { HeaderTitle } from "../components/ui/HeaderTitle";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 5 * 60 * 1000,
+      retry: (failureCount, error) => {
+        if (
+          error instanceof Error &&
+          /network|fetch/i.test(error.message)
+        ) {
+          return failureCount < 2;
+        }
+
+        return failureCount < 1;
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
