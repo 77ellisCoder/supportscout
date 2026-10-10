@@ -334,6 +334,13 @@ function AuthenticatedLayout() {
       />
 
       <Stack.Screen
+        name="bands/epk"
+        options={{
+          title: "Create EPK",
+        }}
+      />
+
+      <Stack.Screen
         name="bands/create"
         options={{
           headerTitle:

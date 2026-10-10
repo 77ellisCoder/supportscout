@@ -241,6 +241,14 @@ export default function BandDetailsScreen() {
 
       <ScreenActionBar>
         <Button
+          title="Create EPK"
+          onPress={() => router.push({
+            pathname: "/bands/epk",
+            params: { id: String(band.bandId) },
+          })}
+        />
+
+        <Button
           title="Edit Band"
           onPress={() =>
             router.push({
