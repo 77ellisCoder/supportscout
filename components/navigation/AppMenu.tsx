@@ -39,6 +39,8 @@ export function AppMenu({ onClose }: AppMenuProps) {
 
             await queryClient.invalidateQueries();
 
+            onClose();
+
             Alert.alert(
                 "Sync complete",
                 "Local data updated successfully."
