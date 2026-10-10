@@ -9,6 +9,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 type GigInput = {
     venueId: number | null;
     gigDate: string;
@@ -45,39 +49,6 @@ function normaliseGigListItem(
     };
 }
 
-async function readError(
-    response: Response,
-    fallback: string
-): Promise<string> {
-    try {
-        const body =
-            await response.json();
-
-        console.log(
-            "API ERROR RESPONSE:",
-            response.status,
-            body
-        );
-
-        if (
-            body &&
-            typeof body.error === "string"
-        ) {
-            return body.error;
-        }
-    } catch (
-    error
-    ) {
-        console.log(
-            "API ERROR BODY COULD NOT BE READ:",
-            response.status,
-            error
-        );
-    }
-
-    return fallback;
-}
-
 export const GigRepository = {
     async getAll(): Promise<
         GigListItem[]
@@ -86,14 +57,10 @@ export const GigRepository = {
             `${API_URL}/gigs`
         );
 
-        if (!response.ok) {
-            throw new Error(
-                await readError(
-                    response,
-                    "Unable to load gigs."
-                )
-            );
-        }
+        await expectOk(
+            response,
+            "Unable to load gigs."
+        );
 
         const gigs =
             (await response.json()) as GigListItem[];
@@ -114,11 +81,10 @@ export const GigRepository = {
             return null;
         }
 
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch gig ${gigId}`
-            );
-        }
+        await expectOk(
+            response,
+            `Failed to fetch gig ${gigId}`
+        );
 
         return response.json();
     },
@@ -131,11 +97,10 @@ export const GigRepository = {
             `${API_URL}/gigs/band/${bandId}?period=${period}`
         );
 
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch ${period} gigs for band ${bandId}`
-            );
-        }
+        await expectOk(
+            response,
+            `Failed to fetch ${period} gigs for band ${bandId}`
+        );
 
         const gigs =
             (await response.json()) as GigListItem[];
@@ -156,14 +121,10 @@ export const GigRepository = {
             return null;
         }
 
-        if (!response.ok) {
-            throw new Error(
-                await readError(
-                    response,
-                    "Unable to load gig."
-                )
-            );
-        }
+        await expectOk(
+            response,
+            "Unable to load gig."
+        );
 
         const gig =
             (await response.json()) as GigDetail;
@@ -224,11 +185,10 @@ export const GigRepository = {
             }`
         );
 
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch gigs for venue ${venueId}`
-            );
-        }
+        await expectOk(
+            response,
+            `Failed to fetch gigs for venue ${venueId}`
+        );
 
         const gigs =
             (await response.json()) as GigListItem[];
@@ -255,14 +215,10 @@ export const GigRepository = {
             }
         );
 
-        if (!response.ok) {
-            throw new Error(
-                await readError(
-                    response,
-                    "Unable to create gig."
-                )
-            );
-        }
+        await expectOk(
+            response,
+            "Unable to create gig."
+        );
 
         const gig =
             (await response.json()) as Gig;
@@ -301,13 +257,9 @@ export const GigRepository = {
             }
         );
 
-        if (!response.ok) {
-            throw new Error(
-                await readError(
-                    response,
-                    "Unable to update gig."
-                )
-            );
-        }
+        await expectOk(
+            response,
+            "Unable to update gig."
+        );
     },
 };
