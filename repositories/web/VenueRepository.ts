@@ -4,6 +4,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 type VenueInput = {
     venueName: string;
     suburb: string | null;
@@ -24,14 +28,10 @@ type VenueInput = {
 async function parseResponse<T>(
     response: Response
 ): Promise<T> {
-    if (!response.ok) {
-        const text = await response.text();
-
-        throw new Error(
-            text ||
-                `Request failed with status ${response.status}`
-        );
-    }
+    await expectOk(
+        response,
+        `Request failed with status ${response.status}`
+    );
 
     return response.json() as Promise<T>;
 }

@@ -4,19 +4,9 @@ import {
     API_URL,
 } from "../../config/environment";
 
-async function ensureOk(
-    response: Response
-): Promise<void> {
-    if (!response.ok) {
-        const message =
-            await response.text();
-
-        throw new Error(
-            message ||
-            `Request failed: ${response.status}`
-        );
-    }
-}
+import {
+    expectOk,
+} from "../../utils/api";
 
 export const DrinkTokenRepository = {
     async getForGigBand(
@@ -27,7 +17,10 @@ export const DrinkTokenRepository = {
             `${API_URL}/gigs/${gigId}/bands/${bandId}/drink-tokens`
         );
 
-        await ensureOk(response);
+        await expectOk(
+            response,
+            `Request failed: ${response.status}`
+        );
 
         return response.json();
     },
@@ -53,7 +46,10 @@ export const DrinkTokenRepository = {
             }
         );
 
-        await ensureOk(response);
+        await expectOk(
+            response,
+            `Request failed: ${response.status}`
+        );
     },
 
     async removeUnusedToken(
@@ -67,6 +63,9 @@ export const DrinkTokenRepository = {
             }
         );
 
-        await ensureOk(response);
+        await expectOk(
+            response,
+            `Request failed: ${response.status}`
+        );
     },
 };

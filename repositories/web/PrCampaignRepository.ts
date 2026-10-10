@@ -9,6 +9,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 export const PrCampaignRepository = {
     /**
      * Creates a new PR campaign with the provided input data.
@@ -31,16 +35,12 @@ export const PrCampaignRepository = {
             }
         );
 
-        const result = await response.json();
+        await expectOk(
+            response,
+            "Unable to create campaign"
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                result.error ??
-                "Unable to create campaign"
-            );
-        }
-
-        return result;
+        return response.json();
     },
 
     /**
@@ -54,16 +54,12 @@ export const PrCampaignRepository = {
             `${API_URL}/pr-campaigns`
         );
 
-        const result = await response.json();
+        await expectOk(
+            response,
+            "Unable to load PR campaigns"
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                result.error ??
-                "Unable to load PR campaigns"
-            );
-        }
-
-        return result;
+        return response.json();
     },
 
     /**
@@ -78,16 +74,12 @@ export const PrCampaignRepository = {
             `${API_URL}/pr-campaigns/${campaignId}`
         );
 
-        const result = await response.json();
+        await expectOk(
+            response,
+            "Unable to load campaign"
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                result.error ??
-                "Unable to load campaign"
-            );
-        }
-
-        return result;
+        return response.json();
     },
 
     /**
@@ -129,16 +121,12 @@ export const PrCampaignRepository = {
             }
         );
 
-        const result = await response.json();
+        await expectOk(
+            response,
+            "Unable to upload MP3"
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                result.error ??
-                "Unable to upload MP3"
-            );
-        }
-
-        return result;
+        return response.json();
     },
 
     /**
@@ -160,15 +148,11 @@ export const PrCampaignRepository = {
             }
         );
 
-        const result = await response.json();
+        await expectOk(
+            response,
+            "Unable to send test email"
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                result.error ??
-                "Unable to send test email"
-            );
-        }
-
-        return result;
+        return response.json();
     },
 };

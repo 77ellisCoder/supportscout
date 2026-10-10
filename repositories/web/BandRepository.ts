@@ -7,6 +7,10 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 type ApiGenre = {
     id: number | string;
     name: string;
@@ -86,11 +90,10 @@ export const BandRepository = {
             `${API_URL}/bands`
         );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load bands (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to load bands (${response.status})`
+        );
 
         const rows: ApiBand[] =
             await response.json();
@@ -121,11 +124,10 @@ export const BandRepository = {
             return null;
         }
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load band (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to load band (${response.status})`
+        );
 
         const row: ApiBand =
             await response.json();
@@ -148,15 +150,10 @@ export const BandRepository = {
             }
         );
 
-        if (!response.ok) {
-            const body =
-                await response.json();
-
-            throw new Error(
-                body.error ??
-                "Unable to create band."
-            );
-        }
+        await expectOk(
+            response,
+            "Unable to create band."
+        );
 
         const band =
             (await response.json()) as Band;
@@ -185,14 +182,12 @@ export const BandRepository = {
             }
         );
 
-        const result = await response.json();
+        await expectOk(
+            response,
+            "Unable to update band"
+        );
 
-        if (!response.ok) {
-            throw new Error(
-                result.error ??
-                "Unable to update band"
-            );
-        }
+        const result = await response.json();
 
         return mapBand(result);
     },

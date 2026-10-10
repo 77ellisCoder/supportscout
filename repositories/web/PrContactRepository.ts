@@ -4,17 +4,20 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 export const PrContactRepository = {
     async getAll(): Promise<PrContact[]> {
         const response = await fetch(
             `${API_URL}/pr-contacts`
         );
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load PR contacts (${response.status})`
-            );
-        }
+        await expectOk(
+            response,
+            `Unable to load PR contacts (${response.status})`
+        );
 
         return response.json();
     },

@@ -4,19 +4,19 @@ import {
     API_URL,
 } from "../../config/environment";
 
+import {
+    expectOk,
+} from "../../utils/api";
+
 async function parseResponse<T>(
     response: Response
 ): Promise<T> {
-    const result = await response.json();
+    await expectOk(
+        response,
+        "Genre API request failed"
+    );
 
-    if (!response.ok) {
-        throw new Error(
-            result.error ??
-            "Genre API request failed"
-        );
-    }
-
-    return result as T;
+    return response.json() as Promise<T>;
 }
 
 export const GenreRepository = {
