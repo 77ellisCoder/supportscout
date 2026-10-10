@@ -74,7 +74,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "api": "tsx server/src/index.ts",
-    "import:support-bands": "node scripts/convert-support-bands.cjs"
+    "import:support-bands": "node scripts/convert-support-bands.cjs",
+    "test": "tsx --test"
   },
   "private": true
 }
