@@ -1,4 +1,7 @@
-import { StyleSheet } from "react-native";
+import {
+    StyleSheet,
+    type TextStyle,
+} from "react-native";
 
 import {
     colors,
@@ -75,7 +78,7 @@ export const styles = StyleSheet.create({
         color: colors.text,
         lineHeight: 22,
         whiteSpace: "pre-wrap",
-    } as any,
+    } as TextStyle,
 
     secondaryText: {
         color: colors.textSecondary,

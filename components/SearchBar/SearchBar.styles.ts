@@ -1,4 +1,7 @@
-import { StyleSheet } from "react-native";
+import {
+    StyleSheet,
+    type TextStyle,
+} from "react-native";
 
 import {
     colors,
@@ -28,8 +31,8 @@ export const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: spacing.md,
 
-        outlineStyle: "none" as any,
-    },
+        outlineStyle: "none",
+    } as unknown as TextStyle,
 
     clearButton: {
         width: 32,
