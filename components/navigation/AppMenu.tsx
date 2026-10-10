@@ -37,7 +37,23 @@ export function AppMenu({ onClose }: AppMenuProps) {
 
             console.log("Bootstrap sync complete.");
 
-            await queryClient.invalidateQueries();
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: ["bands"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["genres"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["venues"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["gigs"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["user-bands"],
+                }),
+            ]);
 
             onClose();
 
