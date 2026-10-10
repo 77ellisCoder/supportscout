@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import {
   ActivityIndicator,
+  Pressable,
   Text,
   View,
 } from "react-native";
@@ -66,22 +67,28 @@ export default function RootLayout() {
   const [startupError, setStartupError] =
     useState<string | null>(null);
 
-  useEffect(() => {
-    async function initialise() {
-      try {
-        await AppBootstrapService.initialise();
-        await SoundService.initialise();
+  const initialise = async () => {
+    setStartupError(null);
+    setReady(false);
 
-        setReady(true);
-      } catch (error) {
-        setStartupError(
-          error instanceof Error
-            ? error.message
-            : String(error)
-        );
-      }
+    AppBootstrapService.reset();
+
+    try {
+      await AppBootstrapService.initialise();
+      await SoundService.initialise();
+
+      setReady(true);
+    } catch (error) {
+      setReady(false);
+      setStartupError(
+        error instanceof Error
+          ? error.message
+          : String(error)
+      );
     }
+  };
 
+  useEffect(() => {
     initialise();
 
     return () => {
@@ -120,6 +127,26 @@ export default function RootLayout() {
           >
             {startupError}
           </Text>
+
+          <Pressable
+            onPress={() => initialise()}
+            style={{
+              marginTop: 20,
+              backgroundColor: colors.primary,
+              borderRadius: 999,
+              paddingHorizontal: 18,
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.background,
+                fontWeight: "700",
+              }}
+            >
+              Retry
+            </Text>
+          </Pressable>
         </View>
       </SafeAreaProvider>
     );
