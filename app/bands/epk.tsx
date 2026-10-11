@@ -267,8 +267,9 @@ export default function BandEpkScreen() {
         <AssetSection
           title="MUSIC"
           required
+          helperText="At least one music file is required."
           files={songFiles}
-          buttonTitle="Add audio files"
+          buttonTitle="Add audio file(s)"
           disabled={pickerDisabled}
           onChoose={chooseSongs}
           onRemove={(index) => setSongFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))}
@@ -330,6 +331,7 @@ function hasRequiredEpkFields({
 function AssetSection({
   title,
   required = false,
+  helperText,
   files,
   buttonTitle,
   disabled,
@@ -338,6 +340,7 @@ function AssetSection({
 }: {
   title: string;
   required?: boolean;
+  helperText?: string;
   files: PickedFile[];
   buttonTitle: string;
   disabled: boolean;
@@ -347,6 +350,9 @@ function AssetSection({
   return (
     <View style={styles.section}>
       <FieldLabel label={title} required={required} style={styles.sectionTitle} />
+      {helperText && (
+        <Text style={styles.helperText}>{helperText}</Text>
+      )}
       <Button
         title={buttonTitle}
         variant="secondary"
@@ -475,6 +481,11 @@ const styles = StyleSheet.create({
   fileSize: {
     ...typography.small,
     color: colors.textMuted,
+  },
+  helperText: {
+    ...typography.small,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
   errorText: {
     ...typography.small,
