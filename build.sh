@@ -3,24 +3,19 @@
 set -euo pipefail
 
 # ------------------------------------------------------------
-# SupportScout Android Build
+# SupportScout Build
 #
 # Performs pre-build validation before starting an EAS build.
-# Usage:
-#   ./build.sh
-#   ./build.sh preview
-#   ./build.sh production
+# Usage: ./build.sh <android|ios> [profile]
+# The profile defaults to preview.
+# Examples:
+#   ./build.sh android
+#   ./build.sh ios preview
+#   ./build.sh android production
 # ------------------------------------------------------------
 
-PROFILE="${1:-preview}"
-
-echo
-echo "========================================"
-echo "  SupportScout Android Build"
-echo "========================================"
-echo
-echo "EAS profile: $PROFILE"
-echo
+PLATFORM="${1:-}"
+PROFILE="${2:-preview}"
 
 # ------------------------------------------------------------
 # Helpers
@@ -45,7 +40,32 @@ step() {
 }
 
 # ------------------------------------------------------------
-# 1. Check required commands
+# 1. Validate arguments
+# ------------------------------------------------------------
+
+case "$PLATFORM" in
+    android)
+        PLATFORM_LABEL="Android"
+        ;;
+    ios)
+        PLATFORM_LABEL="iOS"
+        ;;
+    *)
+        echo "Usage: $0 <android|ios> [profile]" >&2
+        exit 2
+        ;;
+esac
+
+echo
+echo "========================================"
+echo "  SupportScout $PLATFORM_LABEL Build"
+echo "========================================"
+echo
+echo "EAS profile: $PROFILE"
+echo
+
+# ------------------------------------------------------------
+# 2. Check required commands
 # ------------------------------------------------------------
 
 step "Checking build tools"
@@ -65,7 +85,7 @@ command -v eas >/dev/null 2>&1 ||
 success "Required tools found"
 
 # ------------------------------------------------------------
-# 2. Check we're in the project root
+# 3. Check we're in the project root
 # ------------------------------------------------------------
 
 step "Checking project"
@@ -79,7 +99,7 @@ step "Checking project"
 success "SupportScout project found"
 
 # ------------------------------------------------------------
-# 3. Check Git branch
+# 4. Check Git branch
 # ------------------------------------------------------------
 
 step "Checking Git branch"
@@ -89,13 +109,13 @@ BRANCH="$(git branch --show-current)"
 echo "Current branch: $BRANCH"
 
 if [[ "$BRANCH" != "main" ]]; then
-    fail "Android release builds must be run from main."
+    fail "$PLATFORM_LABEL release builds must be run from main."
 fi
 
 success "On main"
 
 # ------------------------------------------------------------
-# 4. Check working tree
+# 5. Check working tree
 # ------------------------------------------------------------
 
 step "Checking Git working tree"
@@ -110,7 +130,7 @@ fi
 success "Working tree clean"
 
 # ------------------------------------------------------------
-# 5. Check local main against origin/main
+# 6. Check local main against origin/main
 # ------------------------------------------------------------
 
 step "Checking remote state"
@@ -132,7 +152,7 @@ fi
 success "Local main matches origin/main"
 
 # ------------------------------------------------------------
-# 6. Check package version
+# 7. Check package version
 # ------------------------------------------------------------
 
 step "Checking version"
@@ -147,7 +167,7 @@ echo "Package version: $VERSION"
 success "Version detected"
 
 # ------------------------------------------------------------
-# 7. Check release tag
+# 8. Check release tag
 # ------------------------------------------------------------
 
 step "Checking Git tag"
@@ -171,7 +191,7 @@ else
 fi
 
 # ------------------------------------------------------------
-# 8. TypeScript
+# 9. TypeScript
 # ------------------------------------------------------------
 
 step "Running TypeScript checks"
@@ -183,7 +203,7 @@ fi
 success "TypeScript checks passed"
 
 # ------------------------------------------------------------
-# 9. Expo Doctor
+# 10. Expo Doctor
 # ------------------------------------------------------------
 
 step "Running Expo Doctor"
@@ -195,7 +215,7 @@ fi
 success "Expo Doctor passed"
 
 # ------------------------------------------------------------
-# 10. Final summary
+# 11. Final summary
 # ------------------------------------------------------------
 
 echo
@@ -207,22 +227,22 @@ echo "Version:  $VERSION"
 echo "Tag:      $EXPECTED_TAG"
 echo "Branch:   $BRANCH"
 echo "Profile:  $PROFILE"
-echo "Platform: Android"
+echo "Platform: $PLATFORM_LABEL"
 echo
 
 # ------------------------------------------------------------
-# 11. Build
+# 12. Build
 # ------------------------------------------------------------
 
-echo "Starting EAS Android build..."
+echo "Starting EAS $PLATFORM_LABEL build..."
 echo
 
 eas build \
-    --platform android \
+    --platform "$PLATFORM" \
     --profile "$PROFILE"
 
 echo
 echo "========================================"
-echo "  SupportScout Android build submitted"
+echo "  SupportScout $PLATFORM_LABEL build submitted"
 echo "========================================"
 echo

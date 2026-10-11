@@ -1,7 +1,7 @@
 {
   "name": "supportscout",
   "description": "A mobile app for managing bands, gigs, venues, and music industry contacts",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",
