@@ -8,7 +8,6 @@ import {
   Alert,
   Platform,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   View,
@@ -18,9 +17,10 @@ import { Button } from "../../../components/ui/Button";
 import { FieldLabel } from "../../../components/ui/FieldLabel";
 import { ScreenActionBar } from "../../../components/ui/ScreenActionBar";
 import { useBand } from "../../../hooks/useBand";
+import { styles } from "../../../styles/band-epk.styles";
 import { detailStyles } from "../../../styles/shared/details.styles";
 import { layoutStyles } from "../../../styles/shared/layout.styles";
-import { colors, radius, spacing, typography } from "../../../theme";
+import { colors } from "../../../theme";
 import { createBandEpkArchive } from "../../../utils/epk";
 
 type PickedFile = {
@@ -401,77 +401,3 @@ function formatFileSize(size: number): string {
 
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scroll: {
-    flex: 1,
-  },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: spacing.xl,
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    ...typography.small,
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
-  },
-  textArea: {
-    ...typography.body,
-    minHeight: 150,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    color: colors.text,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-  },
-  pressReleaseInput: {
-    minHeight: 220,
-  },
-  fileRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-    marginTop: spacing.sm,
-    paddingLeft: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    backgroundColor: colors.surface,
-  },
-  fileInfo: {
-    flex: 1,
-    minWidth: 0,
-  },
-  fileName: {
-    ...typography.small,
-    color: colors.text,
-  },
-  fileSize: {
-    ...typography.small,
-    color: colors.textMuted,
-  },
-  helperText: {
-    ...typography.small,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
-  },
-  errorText: {
-    ...typography.small,
-    color: colors.danger,
-    marginTop: spacing.sm,
-  },
-  successText: {
-    ...typography.small,
-    color: colors.primaryLight,
-    marginTop: spacing.sm,
-  },
-});
