@@ -139,6 +139,7 @@ export function GigForm({
 
                 <GigDatePicker
                     value={values.gigDate}
+                    required
                     onChange={(value) =>
                         updateField(
                             "gigDate",

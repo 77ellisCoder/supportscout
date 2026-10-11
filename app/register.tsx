@@ -15,6 +15,7 @@ import {
 import {
     Button,
 } from "../components/ui/Button";
+import { FieldLabel } from "../components/ui/FieldLabel";
 
 import {
     useAuth,
@@ -191,13 +192,11 @@ export default function RegisterScreen() {
                             styles.field
                         }
                     >
-                        <Text
-                            style={
-                                styles.label
-                            }
-                        >
-                            NAME
-                        </Text>
+                        <FieldLabel
+                            label="NAME"
+                            required
+                            style={styles.label}
+                        />
 
                         <TextInput
                             value={
@@ -221,13 +220,11 @@ export default function RegisterScreen() {
                             styles.field
                         }
                     >
-                        <Text
-                            style={
-                                styles.label
-                            }
-                        >
-                            EMAIL
-                        </Text>
+                        <FieldLabel
+                            label="EMAIL"
+                            required
+                            style={styles.label}
+                        />
 
                         <TextInput
                             value={
@@ -255,13 +252,11 @@ export default function RegisterScreen() {
                             styles.field
                         }
                     >
-                        <Text
-                            style={
-                                styles.label
-                            }
-                        >
-                            PASSWORD
-                        </Text>
+                        <FieldLabel
+                            label="PASSWORD"
+                            required
+                            style={styles.label}
+                        />
 
                         <TextInput
                             value={
@@ -289,13 +284,11 @@ export default function RegisterScreen() {
                             styles.field
                         }
                     >
-                        <Text
-                            style={
-                                styles.label
-                            }
-                        >
-                            CONFIRM PASSWORD
-                        </Text>
+                        <FieldLabel
+                            label="CONFIRM PASSWORD"
+                            required
+                            style={styles.label}
+                        />
 
                         <TextInput
                             value={

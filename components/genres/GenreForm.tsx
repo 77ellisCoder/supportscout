@@ -12,6 +12,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/gig-form.styles";
 
 import { FormActions } from "../ui/FormActions";
+import { FieldLabel } from "../ui/FieldLabel";
 
 
 export type GenreFormValues = {
@@ -87,6 +88,7 @@ export function GenreForm({
 
             <Field
                 label="Genre name"
+                required
                 value={values.genreName}
                 onChangeText={(value) =>
                     updateField(
@@ -108,6 +110,7 @@ export function GenreForm({
 
 type FieldProps = {
     label: string;
+    required?: boolean;
     value: string;
     onChangeText: (
         value: string
@@ -127,6 +130,7 @@ type FieldProps = {
 
 function Field({
     label,
+    required = false,
     value,
     onChangeText,
     placeholder,
@@ -136,9 +140,11 @@ function Field({
 }: FieldProps) {
     return (
         <View style={styles.field}>
-            <Text style={styles.fieldLabel}>
-                {label}
-            </Text>
+            <FieldLabel
+                label={label}
+                required={required}
+                style={styles.fieldLabel}
+            />
 
             <TextInput
                 value={value}

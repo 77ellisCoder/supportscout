@@ -20,6 +20,7 @@ import {
 import {
     Button,
 } from "../../components/ui/Button";
+import { FieldLabel } from "../../components/ui/FieldLabel";
 
 import {
     useCreateRehearsalProposal,
@@ -245,6 +246,16 @@ export default function ProposeRehearsalScreen() {
                     </Text>
                 </View>
 
+                <FieldLabel
+                    label="PROPOSED TIME SLOT"
+                    required
+                    style={{
+                        color: colors.textSecondary,
+                        fontSize: 12,
+                        fontWeight: "700",
+                    }}
+                />
+
                 <View
                     style={{
                         padding: 16,
@@ -329,20 +340,15 @@ export default function ProposeRehearsalScreen() {
                         gap: 8,
                     }}
                 >
-                    <Text
+                    <FieldLabel
+                        label="LOCATION"
+                        required
                         style={{
-                            color:
-                                colors.textSecondary,
-
-                            fontSize:
-                                12,
-
-                            fontWeight:
-                                "700",
+                            color: colors.textSecondary,
+                            fontSize: 12,
+                            fontWeight: "700",
                         }}
-                    >
-                        LOCATION
-                    </Text>
+                    />
 
                     {locations.isLoading ? (
                         <ActivityIndicator
@@ -531,6 +537,7 @@ export default function ProposeRehearsalScreen() {
 
                     {useCustomLocation && (
                         <TextInput
+                            accessibilityLabel="Custom rehearsal location, required"
                             value={
                                 customLocation
                             }

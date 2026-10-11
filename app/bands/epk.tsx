@@ -15,6 +15,7 @@ import {
 } from "react-native";
 
 import { Button } from "../../components/ui/Button";
+import { FieldLabel } from "../../components/ui/FieldLabel";
 import { ScreenActionBar } from "../../components/ui/ScreenActionBar";
 import { useBand } from "../../hooks/useBand";
 import { colors, radius, spacing, typography } from "../../theme";
@@ -120,11 +121,18 @@ export default function BandEpkScreen() {
     if (!band) return;
 
     const bioText = bioDraft ?? band.shortDescription ?? "";
-    const pressReleaseText = pressReleaseDraft ??
-      `${band.bandName}\n\n${band.shortDescription ?? ""}`.trim();
+    const pressReleaseText = pressReleaseDraft ?? "";
 
-    if (!bioText.trim() || !pressReleaseText.trim()) {
-      setFeedback("Add both a band bio and a press release before exporting.");
+    if (!hasRequiredEpkFields({
+      bioText,
+      pressReleaseText,
+      logoFile,
+      photoFiles,
+      songFiles,
+    })) {
+      setFeedback(
+        "Complete the band bio and press release, choose a logo and press image, and add at least one music file before exporting."
+      );
       setFeedbackIsError(true);
       return;
     }
@@ -181,8 +189,14 @@ export default function BandEpkScreen() {
   }
 
   const bioText = bioDraft ?? band.shortDescription ?? "";
-  const pressReleaseText = pressReleaseDraft ??
-    `${band.bandName}\n\n${band.shortDescription ?? ""}`.trim();
+  const pressReleaseText = pressReleaseDraft ?? "";
+  const canCreateEpk = hasRequiredEpkFields({
+    bioText,
+    pressReleaseText,
+    logoFile,
+    photoFiles,
+    songFiles,
+  });
   const pickerDisabled = isPicking || isCreating;
 
   return (
@@ -196,7 +210,7 @@ export default function BandEpkScreen() {
         <Text style={styles.title}>{band.bandName}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>BAND BIO</Text>
+          <FieldLabel label="BAND BIO" required style={styles.sectionTitle} />
           <TextInput
             accessibilityLabel="Band bio"
             multiline
@@ -210,7 +224,7 @@ export default function BandEpkScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>PRESS RELEASE</Text>
+          <FieldLabel label="PRESS RELEASE" required style={styles.sectionTitle} />
           <TextInput
             accessibilityLabel="Press release"
             multiline
@@ -224,7 +238,7 @@ export default function BandEpkScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>LOGO</Text>
+          <FieldLabel label="LOGO" required style={styles.sectionTitle} />
           <Button
             title={logoFile ? "Replace logo" : "Choose logo"}
             variant="secondary"
@@ -242,6 +256,7 @@ export default function BandEpkScreen() {
 
         <AssetSection
           title="PRESS IMAGES"
+          required
           files={photoFiles}
           buttonTitle="Add images"
           disabled={pickerDisabled}
@@ -251,8 +266,10 @@ export default function BandEpkScreen() {
 
         <AssetSection
           title="MUSIC"
+          required
+          helperText="At least one music file is required."
           files={songFiles}
-          buttonTitle="Add audio files"
+          buttonTitle="Add audio file(s)"
           disabled={pickerDisabled}
           onChoose={chooseSongs}
           onRemove={(index) => setSongFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))}
@@ -279,15 +296,9 @@ export default function BandEpkScreen() {
 
       <ScreenActionBar>
         <Button
-          title="Back"
-          variant="ghost"
-          disabled={isCreating}
-          onPress={() => router.back()}
-        />
-        <Button
           title="Create EPK"
           loading={isCreating}
-          disabled={isPicking}
+          disabled={isPicking || !canCreateEpk}
           onPress={createEpk}
         />
       </ScreenActionBar>
@@ -295,8 +306,32 @@ export default function BandEpkScreen() {
   );
 }
 
+function hasRequiredEpkFields({
+  bioText,
+  pressReleaseText,
+  logoFile,
+  photoFiles,
+  songFiles,
+}: {
+  bioText: string;
+  pressReleaseText: string;
+  logoFile: PickedFile | null;
+  photoFiles: PickedFile[];
+  songFiles: PickedFile[];
+}): boolean {
+  return Boolean(
+    bioText.trim() &&
+    pressReleaseText.trim() &&
+    logoFile &&
+    photoFiles.length > 0 &&
+    songFiles.length > 0
+  );
+}
+
 function AssetSection({
   title,
+  required = false,
+  helperText,
   files,
   buttonTitle,
   disabled,
@@ -304,6 +339,8 @@ function AssetSection({
   onRemove,
 }: {
   title: string;
+  required?: boolean;
+  helperText?: string;
   files: PickedFile[];
   buttonTitle: string;
   disabled: boolean;
@@ -312,7 +349,10 @@ function AssetSection({
 }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <FieldLabel label={title} required={required} style={styles.sectionTitle} />
+      {helperText && (
+        <Text style={styles.helperText}>{helperText}</Text>
+      )}
       <Button
         title={buttonTitle}
         variant="secondary"
@@ -441,6 +481,11 @@ const styles = StyleSheet.create({
   fileSize: {
     ...typography.small,
     color: colors.textMuted,
+  },
+  helperText: {
+    ...typography.small,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
   errorText: {
     ...typography.small,

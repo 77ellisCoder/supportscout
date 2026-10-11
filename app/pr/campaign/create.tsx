@@ -15,6 +15,7 @@ import {
 import * as DocumentPicker from "expo-document-picker";
 
 import { Button } from "../../../components/ui/Button";
+import { FieldLabel } from "../../../components/ui/FieldLabel";
 import { usePrContacts } from "../../../hooks/usePrContacts";
 import { PrCampaignRepository } from "../../../repositories"
 
@@ -179,9 +180,7 @@ export default function CreatePrCampaignScreen() {
                             Campaign
                         </Text>
 
-                        <Text style={styles.label}>
-                            Campaign name
-                        </Text>
+                        <FieldLabel label="Campaign name" required style={styles.label} />
 
                         <TextInput
                             value={name}
@@ -193,9 +192,7 @@ export default function CreatePrCampaignScreen() {
                             style={styles.input}
                         />
 
-                        <Text style={styles.label}>
-                            Email subject
-                        </Text>
+                        <FieldLabel label="Email subject" required style={styles.label} />
 
                         <TextInput
                             value={subject}
@@ -207,9 +204,7 @@ export default function CreatePrCampaignScreen() {
                             style={styles.input}
                         />
 
-                        <Text style={styles.label}>
-                            Message
-                        </Text>
+                        <FieldLabel label="Message" required style={styles.label} />
 
                         <TextInput
                             value={emailBody}
@@ -283,9 +278,7 @@ export default function CreatePrCampaignScreen() {
                     </View>
 
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>
-                            Recipients
-                        </Text>
+                        <FieldLabel label="Recipients" required style={styles.sectionTitle} />
 
                         <Text style={styles.secondaryText}>
                             {recipients.length} selected

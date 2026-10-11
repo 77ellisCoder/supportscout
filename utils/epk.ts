@@ -1,5 +1,7 @@
 import JSZip from "jszip";
 
+import { renderEpkPdf, type EpkPdfImage } from "./epk-pdf";
+
 export type EpkAssetReference =
     | number
     | string
@@ -29,22 +31,17 @@ export type CreateBandEpkArchiveInput = {
 };
 
 export function buildEpkArchiveEntries({
-    bandName,
     bioFiles = [],
     photoFiles = [],
     songFiles = [],
 }: BuildEpkArchiveEntriesInput): string[] {
-    const rootName = sanitizeArchiveName(
-        bandName || "SupportScout Band"
-    );
-
     const addFiles = (
         folderName: string,
         files: string[]
     ): string[] =>
         files.map(
             (file) =>
-                `${rootName}_EPK/${folderName}/${sanitizeFileName(file)}`
+                `${folderName}/${sanitizeFileName(file)}`
         );
 
     return [
@@ -76,17 +73,17 @@ export async function createBandEpkArchive({
     fileName: string;
     zipPath: string;
 }> {
+    if (logoFile == null || photoFiles.length === 0) {
+        throw new Error(
+            "Select a band logo and at least one press image before creating the EPK."
+        );
+    }
+
     const zip = new JSZip();
     const rootName = sanitizeArchiveName(
         bandName || "SupportScout Band"
     );
-    const rootFolder = zip.folder(`${rootName}_EPK`);
-
-    if (!rootFolder) {
-        throw new Error(
-            "Unable to create EPK archive root folder."
-        );
-    }
+    const rootFolder = zip;
 
     const bioFolder = rootFolder.folder("Bio + Press Release");
 
@@ -96,14 +93,6 @@ export async function createBandEpkArchive({
         );
     }
 
-    if (bioText.trim()) {
-        bioFolder.file("Band Bio.txt", bioText.trim());
-    }
-
-    if (pressReleaseText.trim()) {
-        bioFolder.file("Press Release.txt", pressReleaseText.trim());
-    }
-
     const isWeb =
         typeof document !== "undefined" &&
         typeof window !== "undefined";
@@ -111,6 +100,33 @@ export async function createBandEpkArchive({
     const FileSystem = isWeb
         ? null
         : await import("expo-file-system/legacy");
+
+    const logoImage = await loadPdfImage(logoFile, FileSystem);
+    const pressImage = await loadPdfImage(photoFiles[0] ?? null, FileSystem);
+
+    if (bioText.trim()) {
+        const pdfBytes = await renderEpkPdf({
+            bandName,
+            documentType: "bio",
+            text: bioText.trim(),
+            logoImage,
+            pressImage,
+        });
+
+        bioFolder.file("Band Bio.pdf", pdfBytes, { binary: true });
+    }
+
+    if (pressReleaseText.trim()) {
+        const pdfBytes = await renderEpkPdf({
+            bandName,
+            documentType: "press-release",
+            text: pressReleaseText.trim(),
+            logoImage,
+            pressImage,
+        });
+
+        bioFolder.file("Press Release.pdf", pdfBytes, { binary: true });
+    }
 
     await addAssetFolder(
         rootFolder,
@@ -237,37 +253,58 @@ async function addAssetFolder(
 
     for (const file of files) {
         const asset = await resolveAsset(file);
-
-        if (FileSystem) {
-            const bytes = await readAssetBytes(asset.uri, FileSystem);
-            folder.file(
-                sanitizeFileName(asset.name),
-                bytes,
-                {
-                    binary: true,
-                }
-            );
-            continue;
-        }
-
-        const response = await fetch(asset.uri);
-
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load EPK asset ${asset.name} (${response.status}).`
-            );
-        }
-
-        const arrayBuffer = await response.arrayBuffer();
+        const bytes = await loadAssetBytes(asset, FileSystem);
 
         folder.file(
             sanitizeFileName(asset.name),
-            arrayBuffer,
+            bytes,
             {
                 binary: true,
             }
         );
     }
+}
+
+async function loadPdfImage(
+    file: EpkAssetReference | null,
+    FileSystem: typeof import("expo-file-system/legacy") | null
+): Promise<EpkPdfImage | null> {
+    if (!file) {
+        return null;
+    }
+
+    const asset = await resolveAsset(file);
+    const extension = asset.name.split(".").pop()?.toLowerCase();
+
+    if (!extension || !["png", "jpg", "jpeg"].includes(extension)) {
+        throw new Error(
+            `EPK PDFs require PNG or JPEG images. Convert ${asset.name} and try again.`
+        );
+    }
+
+    return {
+        name: asset.name,
+        bytes: await loadAssetBytes(asset, FileSystem),
+    };
+}
+
+async function loadAssetBytes(
+    asset: { name: string; uri: string },
+    FileSystem: typeof import("expo-file-system/legacy") | null
+): Promise<Uint8Array> {
+    if (FileSystem) {
+        return readAssetBytes(asset.uri, FileSystem);
+    }
+
+    const response = await fetch(asset.uri);
+
+    if (!response.ok) {
+        throw new Error(
+            `Unable to load EPK asset ${asset.name} (${response.status}).`
+        );
+    }
+
+    return new Uint8Array(await response.arrayBuffer());
 }
 
 async function resolveAsset(

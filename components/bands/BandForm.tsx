@@ -14,6 +14,7 @@ import { colors } from "../../theme";
 import { styles } from "../../styles/band-form.styles";
 import { PageHeader } from "../ui/PageHeader";
 import { FormActions } from "../ui/FormActions";
+import { FieldLabel } from "../ui/FieldLabel";
 import { BandContactLinks } from "./BandContactLinks";
 import { GenreChipSelector } from "./GenreChipSelector";
 import { useGenres } from "../../hooks/useGenres";
@@ -174,6 +175,7 @@ export function BandForm({
 
                 <Field
                     label="Band name"
+                    required
                     value={values.bandName}
                     onChangeText={(value) => {
                         updateField("bandName", value);
@@ -435,6 +437,7 @@ export function BandForm({
 
 type FieldProps = {
     label: string;
+    required?: boolean;
     value: string;
     onChangeText: (value: string) => void;
     placeholder?: string;
@@ -451,6 +454,7 @@ type FieldProps = {
 
 function Field({
     label,
+    required = false,
     value,
     onChangeText,
     placeholder,
@@ -462,9 +466,11 @@ function Field({
 }: FieldProps) {
     return (
         <View style={styles.field}>
-            <Text style={styles.fieldLabel}>
-                {label}
-            </Text>
+            <FieldLabel
+                label={label}
+                required={required}
+                style={styles.fieldLabel}
+            />
 
             <TextInput
                 value={value}
