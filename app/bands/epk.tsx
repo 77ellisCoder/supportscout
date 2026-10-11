@@ -18,6 +18,8 @@ import { Button } from "../../components/ui/Button";
 import { FieldLabel } from "../../components/ui/FieldLabel";
 import { ScreenActionBar } from "../../components/ui/ScreenActionBar";
 import { useBand } from "../../hooks/useBand";
+import { detailStyles } from "../../styles/shared/details.styles";
+import { layoutStyles } from "../../styles/shared/layout.styles";
 import { colors, radius, spacing, typography } from "../../theme";
 import { createBandEpkArchive } from "../../utils/epk";
 
@@ -203,14 +205,16 @@ export default function BandEpkScreen() {
     <View style={styles.screen}>
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={layoutStyles.contentContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.eyebrow}>ELECTRONIC PRESS KIT</Text>
-        <Text style={styles.title}>{band.bandName}</Text>
+        <View style={detailStyles.hero}>
+          <Text style={detailStyles.eyebrow}>ELECTRONIC PRESS KIT</Text>
+          <Text style={detailStyles.title}>{band.bandName}</Text>
+        </View>
 
-        <View style={styles.section}>
-          <FieldLabel label="BAND BIO" required style={styles.sectionTitle} />
+        <View style={detailStyles.section}>
+          <FieldLabel label="BAND BIO" required style={detailStyles.sectionLabel} />
           <TextInput
             accessibilityLabel="Band bio"
             multiline
@@ -223,8 +227,8 @@ export default function BandEpkScreen() {
           />
         </View>
 
-        <View style={styles.section}>
-          <FieldLabel label="PRESS RELEASE" required style={styles.sectionTitle} />
+        <View style={detailStyles.section}>
+          <FieldLabel label="PRESS RELEASE" required style={detailStyles.sectionLabel} />
           <TextInput
             accessibilityLabel="Press release"
             multiline
@@ -237,8 +241,8 @@ export default function BandEpkScreen() {
           />
         </View>
 
-        <View style={styles.section}>
-          <FieldLabel label="LOGO" required style={styles.sectionTitle} />
+        <View style={detailStyles.section}>
+          <FieldLabel label="LOGO" required style={detailStyles.sectionLabel} />
           <Button
             title={logoFile ? "Replace logo" : "Choose logo"}
             variant="secondary"
@@ -348,8 +352,8 @@ function AssetSection({
   onRemove: (index: number) => void;
 }) {
   return (
-    <View style={styles.section}>
-      <FieldLabel label={title} required={required} style={styles.sectionTitle} />
+    <View style={detailStyles.section}>
+      <FieldLabel label={title} required={required} style={detailStyles.sectionLabel} />
       {helperText && (
         <Text style={styles.helperText}>{helperText}</Text>
       )}
@@ -406,14 +410,6 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
-  content: {
-    width: "100%",
-    maxWidth: 820,
-    alignSelf: "center",
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xl,
-  },
   center: {
     flex: 1,
     alignItems: "center",
@@ -425,25 +421,6 @@ const styles = StyleSheet.create({
     ...typography.small,
     color: colors.textSecondary,
     marginTop: spacing.sm,
-  },
-  eyebrow: {
-    ...typography.label,
-    color: colors.primaryLight,
-  },
-  title: {
-    ...typography.h1,
-    color: colors.text,
-    marginBottom: spacing.lg,
-  },
-  section: {
-    paddingVertical: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  sectionTitle: {
-    ...typography.label,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
   },
   textArea: {
     ...typography.body,
