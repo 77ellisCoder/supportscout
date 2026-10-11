@@ -42,6 +42,7 @@ export type BandAvailabilityMember = {
     relationship: string;
 
     connected: boolean;
+    calendarError?: boolean;
 
     providers: string[];
 
@@ -107,16 +108,16 @@ export type CalendarProvider =
 
 export type CalendarConnection = {
     provider:
-        CalendarProvider;
+    CalendarProvider;
 
     email:
-        string | null;
+    string | null;
 
     timezone:
-        string;
+    string;
 
     updatedAt:
-        string;
+    string;
 };
 
 export async function getCalendarConnections():
@@ -200,7 +201,7 @@ export async function connectICloudCalendar(
     if (!response.ok) {
         throw new Error(
             body.error ??
-                "Unable to connect iCloud Calendar."
+            "Unable to connect iCloud Calendar."
         );
     }
 

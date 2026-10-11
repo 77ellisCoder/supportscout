@@ -285,6 +285,11 @@ export function BandAvailabilityCard({
             [members]
         );
 
+    const hasCalendarErrors =
+        members.some(
+            (member) => member.calendarError
+        );
+
     const displayedAvailability =
         showAll
             ? groupedAvailability
@@ -595,14 +600,18 @@ export function BandAvailabilityCard({
                                                 }
                                                 style={{
                                                     color:
-                                                        member.connected
+                                                        member.calendarError
+                                                            ? colors.danger
+                                                            : member.connected
                                                             ? colors.primaryLight
                                                             : colors.textSecondary,
                                                     fontWeight:
                                                         "600",
                                                 }}
                                             >
-                                                {member.connected
+                                                {member.calendarError
+                                                    ? "Needs attention"
+                                                    : member.connected
                                                     ? member.providers
                                                         .map(
                                                             formatProvider
@@ -616,6 +625,18 @@ export function BandAvailabilityCard({
                                     )
                                 )}
                             </View>
+                        )}
+
+                        {hasCalendarErrors && (
+                            <Text
+                                style={{
+                                    color: colors.danger,
+                                    fontSize: 12,
+                                    lineHeight: 17,
+                                }}
+                            >
+                                One or more member calendars could not be read. Ask the affected member to check their Calendar Connections.
+                            </Text>
                         )}
                     </View>
 
@@ -647,7 +668,8 @@ export function BandAvailabilityCard({
                             </Text>
 
                             {connectedCount >
-                                0 && (
+                                0 &&
+                                !hasCalendarErrors && (
                                     <Text
                                         style={{
                                             color:
@@ -677,7 +699,16 @@ export function BandAvailabilityCard({
                             Select a time to propose a rehearsal.
                         </Text>
 
-                        {connectedCount ===
+                        {hasCalendarErrors ? (
+                            <Text
+                                style={{
+                                    color:
+                                        colors.textSecondary,
+                                }}
+                            >
+                                Shared availability can’t be confirmed until all connected calendars can be read.
+                            </Text>
+                        ) : connectedCount ===
                             0 ? (
                             <Text
                                 style={{

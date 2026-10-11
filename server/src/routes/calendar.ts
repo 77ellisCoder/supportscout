@@ -1340,21 +1340,80 @@ calendarRouter.get(
                 await Promise.all(
                     members.map(
                         async (member) => {
+                            try {
 
-                            const {
-                                busy,
-                                connections,
-                            } =
-                                await getUserBusyPeriods(
-                                    member.userId,
-                                    range.from,
-                                    range.to
-                                );
+                                const {
+                                    busy,
+                                    connections,
+                                } =
+                                    await getUserBusyPeriods(
+                                        member.userId,
+                                        range.from,
+                                        range.to
+                                    );
 
-                            if (
-                                connections.length ===
-                                0
-                            ) {
+                                if (
+                                    connections.length ===
+                                    0
+                                ) {
+                                    return {
+                                        userId:
+                                            member.userId,
+
+                                        displayName:
+                                            member.displayName,
+
+                                        email:
+                                            member.email,
+
+                                        relationship:
+                                            member.relationship,
+
+                                        connected:
+                                            false,
+
+                                        providers:
+                                            [],
+
+                                        timezone:
+                                            "Australia/Perth",
+
+                                        minimumMinutes: 0,
+
+                                        busy:
+                                            [],
+
+                                        available:
+                                            [],
+
+                                        calendarError:
+                                            false,
+                                    };
+                                }
+
+                                const preferences =
+                                    await getUserAvailabilityPreferences(
+                                        member.userId
+                                    );
+
+                                const available =
+                                    calculateAvailabilityFromWindows(
+                                        range.from,
+                                        range.to,
+                                        busy,
+                                        preferences.windows,
+                                        {
+                                            minimumMinutes:
+                                                preferences.minimumMinutes,
+
+                                            bufferMinutes:
+                                                preferences.bufferMinutes,
+
+                                            utcOffsetMinutes:
+                                                480,
+                                        }
+                                    );
+
                                 return {
                                     userId:
                                         member.userId,
@@ -1369,87 +1428,60 @@ calendarRouter.get(
                                         member.relationship,
 
                                     connected:
-                                        false,
+                                        true,
 
                                     providers:
-                                        [],
+                                        connections.map(
+                                            (
+                                                connection
+                                            ) =>
+                                                connection.provider
+                                        ),
 
                                     timezone:
-                                        "Australia/Perth",
+                                        preferences.timezone,
 
-                                    minimumMinutes: 0,
+                                    minimumMinutes:
+                                        preferences.minimumMinutes,
 
                                     busy:
-                                        [],
+                                        serializeRanges(
+                                            busy
+                                        ),
 
                                     available:
-                                        [],
+                                        serializeRanges(
+                                            available
+                                        ),
+
+                                    calendarError:
+                                        false,
                                 };
-                            }
-
-                            const preferences =
-                                await getUserAvailabilityPreferences(
-                                    member.userId
-                                );
-
-                            const available =
-                                calculateAvailabilityFromWindows(
-                                    range.from,
-                                    range.to,
-                                    busy,
-                                    preferences.windows,
+                            } catch (error) {
+                                console.error(
+                                    "Band member calendar availability failed:",
                                     {
-                                        minimumMinutes:
-                                            preferences.minimumMinutes,
-
-                                        bufferMinutes:
-                                            preferences.bufferMinutes,
-
-                                        utcOffsetMinutes:
-                                            480,
+                                        userId: member.userId,
+                                        error: error instanceof Error
+                                            ? error.message
+                                            : error,
                                     }
                                 );
 
-                            return {
-                                userId:
-                                    member.userId,
-
-                                displayName:
-                                    member.displayName,
-
-                                email:
-                                    member.email,
-
-                                relationship:
-                                    member.relationship,
-
-                                connected:
-                                    true,
-
-                                providers:
-                                    connections.map(
-                                        (
-                                            connection
-                                        ) =>
-                                            connection.provider
-                                    ),
-
-                                timezone:
-                                    preferences.timezone,
-
-                                minimumMinutes:
-                                    preferences.minimumMinutes,
-
-                                busy:
-                                    serializeRanges(
-                                        busy
-                                    ),
-
-                                available:
-                                    serializeRanges(
-                                        available
-                                    ),
-                            };
+                                return {
+                                    userId: member.userId,
+                                    displayName: member.displayName,
+                                    email: member.email,
+                                    relationship: member.relationship,
+                                    connected: false,
+                                    providers: [],
+                                    timezone: "Australia/Perth",
+                                    minimumMinutes: 0,
+                                    busy: [],
+                                    available: [],
+                                    calendarError: true,
+                                };
+                            }
                         }
                     )
                 );
@@ -1469,28 +1501,35 @@ calendarRouter.get(
                     0
                 );
 
-            const sharedAvailable =
-                intersectAvailability(
-                    connectedMembers.map(
-                        (member) =>
-                            member.available.map(
-                                (period) => ({
-                                    start: new Date(
-                                        period.start
-                                    ),
-                                    end: new Date(
-                                        period.end
-                                    ),
-                                })
-                            )
-                    )
-                ).filter(
-                    (interval) =>
-                        interval.end.getTime() -
-                        interval.start.getTime() >=
-                        minimumSharedMinutes *
-                        60_000
+            const hasCalendarErrors =
+                memberAvailability.some(
+                    (member) => member.calendarError
                 );
+
+            const sharedAvailable =
+                hasCalendarErrors
+                    ? []
+                    : intersectAvailability(
+                        connectedMembers.map(
+                            (member) =>
+                                member.available.map(
+                                    (period) => ({
+                                        start: new Date(
+                                            period.start
+                                        ),
+                                        end: new Date(
+                                            period.end
+                                        ),
+                                    })
+                                )
+                        )
+                    ).filter(
+                        (interval) =>
+                            interval.end.getTime() -
+                            interval.start.getTime() >=
+                            minimumSharedMinutes *
+                            60_000
+                    );
 
             res.json({
                 bandId,
