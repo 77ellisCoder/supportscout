@@ -487,6 +487,16 @@ function AuthenticatedLayout() {
             ),
         }}
       />
+
+      <Stack.Screen
+        name="settings/admin"
+        options={{
+          headerTitle:
+            backTitle(
+              "Administration"
+            ),
+        }}
+      />
     </Stack>
   );
 }
