@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 
 import { authRouter } from "./routes/auth";
+import { adminRouter } from "./routes/admin";
 import { bandsRouter } from "./routes/bands";
 import { genresRouter } from "./routes/genres";
 import { gigsRouter } from "./routes/gigs";
@@ -45,6 +46,7 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/admin", adminRouter);
 app.use("/bands", bandsRouter);
 app.use("/genres", genresRouter);
 app.use("/gigs", gigsRouter);

@@ -7,6 +7,7 @@ import {
 import {
   router,
 } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
 
 import {
   useAuth,
@@ -20,6 +21,7 @@ import AvailabilityPreferencesCard from "../../components/settings/AvailabilityP
 
 import MyBandsCard from "../../components/settings/MyBandsCard";
 import CalendarConnectionsCard from "../../components/settings/CalendarConnectionsCard";
+import { AdminService } from "../../services/admin/AdminService";
 
 import {
   styles,
@@ -30,6 +32,12 @@ export default function SettingsScreen() {
     user,
     logout,
   } = useAuth();
+
+  const adminAccess = useQuery({
+    queryKey: ["admin", "me"],
+    queryFn: AdminService.getAccess,
+    enabled: Boolean(user),
+  });
 
   if (!user) {
     return null;
@@ -174,6 +182,26 @@ export default function SettingsScreen() {
           }
         />
       </View>
+
+      {(adminAccess.data?.systemAdmin ||
+        (adminAccess.data?.bandAdminIds.length ?? 0) > 0) && (
+        <View style={styles.settingsCard}>
+          <View style={styles.settingsDetails}>
+            <Text style={styles.sectionLabel}>ADMINISTRATION</Text>
+            <Text style={styles.settingsTitle}>Access and band members</Text>
+            <Text style={styles.settingsDescription}>
+              Manage system roles and the bands you administer.
+            </Text>
+          </View>
+          <Button
+            title="Manage access"
+            variant="secondary"
+            style={styles.compactButton}
+            textStyle={styles.compactButtonText}
+            onPress={() => router.push("/settings/admin")}
+          />
+        </View>
+      )}
 
       <MyBandsCard />
 
