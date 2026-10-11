@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
 import * as DocumentPicker from "expo-document-picker";
@@ -14,14 +14,14 @@ import {
   View,
 } from "react-native";
 
-import { Button } from "../../components/ui/Button";
-import { FieldLabel } from "../../components/ui/FieldLabel";
-import { ScreenActionBar } from "../../components/ui/ScreenActionBar";
-import { useBand } from "../../hooks/useBand";
-import { detailStyles } from "../../styles/shared/details.styles";
-import { layoutStyles } from "../../styles/shared/layout.styles";
-import { colors, radius, spacing, typography } from "../../theme";
-import { createBandEpkArchive } from "../../utils/epk";
+import { Button } from "../../../components/ui/Button";
+import { FieldLabel } from "../../../components/ui/FieldLabel";
+import { ScreenActionBar } from "../../../components/ui/ScreenActionBar";
+import { useBand } from "../../../hooks/useBand";
+import { detailStyles } from "../../../styles/shared/details.styles";
+import { layoutStyles } from "../../../styles/shared/layout.styles";
+import { colors, radius, spacing, typography } from "../../../theme";
+import { createBandEpkArchive } from "../../../utils/epk";
 
 type PickedFile = {
   name: string;
