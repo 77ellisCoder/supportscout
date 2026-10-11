@@ -275,7 +275,7 @@ export function BandAvailabilityCard({
             [sharedSlots]
         );
 
-    const connectedCount =
+    const readableMemberCount =
         useMemo(
             () =>
                 members.filter(
@@ -534,13 +534,13 @@ export function BandAvailabilityCard({
                             }}
                         >
                             {
-                                connectedCount
+                                readableMemberCount
                             }
                             /
                             {
                                 members.length
                             }{" "}
-                            members connected
+                            members with readable calendars
                         </Text>
 
                         {members.length ===
@@ -627,15 +627,17 @@ export function BandAvailabilityCard({
                             </View>
                         )}
 
-                        {hasCalendarErrors && (
+                        {readableMemberCount < members.length && (
                             <Text
                                 style={{
-                                    color: colors.danger,
+                                    color: hasCalendarErrors
+                                        ? colors.danger
+                                        : colors.textSecondary,
                                     fontSize: 12,
                                     lineHeight: 17,
                                 }}
                             >
-                                One or more member calendars could not be read. Ask the affected member to check their Calendar Connections.
+                                Availability below excludes members whose calendars are not connected or could not be read.
                             </Text>
                         )}
                     </View>
@@ -667,9 +669,7 @@ export function BandAvailabilityCard({
                                 SHARED AVAILABILITY
                             </Text>
 
-                            {connectedCount >
-                                0 &&
-                                !hasCalendarErrors && (
+                            {readableMemberCount > 0 && (
                                     <Text
                                         style={{
                                             color:
@@ -678,7 +678,9 @@ export function BandAvailabilityCard({
                                             fontWeight: "600",
                                         }}
                                     >
-                                        All connected members
+                                        {readableMemberCount === members.length
+                                            ? "All members"
+                                            : `${readableMemberCount} readable`}
                                     </Text>
                                 )}
                         </View>
@@ -695,20 +697,11 @@ export function BandAvailabilityCard({
                                     17,
                             }}
                         >
-                            Times when all connected members are free.
+                            Times when all readable connected calendars are free.
                             Select a time to propose a rehearsal.
                         </Text>
 
-                        {hasCalendarErrors ? (
-                            <Text
-                                style={{
-                                    color:
-                                        colors.textSecondary,
-                                }}
-                            >
-                                Shared availability can’t be confirmed until all connected calendars can be read.
-                            </Text>
-                        ) : connectedCount ===
+                        {readableMemberCount ===
                             0 ? (
                             <Text
                                 style={{

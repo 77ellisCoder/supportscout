@@ -1501,15 +1501,8 @@ calendarRouter.get(
                     0
                 );
 
-            const hasCalendarErrors =
-                memberAvailability.some(
-                    (member) => member.calendarError
-                );
-
             const sharedAvailable =
-                hasCalendarErrors
-                    ? []
-                    : intersectAvailability(
+                intersectAvailability(
                         connectedMembers.map(
                             (member) =>
                                 member.available.map(
