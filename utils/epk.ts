@@ -31,22 +31,17 @@ export type CreateBandEpkArchiveInput = {
 };
 
 export function buildEpkArchiveEntries({
-    bandName,
     bioFiles = [],
     photoFiles = [],
     songFiles = [],
 }: BuildEpkArchiveEntriesInput): string[] {
-    const rootName = sanitizeArchiveName(
-        bandName || "SupportScout Band"
-    );
-
     const addFiles = (
         folderName: string,
         files: string[]
     ): string[] =>
         files.map(
             (file) =>
-                `${rootName}_EPK/${folderName}/${sanitizeFileName(file)}`
+                `${folderName}/${sanitizeFileName(file)}`
         );
 
     return [
@@ -88,13 +83,7 @@ export async function createBandEpkArchive({
     const rootName = sanitizeArchiveName(
         bandName || "SupportScout Band"
     );
-    const rootFolder = zip.folder(`${rootName}_EPK`);
-
-    if (!rootFolder) {
-        throw new Error(
-            "Unable to create EPK archive root folder."
-        );
-    }
+    const rootFolder = zip;
 
     const bioFolder = rootFolder.folder("Bio + Press Release");
 

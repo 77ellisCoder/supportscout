@@ -12,14 +12,17 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 
 import { styles } from "../../styles/gig-form.styles";
+import { FieldLabel } from "../ui/FieldLabel";
 
 type GigDatePickerProps = {
     value: string;
+    required?: boolean;
     onChange: (value: string) => void;
 };
 
 export function GigDatePicker({
     value,
+    required = false,
     onChange,
 }: GigDatePickerProps) {
     const [showPicker, setShowPicker] =
@@ -45,9 +48,11 @@ export function GigDatePicker({
 
     return (
         <View style={styles.field}>
-            <Text style={styles.fieldLabel}>
-                Gig date
-            </Text>
+            <FieldLabel
+                label="Gig date"
+                required={required}
+                style={styles.fieldLabel}
+            />
 
             <Pressable
                 onPress={() => setShowPicker(true)}

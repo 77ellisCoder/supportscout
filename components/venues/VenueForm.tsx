@@ -13,6 +13,7 @@ import type { VenueStatus } from "../../models/Venue";
 import { colors } from "../../theme";
 import { styles } from "../../styles/venue-form.styles";
 import { FormActions } from "../ui/FormActions";
+import { FieldLabel } from "../ui/FieldLabel";
 
 import { Chip } from "../../components/Chip";
 import { ScreenActionBar } from "../../components/ui/ScreenActionBar"
@@ -120,6 +121,7 @@ export function VenueForm({
 
                 <Field
                     label="Venue name"
+                    required
                     value={values.venueName}
                     onChangeText={(value) =>
                         updateField("venueName", value)
@@ -327,6 +329,7 @@ export function VenueForm({
 
 type FieldProps = {
     label: string;
+    required?: boolean;
     value: string;
     onChangeText: (value: string) => void;
     placeholder?: string;
@@ -341,6 +344,7 @@ type FieldProps = {
 
 function Field({
     label,
+    required = false,
     value,
     onChangeText,
     placeholder,
@@ -350,9 +354,11 @@ function Field({
 }: FieldProps) {
     return (
         <View style={styles.field}>
-            <Text style={styles.fieldLabel}>
-                {label}
-            </Text>
+            <FieldLabel
+                label={label}
+                required={required}
+                style={styles.fieldLabel}
+            />
 
             <TextInput
                 value={value}

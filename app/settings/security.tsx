@@ -11,6 +11,7 @@ import {
 import {
     Button,
 } from "../../components/ui/Button";
+import { FieldLabel } from "../../components/ui/FieldLabel";
 
 import {
     setPassword,
@@ -154,13 +155,11 @@ export default function SecurityScreen() {
                         styles.form
                     }
                 >
-                    <Text
-                        style={
-                            styles.label
-                        }
-                    >
-                        New password
-                    </Text>
+                    <FieldLabel
+                        label="New password"
+                        required
+                        style={styles.label}
+                    />
 
                     <TextInput
                         value={
@@ -180,13 +179,11 @@ export default function SecurityScreen() {
                         }
                     />
 
-                    <Text
-                        style={
-                            styles.label
-                        }
-                    >
-                        Confirm password
-                    </Text>
+                    <FieldLabel
+                        label="Confirm password"
+                        required
+                        style={styles.label}
+                    />
 
                     <TextInput
                         value={

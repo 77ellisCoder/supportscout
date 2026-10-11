@@ -15,9 +15,11 @@ import {
 } from "../../theme";
 
 import { styles } from "../../styles/gig-form.styles";
+import { FieldLabel } from "../ui/FieldLabel";
 
 type GigDatePickerProps = {
     value: string;
+    required?: boolean;
     onChange: (value: string) => void;
 };
 
@@ -33,6 +35,7 @@ const WEEKDAYS = [
 
 export function GigDatePicker({
     value,
+    required = false,
     onChange,
 }: GigDatePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -83,9 +86,11 @@ export function GigDatePicker({
 
     return (
         <View style={styles.field}>
-            <Text style={styles.fieldLabel}>
-                Gig date
-            </Text>
+            <FieldLabel
+                label="Gig date"
+                required={required}
+                style={styles.fieldLabel}
+            />
 
             <Pressable
                 onPress={() => setIsOpen((current) => !current)}

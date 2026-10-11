@@ -17,9 +17,9 @@ test("buildEpkArchiveEntries creates the expected folder structure", () => {
     });
 
     assert.deepEqual(entries, [
-        "Red Temples_EPK/Bio + Press Release/bio.pdf",
-        "Red Temples_EPK/Press Photos/photo-1.jpg",
-        "Red Temples_EPK/Song Files/song-1.mp3",
+        "Bio + Press Release/bio.pdf",
+        "Press Photos/photo-1.jpg",
+        "Song Files/song-1.mp3",
     ]);
 });
 
@@ -116,17 +116,18 @@ test("createBandEpkArchive includes the bio and press release as PDFs", async ()
 
         assert.ok(archiveBlob);
         const archive = await JSZip.loadAsync(archiveBlob);
-        const bioPath = "Red Temples_EPK/Bio + Press Release/Band Bio.pdf";
-        const pressPath = "Red Temples_EPK/Bio + Press Release/Press Release.pdf";
+        const bioPath = "Bio + Press Release/Band Bio.pdf";
+        const pressPath = "Bio + Press Release/Press Release.pdf";
         const bioFile = archive.file(bioPath);
         const pressFile = archive.file(pressPath);
 
         assert.ok(bioFile);
         assert.ok(pressFile);
-        assert.ok(archive.file("Red Temples_EPK/Branding/logo.png"));
-        assert.ok(archive.file("Red Temples_EPK/Press Photos/press-photo.png"));
-        assert.equal(archive.file("Red Temples_EPK/Bio + Press Release/Band Bio.txt"), null);
-        assert.equal(archive.file("Red Temples_EPK/Bio + Press Release/Press Release.txt"), null);
+        assert.ok(archive.file("Branding/logo.png"));
+        assert.ok(archive.file("Press Photos/press-photo.png"));
+        assert.equal(archive.file("Bio + Press Release/Band Bio.txt"), null);
+        assert.equal(archive.file("Bio + Press Release/Press Release.txt"), null);
+        assert.ok(!Object.keys(archive.files).some((path) => path.startsWith("Red Temples_EPK/")));
         const bioPdfBytes = await bioFile.async("uint8array");
         const pressPdfBytes = await pressFile.async("uint8array");
         assert.equal((await PDFDocument.load(bioPdfBytes)).getPageCount(), 1);
