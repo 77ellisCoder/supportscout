@@ -1,5 +1,6 @@
 {
   "name": "supportscout",
+  "description": "A mobile app for managing bands, gigs, venues, and music industry contacts",
   "version": "1.0.4",
   "main": "expo-router/entry",
   "dependencies": {
